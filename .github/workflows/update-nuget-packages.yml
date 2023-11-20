@@ -1,0 +1,61 @@
+
+name: update-nuget-packages
+
+on:
+  schedule:
+    - cron:  '00 20 * * TUE'
+  workflow_dispatch:
+
+env:
+  HUSKY: 0
+  BRANCH: "feature/update-nuget-packages"
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  update-dotnet-sdk:
+    name: Update .NET SDK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: 'develop' # Checkout the develop branch instead of the default branch
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: './global.json'
+
+      - name: Update NuGet packages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          dotnet tool install -g dotnet-outdated-tool
+          dotnet restore StarWarsProgressBarIssueTracker.sln
+          dotnet outdated -u
+          
+          gitDiffOutput=$(git diff)
+          
+          if [ -n "$gitDiffOutput" ]; then
+            echo "Updated NuGet packages. Creating PR"
+          
+            git config user.email "action@github.com"
+            git config user.name "GitHub Action"
+          
+            git checkout -b $BRANCH
+            git commit -am "chore: Update NuGet packages" -n
+            git push --set-upstream origin $BRANCH
+          
+            gh pr create \
+              --title "NuGet package updates" \
+              --body "Updated NuGet packages to latest versions" \
+              --base "develop" \
+              --head $BRANCH
+          else
+            echo "All NuGet packages are up-to-date"
+          fi
