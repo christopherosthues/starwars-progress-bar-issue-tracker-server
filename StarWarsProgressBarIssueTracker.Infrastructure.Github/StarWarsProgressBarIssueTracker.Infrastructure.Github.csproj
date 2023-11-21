@@ -4,13 +4,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\StarWarsProgressBarIssueTracker.Domain\StarWarsProgressBarIssueTracker.Domain.csproj"/>
-    <ProjectReference Include="..\StarWarsProgressBarIssueTracker.Infrastructure.Github\StarWarsProgressBarIssueTracker.Infrastructure.Github.csproj"/>
-    <ProjectReference Include="..\StarWarsProgressBarIssueTracker.Infrastructure.Gitlab\StarWarsProgressBarIssueTracker.Infrastructure.Gitlab.csproj"/>
+    <Folder Include="Queries\"/>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0"/>
+    <PackageReference Include="StrawberryShake.Server" Version="13.7.0"/>
   </ItemGroup>
 
   <Target Name="Husky" BeforeTargets="Restore;CollectPackageReferences" Condition="'$(HUSKY)' != 0">

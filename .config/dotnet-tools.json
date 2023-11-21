@@ -19,6 +19,12 @@
       "commands": [
         "husky"
       ]
+    },
+    "strawberryshake.tools": {
+      "version": "13.7.0",
+      "commands": [
+        "dotnet-graphql"
+      ]
     }
   }
 }

@@ -18,7 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{705452CE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StarWarsProgressBarIssueTracker.Domain", "StarWarsProgressBarIssueTracker.Domain\StarWarsProgressBarIssueTracker.Domain.csproj", "{69A87A6D-A232-4F4A-B01A-B5072D2F7BDE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StarWarsProgressBarIssueTracker.Infrastructure", "StarWarsProgressBarIssueTracker.Infrastructure\StarWarsProgressBarIssueTracker.Infrastructure.csproj", "{4BE98324-ACBC-40C5-881B-2928070AC8C5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StarWarsProgressBarIssueTracker.Infrastructure.Gitlab", "StarWarsProgressBarIssueTracker.Infrastructure.Gitlab\StarWarsProgressBarIssueTracker.Infrastructure.Gitlab.csproj", "{4BE98324-ACBC-40C5-881B-2928070AC8C5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StarWarsProgressBarIssueTracker.Domain.Tests", "StarWarsProgressBarIssueTracker.Domain.Tests\StarWarsProgressBarIssueTracker.Domain.Tests.csproj", "{8CDFCA54-445E-4B5D-B32D-8E6B3E629417}"
 EndProject
@@ -27,6 +27,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "git hooks", "git hooks", "{
 		.husky\task-runner.json = .husky\task-runner.json
 		.husky\_\husky.sh = .husky\_\husky.sh
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{5D23A55C-DFFE-40D8-9168-6AE8CC9DDFFD}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+		README.md = README.md
+		CHANGELOG.md = CHANGELOG.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StarWarsProgressBarIssueTracker.Infrastructure", "StarWarsProgressBarIssueTracker.Infrastructure\StarWarsProgressBarIssueTracker.Infrastructure.csproj", "{DE7C2874-1C2C-4F74-B1DC-F09868D2224F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StarWarsProgressBarIssueTracker.Infrastructure.Github", "StarWarsProgressBarIssueTracker.Infrastructure.Github\StarWarsProgressBarIssueTracker.Infrastructure.Github.csproj", "{0768BB06-8EFE-4686-A1D8-987EE9A8AC1E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,9 +61,18 @@ Global
 		{8CDFCA54-445E-4B5D-B32D-8E6B3E629417}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8CDFCA54-445E-4B5D-B32D-8E6B3E629417}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8CDFCA54-445E-4B5D-B32D-8E6B3E629417}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE7C2874-1C2C-4F74-B1DC-F09868D2224F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE7C2874-1C2C-4F74-B1DC-F09868D2224F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE7C2874-1C2C-4F74-B1DC-F09868D2224F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE7C2874-1C2C-4F74-B1DC-F09868D2224F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0768BB06-8EFE-4686-A1D8-987EE9A8AC1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0768BB06-8EFE-4686-A1D8-987EE9A8AC1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0768BB06-8EFE-4686-A1D8-987EE9A8AC1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0768BB06-8EFE-4686-A1D8-987EE9A8AC1E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{705452CE-6D9D-468E-9148-51BB8279812D} = {86AE95DA-23E3-4778-BA05-A8AA47509F09}
 		{A854F50E-9FA0-420C-B764-E56137D66B62} = {86AE95DA-23E3-4778-BA05-A8AA47509F09}
+		{5D23A55C-DFFE-40D8-9168-6AE8CC9DDFFD} = {86AE95DA-23E3-4778-BA05-A8AA47509F09}
 	EndGlobalSection
 EndGlobal

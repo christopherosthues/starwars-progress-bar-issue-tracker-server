@@ -1,0 +1,27 @@
+﻿{
+  "schema": "schema.graphql",
+  "documents": "Queries/*.graphql",
+  "extensions": {
+    "strawberryShake": {
+      "name": "GitlabClient",
+      "namespace": "StarWarsProgressBarIssueTracker.Infrastructure.Gitlab.GraphQL",
+      "url": "https://gitlab.com/api/graphql",
+      "dependencyInjection": true,
+      "strictSchemaValidation": true,
+      "useSingleFile": true,
+      "requestStrategy": "Default",
+      "outputDirectoryName": "Generated",
+      "emitGeneratedCode": false,
+      "records": {
+        "inputs": false,
+        "entities": false
+      },
+      "transportProfiles": [
+        {
+          "default": "Http",
+          "subscription": "WebSocket"
+        }
+      ]
+    }
+  }
+}
