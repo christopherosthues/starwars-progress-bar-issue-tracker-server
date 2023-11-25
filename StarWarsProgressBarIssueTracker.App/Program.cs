@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using StarWarsProgressBarIssueTracker.App.Queries;
 using StarWarsProgressBarIssueTracker.Infrastructure;
 
@@ -10,7 +11,8 @@ builder.Services.AddSwaggerGen();
 
 // builder.Services.AddGitlabClient();
 
-builder.Services.AddDbContext<IssueTrackerContext>();
+var connectionString = builder.Configuration.GetConnectionString("IssueTrackerContext");
+builder.Services.AddDbContext<IssueTrackerContext>(optionsBuilder => optionsBuilder.UseNpgsql(connectionString));
 
 builder.Services.AddGraphQLServer()
     .AddQueryType<LabelQueries>();
@@ -24,33 +26,19 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    var context = services.GetRequiredService<IssueTrackerContext>();
+
+    context.Database.Migrate();
+}
+
 app.UseHttpsRedirection();
 
 app.MapGraphQL();
 
-// var summaries = new[]
-// {
-//     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-// };
-//
-// app.MapGet("/weatherforecast", () =>
-//     {
-//         var forecast = Enumerable.Range(1, 5).Select(index =>
-//                 new WeatherForecast
-//                 (
-//                     DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-//                     Random.Shared.Next(-20, 55),
-//                     summaries[Random.Shared.Next(summaries.Length)]
-//                 ))
-//             .ToArray();
-//         return forecast;
-//     })
-//     .WithName("GetWeatherForecast")
-//     .WithOpenApi();
+app.MapControllers();
 
 app.Run();
-
-// record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-// {
-//     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-// }
