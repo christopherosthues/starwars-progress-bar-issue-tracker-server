@@ -6,28 +6,32 @@
     <!-- Disable warning for RouteHandlerAnalyzer throws InvalidOperationException (https://github.com/dotnet/aspnetcore/issues/50836) -->
     <NoWarn>$(NoWarn);AD0001</NoWarn>
   </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="HotChocolate.AspNetCore" Version="13.7.0" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
+    <PackageReference Include="HotChocolate.AspNetCore" Version="13.7.0"/>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0"/>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="StrawberryShake.Server" Version="13.7.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="StrawberryShake.Server" Version="13.7.0"/>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0"/>
   </ItemGroup>
+
   <ItemGroup>
     <Content Include="..\.dockerignore">
       <Link>.dockerignore</Link>
     </Content>
   </ItemGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\StarWarsProgressBarIssueTracker.Domain\StarWarsProgressBarIssueTracker.Domain.csproj" />
-    <ProjectReference Include="..\StarWarsProgressBarIssueTracker.Infrastructure\StarWarsProgressBarIssueTracker.Infrastructure.csproj" />
+    <ProjectReference Include="..\StarWarsProgressBarIssueTracker.Domain\StarWarsProgressBarIssueTracker.Domain.csproj"/>
+    <ProjectReference Include="..\StarWarsProgressBarIssueTracker.Infrastructure\StarWarsProgressBarIssueTracker.Infrastructure.csproj"/>
   </ItemGroup>
+
   <Target Name="Husky" BeforeTargets="Restore;CollectPackageReferences" Condition="'$(HUSKY)' != 0">
-    <Exec Command="dotnet tool restore" StandardOutputImportance="Low" StandardErrorImportance="High" />
-    <Exec Command="dotnet husky install" StandardOutputImportance="Low" StandardErrorImportance="High" WorkingDirectory=".." />
+    <Exec Command="dotnet tool restore" StandardOutputImportance="Low" StandardErrorImportance="High"/>
+    <Exec Command="dotnet husky install" StandardOutputImportance="Low" StandardErrorImportance="High" WorkingDirectory=".."/>
   </Target>
 </Project>

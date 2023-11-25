@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StarWarsProgressBarIssueTra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StarWarsProgressBarIssueTracker.Infrastructure.Github", "StarWarsProgressBarIssueTracker.Infrastructure.Github\StarWarsProgressBarIssueTracker.Infrastructure.Github.csproj", "{0768BB06-8EFE-4686-A1D8-987EE9A8AC1E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StarWarsProgressBarIssueTracker.App.Tests", "StarWarsProgressBarIssueTracker.App.Tests\StarWarsProgressBarIssueTracker.App.Tests.csproj", "{735AF988-6C10-41BC-B517-95321ADAC2C7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,10 @@ Global
 		{0768BB06-8EFE-4686-A1D8-987EE9A8AC1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0768BB06-8EFE-4686-A1D8-987EE9A8AC1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0768BB06-8EFE-4686-A1D8-987EE9A8AC1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{735AF988-6C10-41BC-B517-95321ADAC2C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{735AF988-6C10-41BC-B517-95321ADAC2C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{735AF988-6C10-41BC-B517-95321ADAC2C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{735AF988-6C10-41BC-B517-95321ADAC2C7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{705452CE-6D9D-468E-9148-51BB8279812D} = {86AE95DA-23E3-4778-BA05-A8AA47509F09}
