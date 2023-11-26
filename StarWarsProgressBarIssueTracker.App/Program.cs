@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using StarWarsProgressBarIssueTracker.App.Queries;
-using StarWarsProgressBarIssueTracker.Infrastructure;
+using StarWarsProgressBarIssueTracker.Infrastructure.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +15,7 @@ var connectionString = builder.Configuration.GetConnectionString("IssueTrackerCo
 builder.Services.AddDbContext<IssueTrackerContext>(optionsBuilder => optionsBuilder.UseNpgsql(connectionString));
 
 builder.Services.AddGraphQLServer()
-    .AddQueryType<LabelQueries>();
+    .AddQueryType<AppearanceQueries>();
 
 var app = builder.Build();
 

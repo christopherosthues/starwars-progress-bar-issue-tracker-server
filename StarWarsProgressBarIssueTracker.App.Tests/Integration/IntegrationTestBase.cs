@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using StarWarsProgressBarIssueTracker.App.Tests.Integration.Setup;
 using StarWarsProgressBarIssueTracker.Infrastructure;
+using StarWarsProgressBarIssueTracker.Infrastructure.Database;
 
 namespace StarWarsProgressBarIssueTracker.App.Tests.Integration;
 
@@ -57,7 +58,7 @@ public class IntegrationTestBase
     {
         dbContext.Issues.RemoveRange(dbContext.Issues);
         dbContext.Milestones.RemoveRange(dbContext.Milestones);
-        dbContext.Labels.RemoveRange(dbContext.Labels);
+        dbContext.Appearances.RemoveRange(dbContext.Appearances);
         dbContext.Releases.RemoveRange(dbContext.Releases);
     }
 

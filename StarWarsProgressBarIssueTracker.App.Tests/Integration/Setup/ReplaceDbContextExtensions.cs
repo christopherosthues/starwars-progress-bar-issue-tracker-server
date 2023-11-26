@@ -2,6 +2,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using StarWarsProgressBarIssueTracker.Infrastructure;
+using StarWarsProgressBarIssueTracker.Infrastructure.Database;
 
 namespace StarWarsProgressBarIssueTracker.App.Tests.Integration.Setup;
 

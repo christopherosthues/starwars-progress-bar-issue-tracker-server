@@ -2,10 +2,11 @@
 
 namespace StarWarsProgressBarIssueTracker.App.Queries;
 
-public class LabelQueries
+public class AppearanceQueries
 {
-    public Label GetLabel() => new Label
+    public Appearance GetLabel() => new Appearance
     {
+        Id = Guid.NewGuid(), CreateAt = DateTime.UtcNow,
         Color = "Color", Title = "Title", TextColor = "TextColor", Description = "Description"
     };
 }

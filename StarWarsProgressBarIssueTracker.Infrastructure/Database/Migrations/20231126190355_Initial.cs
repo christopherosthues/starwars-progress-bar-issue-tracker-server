@@ -16,8 +16,8 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Title = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: true),
+                    Title = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     MilestoneState = table.Column<int>(type: "integer", nullable: false),
                     CreateAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
@@ -32,8 +32,8 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Title = table.Column<string>(type: "text", nullable: false),
-                    ReleaseNotes = table.Column<string>(type: "text", nullable: true),
+                    Title = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    ReleaseNotes = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     ReleaseState = table.Column<int>(type: "integer", nullable: false),
                     ReleaseDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     CreateAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -49,9 +49,7 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    EngineColor = table.Column<int>(type: "integer", nullable: false),
-                    CreateAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    EngineColor = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -59,12 +57,35 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Appearances",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Title = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    Color = table.Column<string>(type: "character varying(8)", maxLength: 8, nullable: false),
+                    TextColor = table.Column<string>(type: "character varying(8)", maxLength: 8, nullable: false),
+                    DbVehicleId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CreateAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Appearances", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Appearances_Vehicles_DbVehicleId",
+                        column: x => x.DbVehicleId,
+                        principalTable: "Vehicles",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Issues",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Title = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: true),
+                    Title = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    Description = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     Priority = table.Column<int>(type: "integer", nullable: false),
                     IssueState = table.Column<int>(type: "integer", nullable: false),
                     IssueType = table.Column<int>(type: "integer", nullable: false),
@@ -95,12 +116,32 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Photos",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    PhotoData = table.Column<byte[]>(type: "bytea", nullable: false),
+                    DbVehicleId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CreateAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Photos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Photos_Vehicles_DbVehicleId",
+                        column: x => x.DbVehicleId,
+                        principalTable: "Vehicles",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Translations",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Country = table.Column<string>(type: "text", nullable: false),
-                    Text = table.Column<string>(type: "text", nullable: false),
+                    Country = table.Column<string>(type: "character varying(7)", maxLength: 7, nullable: false),
+                    Text = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     DbVehicleId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
@@ -113,28 +154,10 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                         principalColumn: "Id");
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Labels",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Title = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: true),
-                    Color = table.Column<string>(type: "text", nullable: false),
-                    TextColor = table.Column<string>(type: "text", nullable: false),
-                    DbIssueId = table.Column<Guid>(type: "uuid", nullable: true),
-                    CreateAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Labels", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Labels_Issues_DbIssueId",
-                        column: x => x.DbIssueId,
-                        principalTable: "Issues",
-                        principalColumn: "Id");
-                });
+            migrationBuilder.CreateIndex(
+                name: "IX_Appearances_DbVehicleId",
+                table: "Appearances",
+                column: "DbVehicleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Issues_MilestoneId",
@@ -152,9 +175,9 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                 column: "VehicleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Labels_DbIssueId",
-                table: "Labels",
-                column: "DbIssueId");
+                name: "IX_Photos_DbVehicleId",
+                table: "Photos",
+                column: "DbVehicleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Translations_DbVehicleId",
@@ -166,13 +189,16 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Labels");
-
-            migrationBuilder.DropTable(
-                name: "Translations");
+                name: "Appearances");
 
             migrationBuilder.DropTable(
                 name: "Issues");
+
+            migrationBuilder.DropTable(
+                name: "Photos");
+
+            migrationBuilder.DropTable(
+                name: "Translations");
 
             migrationBuilder.DropTable(
                 name: "Milestones");

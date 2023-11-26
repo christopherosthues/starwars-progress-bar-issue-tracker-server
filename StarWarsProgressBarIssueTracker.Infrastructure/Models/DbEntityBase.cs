@@ -1,6 +1,6 @@
 ﻿namespace StarWarsProgressBarIssueTracker.Infrastructure.Models;
 
-public abstract class DbEntity
+public abstract class DbEntityBase
 {
     public Guid Id { get; set; } = Guid.NewGuid();
 

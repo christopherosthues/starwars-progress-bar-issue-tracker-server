@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using StarWarsProgressBarIssueTracker.Domain.Models;
 
 namespace StarWarsProgressBarIssueTracker.Infrastructure.Models;
 
-public class DbMilestone : DbEntityBase
+public class DbAppearance : DbEntityBase
 {
     [MaxLength(50)]
     public required string Title { get; set; }
@@ -11,7 +10,9 @@ public class DbMilestone : DbEntityBase
     [MaxLength(255)]
     public string? Description { get; set; }
 
-    public MilestoneState MilestoneState { get; set; }
+    [StringLength(8, MinimumLength = 8)]
+    public required string Color { get; set; }
 
-    public List<DbIssue> Issues { get; set; } = [];
+    [StringLength(8, MinimumLength = 8)]
+    public required string TextColor { get; set; }
 }

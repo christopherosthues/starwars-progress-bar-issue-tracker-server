@@ -1,6 +1,6 @@
 ﻿namespace StarWarsProgressBarIssueTracker.Domain.Models;
 
-public class Label
+public class Appearance : EntityBase
 {
     public required string Title { get; set; }
 
