@@ -17,6 +17,10 @@ builder.Services.AddDbContext<IssueTrackerContext>(optionsBuilder => optionsBuil
 builder.Services.AddGraphQLServer()
     .AddQueryType<AppearanceQueries>();
 
+// builder.Services.AddCors(corsOptions =>
+//     corsOptions.AddDefaultPolicy(corsPolicyBuilder =>
+//         corsPolicyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -34,6 +38,8 @@ using (var scope = app.Services.CreateScope())
 
     context.Database.Migrate();
 }
+
+// app.UseCors();
 
 app.UseHttpsRedirection();
 
