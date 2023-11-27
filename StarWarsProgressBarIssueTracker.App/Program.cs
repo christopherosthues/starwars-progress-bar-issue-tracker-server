@@ -42,3 +42,8 @@ app.MapGraphQL();
 app.MapControllers();
 
 app.Run();
+
+/// <summary>
+/// Used for integration tests. Entry point class has to accessible from the custom WebApplicationFactory.
+/// </summary>
+public partial class Program { }
