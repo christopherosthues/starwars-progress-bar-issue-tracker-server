@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using StarWarsProgressBarIssueTracker.Domain.Models;
+using StarWarsProgressBarIssueTracker.Domain.Issues;
 
 namespace StarWarsProgressBarIssueTracker.Infrastructure.Models;
 

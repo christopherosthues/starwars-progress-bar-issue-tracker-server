@@ -1,4 +1,6 @@
-namespace StarWarsProgressBarIssueTracker.Domain.Models;
+using StarWarsProgressBarIssueTracker.Domain.Appearances;
+
+namespace StarWarsProgressBarIssueTracker.Domain.Issues;
 
 public class Vehicle
 {

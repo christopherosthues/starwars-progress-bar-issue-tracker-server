@@ -1,4 +1,7 @@
-namespace StarWarsProgressBarIssueTracker.Domain.Models;
+using StarWarsProgressBarIssueTracker.Domain.Issues;
+using StarWarsProgressBarIssueTracker.Domain.Models;
+
+namespace StarWarsProgressBarIssueTracker.Domain.Releases;
 
 public class Release : EntityBase
 {

@@ -1,4 +1,6 @@
-﻿namespace StarWarsProgressBarIssueTracker.Domain.Models;
+﻿using StarWarsProgressBarIssueTracker.Domain.Models;
+
+namespace StarWarsProgressBarIssueTracker.Domain.Appearances;
 
 public class Appearance : EntityBase
 {

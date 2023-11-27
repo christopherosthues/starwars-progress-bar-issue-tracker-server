@@ -1,4 +1,8 @@
-namespace StarWarsProgressBarIssueTracker.Domain.Models;
+using StarWarsProgressBarIssueTracker.Domain.Milestones;
+using StarWarsProgressBarIssueTracker.Domain.Models;
+using StarWarsProgressBarIssueTracker.Domain.Releases;
+
+namespace StarWarsProgressBarIssueTracker.Domain.Issues;
 
 public class Issue : EntityBase
 {

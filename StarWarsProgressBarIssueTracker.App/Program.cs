@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using StarWarsProgressBarIssueTracker.App.Queries;
+using StarWarsProgressBarIssueTracker.App.Appearances;
+using StarWarsProgressBarIssueTracker.App.ServiceCollectionExtensions;
 using StarWarsProgressBarIssueTracker.Infrastructure.Database;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +17,8 @@ builder.Services.AddDbContext<IssueTrackerContext>(optionsBuilder => optionsBuil
 
 builder.Services.AddGraphQLServer()
     .AddQueryType<AppearanceQueries>();
+
+builder.Services.AddIssueTrackerServices();
 
 // builder.Services.AddCors(corsOptions =>
 //     corsOptions.AddDefaultPolicy(corsPolicyBuilder =>
@@ -52,4 +55,4 @@ app.Run();
 /// <summary>
 /// Used for integration tests. Entry point class has to accessible from the custom WebApplicationFactory.
 /// </summary>
-public partial class Program { }
+public partial class Program;

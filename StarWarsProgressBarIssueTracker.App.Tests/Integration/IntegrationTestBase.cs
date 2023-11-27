@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using StarWarsProgressBarIssueTracker.App.Tests.Integration.Setup;
-using StarWarsProgressBarIssueTracker.Infrastructure;
 using StarWarsProgressBarIssueTracker.Infrastructure.Database;
 
 namespace StarWarsProgressBarIssueTracker.App.Tests.Integration;

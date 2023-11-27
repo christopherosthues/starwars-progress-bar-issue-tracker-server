@@ -1,4 +1,4 @@
-﻿namespace StarWarsProgressBarIssueTracker.Domain.Models;
+﻿namespace StarWarsProgressBarIssueTracker.Domain.Milestones;
 
 public enum MilestoneState
 {
