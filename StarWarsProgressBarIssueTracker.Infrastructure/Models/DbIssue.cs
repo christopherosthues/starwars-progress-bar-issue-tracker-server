@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using StarWarsProgressBarIssueTracker.Domain.Models;
 
 namespace StarWarsProgressBarIssueTracker.Infrastructure.Models;
@@ -17,9 +18,12 @@ public class DbIssue : DbEntityBase
 
     public IssueType IssueType { get; set; }
 
+    [ForeignKey("MilestoneId")]
     public DbMilestone? Milestone { get; set; }
 
+    [ForeignKey("ReleaseId")]
     public DbRelease? Release { get; set; }
 
+    [Column("VehicleId")]
     public DbVehicle? Vehicle { get; set; }
 }

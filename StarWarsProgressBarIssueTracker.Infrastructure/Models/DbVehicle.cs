@@ -8,11 +8,14 @@ public class DbVehicle
 {
     public Guid Id { get; set; } = Guid.NewGuid();
 
-    public List<DbAppearance> Appearances { get; set; } = [];
+    [Column("AppearanceId")]
+    public virtual List<DbAppearance> Appearances { get; set; } = [];
 
     public EngineColor EngineColor { get; set; }
 
-    public List<DbTranslation> Translations { get; set; } = [];
+    [Column("TranslationId")]
+    public virtual List<DbTranslation> Translations { get; set; } = [];
 
-    public List<DbPhoto> Photos { get; set; } = [];
+    [Column("PhotoId")]
+    public virtual List<DbPhoto> Photos { get; set; } = [];
 }
