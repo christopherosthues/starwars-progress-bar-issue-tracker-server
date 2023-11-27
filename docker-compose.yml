@@ -1,0 +1,39 @@
+version: '3.4'
+
+services:
+  postgres:
+    build:
+      context: ./StarWarsProgressBarIssueTracker.DB
+      dockerfile: Dockerfile
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    hostname: issuetrackerdb
+    container_name: issue_tracker_db
+    restart: unless-stopped
+    networks:
+      - issue_tracker_network
+
+  issuetracker:
+    build:
+      context: ./StarWarsProgressBarIssueTracker.App
+      dockerfile: Dockerfile
+    hostname: issuetrackerserver
+    container_name: issue_tracker_server
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_URLS=http://+:8080
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    networks:
+      - issue_tracker_network
+
+volumes:
+  pgdata:
+
+networks:
+  issue_tracker_network:
+    external: false
