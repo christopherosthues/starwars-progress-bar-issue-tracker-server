@@ -23,7 +23,7 @@ public class AppearanceService : IAppearanceService
 
     public Appearance GetAppearance(Guid id)
     {
-        throw new NotImplementedException();
+        return _mapper.Map<Appearance>(_repository.GetAll());
     }
 
     public void AddAppearance(Appearance appearance)

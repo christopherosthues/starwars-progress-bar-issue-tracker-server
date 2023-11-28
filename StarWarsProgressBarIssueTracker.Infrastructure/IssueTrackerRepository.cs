@@ -1,13 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StarWarsProgressBarIssueTracker.Domain;
+using StarWarsProgressBarIssueTracker.Infrastructure.Database;
 
 namespace StarWarsProgressBarIssueTracker.Infrastructure;
 
-public class IssueTrackerRepository<T>(DbContext context) : IRepository<T>
+public class IssueTrackerRepository<T>(IssueTrackerContext context) : IRepository<T>
     where T : class
 {
-    // TODO: map domain entity to db entity
-
     private readonly DbSet<T> _dbSet = context.Set<T>();
 
     public T GetById(Guid id)

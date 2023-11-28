@@ -18,6 +18,7 @@ builder.Services.AddDbContext<IssueTrackerContext>(optionsBuilder => optionsBuil
 builder.Services.AddGraphQLServer()
     .AddQueryType<AppearanceQueries>();
 
+builder.Services.AddIssueTrackerMappers();
 builder.Services.AddIssueTrackerServices();
 
 // builder.Services.AddCors(corsOptions =>
