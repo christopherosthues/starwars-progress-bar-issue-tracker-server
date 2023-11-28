@@ -16,7 +16,8 @@ var connectionString = builder.Configuration.GetConnectionString("IssueTrackerCo
 builder.Services.AddDbContext<IssueTrackerContext>(optionsBuilder => optionsBuilder.UseNpgsql(connectionString));
 
 builder.Services.AddGraphQLServer()
-    .AddQueryType<AppearanceQueries>();
+    .AddQueryType<AppearanceQueries>()
+    .AddMutationType<AppearanceMutations>();
 
 builder.Services.AddIssueTrackerMappers();
 builder.Services.AddIssueTrackerServices();
@@ -49,7 +50,7 @@ app.UseHttpsRedirection();
 
 app.MapGraphQL();
 
-app.MapControllers();
+// app.MapControllers();
 
 app.Run();
 

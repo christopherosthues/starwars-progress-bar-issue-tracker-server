@@ -18,17 +18,25 @@ public class AppearanceService : IAppearanceService
 
     public IEnumerable<Appearance> GetAllAppearances()
     {
-        return _mapper.Map<IEnumerable<DbAppearance>, IEnumerable<Appearance>>(_repository.GetAll());
+        return _mapper.Map<IEnumerable<Appearance>>(_repository.GetAll());
     }
 
     public Appearance GetAppearance(Guid id)
     {
-        return _mapper.Map<Appearance>(_repository.GetAll());
+        return _mapper.Map<Appearance>(_repository.GetById(id));
     }
 
     public void AddAppearance(Appearance appearance)
     {
-        throw new NotImplementedException();
+        DbAppearance dbAppearance = new()
+        {
+            Title = appearance.Title,
+            Description = appearance.Description,
+            Color = appearance.Color,
+            TextColor = appearance.TextColor
+        };
+
+        _repository.Add(dbAppearance);
     }
 
     public void UpdateAppearance(Appearance appearance)

@@ -13,30 +13,11 @@ public class AppearanceQueries
 
     public IEnumerable<Appearance> GetAppearances()
     {
-        return new List<Appearance>
-        {
-            new()
-            {
-                Id = Guid.NewGuid(),
-                CreateAt = DateTime.UtcNow,
-                Color = "Color",
-                Title = "Title",
-                TextColor = "TextColor",
-                Description = "Description"
-            }
-        };
+        return _appearanceService.GetAllAppearances();
     }
 
     public Appearance GetAppearance(Guid id)
     {
-        return new()
-        {
-            Id = id,
-            CreateAt = DateTime.UtcNow,
-            Color = "Color",
-            Title = "Title",
-            TextColor = "TextColor",
-            Description = "Description"
-        };
+        return _appearanceService.GetAppearance(id);
     }
 }
