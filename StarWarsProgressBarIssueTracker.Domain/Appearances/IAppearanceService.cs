@@ -2,13 +2,13 @@ namespace StarWarsProgressBarIssueTracker.Domain.Appearances;
 
 public interface IAppearanceService
 {
-    IEnumerable<Appearance> GetAllAppearances();
+    Task<IEnumerable<Appearance>> GetAllAppearances();
 
-    Appearance GetAppearance(Guid id);
+    Task<Appearance> GetAppearance(Guid id);
 
-    void AddAppearance(Appearance appearance);
+    Task<Appearance> AddAppearance(string title, string color, string textColor, string? description);
 
-    void UpdateAppearance(Appearance appearance);
+    Appearance UpdateAppearance(Appearance appearance);
 
-    void DeleteAppearance(Appearance appearance);
+    Appearance DeleteAppearance(Appearance appearance);
 }

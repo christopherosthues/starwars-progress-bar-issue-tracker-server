@@ -16,8 +16,11 @@ var connectionString = builder.Configuration.GetConnectionString("IssueTrackerCo
 builder.Services.AddDbContext<IssueTrackerContext>(optionsBuilder => optionsBuilder.UseNpgsql(connectionString));
 
 builder.Services.AddGraphQLServer()
+    .AddMutationConventions()
     .AddQueryType<AppearanceQueries>()
-    .AddMutationType<AppearanceMutations>();
+    .AddMutationType<AppearanceMutations>()
+    .RegisterService<AppearanceService>()
+    .RegisterDbContext<IssueTrackerContext>();
 
 builder.Services.AddIssueTrackerMappers();
 builder.Services.AddIssueTrackerServices();
@@ -41,7 +44,7 @@ using (var scope = app.Services.CreateScope())
 
     var context = services.GetRequiredService<IssueTrackerContext>();
 
-    context.Database.Migrate();
+    await context.Database.MigrateAsync();
 }
 
 // app.UseCors();

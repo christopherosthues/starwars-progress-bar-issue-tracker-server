@@ -6,18 +6,18 @@ public class AppearanceQueries
 {
     private readonly IAppearanceService _appearanceService;
 
-    public AppearanceQueries(IAppearanceService appearanceService)
+    public AppearanceQueries(AppearanceService appearanceService)
     {
         _appearanceService = appearanceService;
     }
 
-    public IEnumerable<Appearance> GetAppearances()
+    public async Task<IEnumerable<Appearance>> GetAppearances()
     {
-        return _appearanceService.GetAllAppearances();
+        return await _appearanceService.GetAllAppearances();
     }
 
-    public Appearance GetAppearance(Guid id)
+    public async Task<Appearance> GetAppearance(Guid id)
     {
-        return _appearanceService.GetAppearance(id);
+        return await _appearanceService.GetAppearance(id);
     }
 }

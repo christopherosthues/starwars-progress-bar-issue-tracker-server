@@ -4,33 +4,44 @@ using StarWarsProgressBarIssueTracker.Infrastructure.Database;
 
 namespace StarWarsProgressBarIssueTracker.Infrastructure;
 
-public class IssueTrackerRepository<T>(IssueTrackerContext context) : IRepository<T>
+public class IssueTrackerRepository<T> : IRepository<T>
     where T : class
 {
-    private readonly DbSet<T> _dbSet = context.Set<T>();
+    private readonly DbSet<T> _dbSet;
+    private readonly IssueTrackerContext _context;
 
-    public T GetById(Guid id)
+    public IssueTrackerRepository(IssueTrackerContext context)
     {
-        return _dbSet.Find(id)!;
+        _context = context;
+        _dbSet = context.Set<T>();
     }
 
-    public IEnumerable<T> GetAll()
+    public async Task<T?> GetById(Guid id)
     {
-        return _dbSet.ToList();
+        return await _dbSet.FindAsync(id);
     }
 
-    public void Add(T entity)
+    public async Task<IEnumerable<T>> GetAll()
     {
-        _dbSet.Add(entity);
+        return await _dbSet.ToListAsync();
     }
 
-    public void Update(T entity)
+    public async Task<T> Add(T entity)
     {
-        context.Entry(entity).State = EntityState.Modified;
+        var resultEntry = await _dbSet.AddAsync(entity);
+        return resultEntry.Entity;
     }
 
-    public void Delete(T entity)
+    public T Update(T entity)
     {
-        _dbSet.Remove(entity);
+        var entry = _context.Entry(entity);
+        entry.State = EntityState.Modified;
+
+        return entry.Entity;
+    }
+
+    public T Delete(T entity)
+    {
+        return _dbSet.Remove(entity).Entity;
     }
 }

@@ -2,13 +2,13 @@
 
 public interface IRepository<T>
 {
-    T GetById(Guid id);
+    Task<T?> GetById(Guid id);
 
-    IEnumerable<T> GetAll();
+    Task<IEnumerable<T>> GetAll();
 
-    void Add(T entity);
+    Task<T> Add(T entity);
 
-    void Update(T entity);
+    T Update(T entity);
 
-    void Delete(T entity);
+    T Delete(T entity);
 }

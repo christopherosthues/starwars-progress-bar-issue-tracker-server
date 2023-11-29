@@ -11,13 +11,14 @@ public class EntityMapperProfile : Profile
 {
     public EntityMapperProfile()
     {
-        CreateMap<Appearance, DbAppearance>();
-        CreateMap<Issue, DbIssue>();
+        CreateMap<Appearance, DbAppearance>().ReverseMap();
+        CreateMap<Issue, DbIssue>().ReverseMap();
         CreateMap<Photo, DbPhoto>()
-            .ForMember(dest => dest.PhotoData, opt => opt.MapFrom(src => src.PhotoData));
-        CreateMap<Translation, DbTranslation>();
-        CreateMap<Vehicle, DbVehicle>();
-        CreateMap<Milestone, DbMilestone>();
-        CreateMap<Release, DbRelease>();
+            .ForMember(dest => dest.PhotoData, opt => opt.MapFrom(src => src.PhotoData))
+            .ReverseMap();
+        CreateMap<Translation, DbTranslation>().ReverseMap();
+        CreateMap<Vehicle, DbVehicle>().ReverseMap();
+        CreateMap<Milestone, DbMilestone>().ReverseMap();
+        CreateMap<Release, DbRelease>().ReverseMap();
     }
 }

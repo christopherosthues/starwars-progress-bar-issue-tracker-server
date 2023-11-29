@@ -16,35 +16,35 @@ public class AppearanceService : IAppearanceService
         _mapper = mapper;
     }
 
-    public IEnumerable<Appearance> GetAllAppearances()
+    public async Task<IEnumerable<Appearance>> GetAllAppearances()
     {
-        return _mapper.Map<IEnumerable<Appearance>>(_repository.GetAll());
+        return _mapper.Map<IEnumerable<Appearance>>(await _repository.GetAll());
     }
 
-    public Appearance GetAppearance(Guid id)
+    public async Task<Appearance> GetAppearance(Guid id)
     {
-        return _mapper.Map<Appearance>(_repository.GetById(id));
+        return _mapper.Map<Appearance>(await _repository.GetById(id));
     }
 
-    public void AddAppearance(Appearance appearance)
+    public async Task<Appearance> AddAppearance(string title, string color, string textColor, string? description)
     {
         DbAppearance dbAppearance = new()
         {
-            Title = appearance.Title,
-            Description = appearance.Description,
-            Color = appearance.Color,
-            TextColor = appearance.TextColor
+            Title = title,
+            Description = description,
+            Color = color,
+            TextColor = textColor
         };
 
-        _repository.Add(dbAppearance);
+        return _mapper.Map<Appearance>(await _repository.Add(dbAppearance));
     }
 
-    public void UpdateAppearance(Appearance appearance)
+    public Appearance UpdateAppearance(Appearance appearance)
     {
         throw new NotImplementedException();
     }
 
-    public void DeleteAppearance(Appearance appearance)
+    public Appearance DeleteAppearance(Appearance appearance)
     {
         throw new NotImplementedException();
     }

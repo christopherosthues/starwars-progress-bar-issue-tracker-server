@@ -6,15 +6,13 @@ public class AppearanceMutations
 {
     private readonly IAppearanceService _appearanceService;
 
-    public AppearanceMutations(IAppearanceService appearanceService)
+    public AppearanceMutations(AppearanceService appearanceService)
     {
         _appearanceService = appearanceService;
     }
 
-    public async Task AddAppearance(Appearance appearance)
+    public async Task<Appearance> AddAppearance(string title, string color, string textColor, string? description)
     {
-        _appearanceService.AddAppearance(appearance);
-
-        await Task.CompletedTask;
+        return await _appearanceService.AddAppearance(title, color, textColor, description);
     }
 }

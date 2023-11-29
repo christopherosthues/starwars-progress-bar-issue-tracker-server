@@ -18,6 +18,7 @@ public static class ServiceRegistrationExtensions
     public static void AddIssueTrackerServices(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddTransient<IAppearanceService, AppearanceService>();
+        serviceCollection.AddTransient<AppearanceService>();
         serviceCollection.AddTransient<IIssueService, IssueService>();
         serviceCollection.AddTransient<IMilestoneService, MilestoneService>();
         serviceCollection.AddTransient<IReleaseService, ReleaseService>();
