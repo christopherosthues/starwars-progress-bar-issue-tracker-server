@@ -3,7 +3,7 @@ using StarWarsProgressBarIssueTracker.Infrastructure.Models;
 
 namespace StarWarsProgressBarIssueTracker.Infrastructure.Database;
 
-public class IssueTrackerContext(DbContextOptions options) : DbContext(options)
+public class IssueTrackerContext(DbContextOptions<IssueTrackerContext> options) : DbContext(options)
 {
     public DbSet<DbAppearance> Appearances { get; init; } = default!;
     public DbSet<DbIssue> Issues { get; init; } = default!;

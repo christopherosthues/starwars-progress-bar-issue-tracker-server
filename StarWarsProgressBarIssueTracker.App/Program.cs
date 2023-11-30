@@ -18,12 +18,12 @@ builder.Services.AddDbContext<IssueTrackerContext>(optionsBuilder => optionsBuil
 builder.Services.AddGraphQLServer()
     .AddMutationConventions()
     .AddQueryType<AppearanceQueries>()
-    .AddMutationType<AppearanceMutations>()
-    .RegisterService<AppearanceService>()
-    .RegisterDbContext<IssueTrackerContext>();
+    .AddMutationType<AppearanceMutations>();
 
 builder.Services.AddIssueTrackerMappers();
 builder.Services.AddIssueTrackerServices();
+builder.Services.AddGraphQLQueries();
+builder.Services.AddGraphQLMutations();
 
 // builder.Services.AddCors(corsOptions =>
 //     corsOptions.AddDefaultPolicy(corsPolicyBuilder =>

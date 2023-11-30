@@ -1,51 +1,32 @@
-using AutoMapper;
-using StarWarsProgressBarIssueTracker.Domain;
 using StarWarsProgressBarIssueTracker.Domain.Appearances;
-using StarWarsProgressBarIssueTracker.Infrastructure.Models;
+using StarWarsProgressBarIssueTracker.Infrastructure.Repositories;
 
 namespace StarWarsProgressBarIssueTracker.App.Appearances;
 
-public class AppearanceService : IAppearanceService
+public class AppearanceService(IAppearanceRepository repository) : IAppearanceService
 {
-    private readonly IRepository<DbAppearance> _repository;
-    private readonly IMapper _mapper;
-
-    public AppearanceService(IRepository<DbAppearance> repository, IMapper mapper)
+    public Task<IEnumerable<Appearance>> GetAllAppearances()
     {
-        _repository = repository;
-        _mapper = mapper;
+        return repository.GetAll();
     }
 
-    public async Task<IEnumerable<Appearance>> GetAllAppearances()
+    public Task<Appearance?> GetAppearance(Guid id)
     {
-        return _mapper.Map<IEnumerable<Appearance>>(await _repository.GetAll());
+        return repository.GetById(id);
     }
 
-    public async Task<Appearance> GetAppearance(Guid id)
+    public Task<Appearance> AddAppearance(Appearance appearance)
     {
-        return _mapper.Map<Appearance>(await _repository.GetById(id));
+        return repository.Add(appearance);
     }
 
-    public async Task<Appearance> AddAppearance(string title, string color, string textColor, string? description)
+    public Task<Appearance> UpdateAppearance(Appearance appearance)
     {
-        DbAppearance dbAppearance = new()
-        {
-            Title = title,
-            Description = description,
-            Color = color,
-            TextColor = textColor
-        };
-
-        return _mapper.Map<Appearance>(await _repository.Add(dbAppearance));
+        return repository.Update(appearance);
     }
 
-    public Appearance UpdateAppearance(Appearance appearance)
+    public Task<Appearance> DeleteAppearance(Appearance appearance)
     {
-        throw new NotImplementedException();
-    }
-
-    public Appearance DeleteAppearance(Appearance appearance)
-    {
-        throw new NotImplementedException();
+        return repository.Delete(appearance);
     }
 }

@@ -4,11 +4,11 @@ public interface IAppearanceService
 {
     Task<IEnumerable<Appearance>> GetAllAppearances();
 
-    Task<Appearance> GetAppearance(Guid id);
+    Task<Appearance?> GetAppearance(Guid id);
 
-    Task<Appearance> AddAppearance(string title, string color, string textColor, string? description);
+    Task<Appearance> AddAppearance(Appearance appearance);
 
-    Appearance UpdateAppearance(Appearance appearance);
+    Task<Appearance> UpdateAppearance(Appearance appearance);
 
-    Appearance DeleteAppearance(Appearance appearance);
+    Task<Appearance> DeleteAppearance(Appearance appearance);
 }

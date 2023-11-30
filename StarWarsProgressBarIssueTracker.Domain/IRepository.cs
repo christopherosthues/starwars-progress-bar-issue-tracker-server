@@ -1,14 +1,14 @@
 ﻿namespace StarWarsProgressBarIssueTracker.Domain;
 
-public interface IRepository<T>
+public interface IRepository<TDbDomain>
 {
-    Task<T?> GetById(Guid id);
+    Task<TDbDomain?> GetById(Guid id);
 
-    Task<IEnumerable<T>> GetAll();
+    Task<IEnumerable<TDbDomain>> GetAll();
 
-    Task<T> Add(T entity);
+    Task<TDbDomain> Add(TDbDomain domain);
 
-    T Update(T entity);
+    Task<TDbDomain> Update(TDbDomain entity);
 
-    T Delete(T entity);
+    Task<TDbDomain> Delete(TDbDomain entity);
 }
