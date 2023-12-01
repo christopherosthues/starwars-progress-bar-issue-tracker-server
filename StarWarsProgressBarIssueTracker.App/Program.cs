@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using StarWarsProgressBarIssueTracker.App.Appearances;
+using StarWarsProgressBarIssueTracker.App.Issues;
+using StarWarsProgressBarIssueTracker.App.Milestones;
+using StarWarsProgressBarIssueTracker.App.Releases;
 using StarWarsProgressBarIssueTracker.App.ServiceCollectionExtensions;
 using StarWarsProgressBarIssueTracker.Infrastructure.Database;
 
@@ -18,7 +21,13 @@ builder.Services.AddDbContext<IssueTrackerContext>(optionsBuilder => optionsBuil
 builder.Services.AddGraphQLServer()
     .AddMutationConventions()
     .AddQueryType<AppearanceQueries>()
-    .AddMutationType<AppearanceMutations>();
+    .AddMutationType<AppearanceMutations>()
+    .AddQueryType<IssueQueries>()
+    .AddMutationType<IssueMutations>()
+    .AddQueryType<MilestoneQueries>()
+    .AddMutationType<MilestoneMutations>()
+    .AddQueryType<ReleaseQueries>()
+    .AddMutationType<ReleaseMutations>();
 
 builder.Services.AddIssueTrackerMappers();
 builder.Services.AddIssueTrackerServices();
