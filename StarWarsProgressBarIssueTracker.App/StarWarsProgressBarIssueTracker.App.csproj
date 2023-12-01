@@ -3,6 +3,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <InvariantGlobalization>true</InvariantGlobalization>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
     <!-- Disable warning for RouteHandlerAnalyzer throws InvalidOperationException (https://github.com/dotnet/aspnetcore/issues/50836) -->
     <NoWarn>$(NoWarn);AD0001</NoWarn>
   </PropertyGroup>

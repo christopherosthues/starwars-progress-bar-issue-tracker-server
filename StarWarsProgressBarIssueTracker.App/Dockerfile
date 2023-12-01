@@ -1,5 +1,4 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
@@ -7,11 +6,11 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["StarWarsProgressBarIssueTracker.App/StarWarsProgressBarIssueTracker.App.csproj", "StarWarsProgressBarIssueTracker.App/"]
-COPY ["StarWarsProgressBarIssueTracker.Domain/StarWarsProgressBarIssueTracker.Domain.csproj", "StarWarsProgressBarIssueTracker.Domain/"]
-COPY ["StarWarsProgressBarIssueTracker.Infrastructure/StarWarsProgressBarIssueTracker.Infrastructure.csproj", "StarWarsProgressBarIssueTracker.Infrastructure/"]
-COPY ["StarWarsProgressBarIssueTracker.Infrastructure.Github/StarWarsProgressBarIssueTracker.Infrastructure.Github.csproj", "StarWarsProgressBarIssueTracker.Infrastructure.Github/"]
-COPY ["StarWarsProgressBarIssueTracker.Infrastructure.Gitlab/StarWarsProgressBarIssueTracker.Infrastructure.Gitlab.csproj", "StarWarsProgressBarIssueTracker.Infrastructure.Gitlab/"]
+COPY StarWarsProgressBarIssueTracker.App/StarWarsProgressBarIssueTracker.App.csproj ./StarWarsProgressBarIssueTracker.App/
+COPY StarWarsProgressBarIssueTracker.Domain/StarWarsProgressBarIssueTracker.Domain.csproj ./StarWarsProgressBarIssueTracker.Domain/
+COPY StarWarsProgressBarIssueTracker.Infrastructure/StarWarsProgressBarIssueTracker.Infrastructure.csproj ./StarWarsProgressBarIssueTracker.Infrastructure/
+COPY StarWarsProgressBarIssueTracker.Infrastructure.Github/StarWarsProgressBarIssueTracker.Infrastructure.Github.csproj ./StarWarsProgressBarIssueTracker.Infrastructure.Github/
+COPY StarWarsProgressBarIssueTracker.Infrastructure.Gitlab/StarWarsProgressBarIssueTracker.Infrastructure.Gitlab.csproj ./StarWarsProgressBarIssueTracker.Infrastructure.Gitlab/
 RUN dotnet restore "./StarWarsProgressBarIssueTracker.App/StarWarsProgressBarIssueTracker.App.csproj"
 COPY . .
 WORKDIR "/StarWarsProgressBarIssueTracker.App"
