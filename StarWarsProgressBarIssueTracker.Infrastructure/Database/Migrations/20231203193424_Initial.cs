@@ -23,7 +23,7 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                     Title = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     Description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     MilestoneState = table.Column<int>(type: "integer", nullable: false),
-                    CreateAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
@@ -41,7 +41,7 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                     ReleaseNotes = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     ReleaseState = table.Column<int>(type: "integer", nullable: false),
                     ReleaseDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    CreateAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
@@ -70,10 +70,10 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Title = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     Description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    Color = table.Column<string>(type: "character varying(8)", maxLength: 8, nullable: false),
-                    TextColor = table.Column<string>(type: "character varying(8)", maxLength: 8, nullable: false),
+                    Color = table.Column<string>(type: "character varying(6)", maxLength: 6, nullable: false),
+                    TextColor = table.Column<string>(type: "character varying(6)", maxLength: 6, nullable: false),
                     AppearanceId = table.Column<Guid>(type: "uuid", nullable: true),
-                    CreateAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
@@ -102,7 +102,7 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                     ReleaseId = table.Column<Guid>(type: "uuid", nullable: true),
                     VehicleId = table.Column<Guid>(type: "uuid", nullable: true),
                     DbVehicleId = table.Column<Guid>(type: "uuid", nullable: true),
-                    CreateAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
@@ -142,7 +142,7 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     PhotoData = table.Column<byte[]>(type: "bytea", nullable: false),
                     PhotoId = table.Column<Guid>(type: "uuid", nullable: true),
-                    CreateAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>

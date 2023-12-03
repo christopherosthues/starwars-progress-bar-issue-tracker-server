@@ -1,3 +1,6 @@
+using System.Text.Json;
+using GraphQL.Client.Http;
+using GraphQL.Client.Serializer.SystemTextJson;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using StarWarsProgressBarIssueTracker.App.Tests.Integration.Setup;
@@ -12,21 +15,26 @@ public class IntegrationTestBase
 {
     protected IssueTrackerWebApplicationFactory ApiFactory = default!;
     protected HttpClient HttpClient = default!;
+    protected GraphQLHttpClient GraphQLClient = default!;
 
     [OneTimeSetUp]
     public void SetUpOnceBase()
     {
         ApiFactory = new IssueTrackerWebApplicationFactory();
         HttpClient = ApiFactory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
+        GraphQLClient =
+            new GraphQLHttpClient(new GraphQLHttpClientOptions { EndPoint = new Uri("http://localhost:8080/graphql"), },
+                new SystemTextJsonSerializer(new JsonSerializerOptions { PropertyNameCaseInsensitive = true }),
+                HttpClient);
     }
 
     [SetUp]
-    public void SetUpBase()
+    public async Task SetUpBase()
     {
-        using var scope = ApiFactory.GetServiceProvider().CreateScope();
+        using var scope = ApiFactory.Services.CreateScope();
         var serviceProvider = scope.ServiceProvider;
         var dbContext = serviceProvider.GetRequiredService<IssueTrackerContext>();
-        SeedDatabase(dbContext);
+        await SeedInitialDatabase(dbContext);
     }
 
     /// <summary>
@@ -34,18 +42,36 @@ public class IntegrationTestBase
     /// with which the database is seeded. The default implementation seeds the database with some mocked data.
     /// </summary>
     /// <param name="dbContext">The database context used to seed the database</param>
-    protected virtual void SeedDatabase(IssueTrackerContext dbContext)
+    protected virtual async Task SeedInitialDatabase(IssueTrackerContext dbContext)
     {
         // TODO: seed db with data
+        await dbContext.SaveChangesAsync();
+    }
+
+    protected async Task SeedDatabase(Action<IssueTrackerContext> seed)
+    {
+        using var scope = ApiFactory.Services.CreateScope();
+        var serviceProvider = scope.ServiceProvider;
+        var dbContext = serviceProvider.GetRequiredService<IssueTrackerContext>();
+        seed(dbContext);
+        await dbContext.SaveChangesAsync();
+    }
+
+    protected void CheckDbContent(Action<IssueTrackerContext> check)
+    {
+        using var scope = ApiFactory.Services.CreateScope();
+        var serviceProvider = scope.ServiceProvider;
+        var dbContext = serviceProvider.GetRequiredService<IssueTrackerContext>();
+        check(dbContext);
     }
 
     [TearDown]
-    public void TearDownBase()
+    public async Task TearDownBase()
     {
-        using var scope = ApiFactory.GetServiceProvider().CreateScope();
+        using var scope = ApiFactory.Services.CreateScope();
         var serviceProvider = scope.ServiceProvider;
         var dbContext = serviceProvider.GetRequiredService<IssueTrackerContext>();
-        ResetDatabase(dbContext);
+        await ResetDatabase(dbContext);
     }
 
     /// <summary>
@@ -53,18 +79,23 @@ public class IntegrationTestBase
     /// implementation deletes all data from the database.
     /// </summary>
     /// <param name="dbContext">The database context used to reset the database</param>
-    protected virtual void ResetDatabase(IssueTrackerContext dbContext)
+    protected virtual async Task ResetDatabase(IssueTrackerContext dbContext)
     {
         dbContext.Issues.RemoveRange(dbContext.Issues);
         dbContext.Milestones.RemoveRange(dbContext.Milestones);
         dbContext.Appearances.RemoveRange(dbContext.Appearances);
         dbContext.Releases.RemoveRange(dbContext.Releases);
+        dbContext.Vehicles.RemoveRange(dbContext.Vehicles);
+        dbContext.Photos.RemoveRange(dbContext.Photos);
+        dbContext.Translations.RemoveRange(dbContext.Translations);
+        await dbContext.SaveChangesAsync();
     }
 
     [OneTimeTearDown]
     public async Task TearDownOnceBase()
     {
         HttpClient.Dispose();
+        GraphQLClient.Dispose();
         await ApiFactory.DisposeAsync();
     }
 }
