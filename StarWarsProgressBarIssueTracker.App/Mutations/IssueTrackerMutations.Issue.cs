@@ -2,9 +2,9 @@ using StarWarsProgressBarIssueTracker.Domain.Issues;
 using StarWarsProgressBarIssueTracker.Domain.Milestones;
 using StarWarsProgressBarIssueTracker.Domain.Releases;
 
-namespace StarWarsProgressBarIssueTracker.App.Issues;
+namespace StarWarsProgressBarIssueTracker.App.Mutations;
 
-public class IssueMutations(IIssueService issueService)
+public partial class IssueTrackerMutations
 {
     public async Task<Issue> AddIssue(string title, string? description, Priority priority, IssueType issueType,
         Guid? milestoneId, Guid? releaseId, Vehicle? vehicle)

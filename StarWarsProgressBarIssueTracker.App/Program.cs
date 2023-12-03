@@ -1,8 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using StarWarsProgressBarIssueTracker.App.Appearances;
-using StarWarsProgressBarIssueTracker.App.Issues;
-using StarWarsProgressBarIssueTracker.App.Milestones;
-using StarWarsProgressBarIssueTracker.App.Releases;
+using StarWarsProgressBarIssueTracker.App.Mutations;
+using StarWarsProgressBarIssueTracker.App.Queries;
 using StarWarsProgressBarIssueTracker.App.ServiceCollectionExtensions;
 using StarWarsProgressBarIssueTracker.Infrastructure.Database;
 
@@ -20,15 +18,10 @@ builder.Services.AddDbContext<IssueTrackerContext>(optionsBuilder => optionsBuil
 
 builder.Services.AddGraphQLServer()
     .AddMutationConventions()
-    .AddQueryType<AppearanceQueries>()
-    .AddMutationType<AppearanceMutations>()
-    .AddQueryType<IssueQueries>()
-    .AddMutationType<IssueMutations>()
-    .AddQueryType<MilestoneQueries>()
-    .AddMutationType<MilestoneMutations>()
-    .AddQueryType<ReleaseQueries>()
-    .AddMutationType<ReleaseMutations>();
+    .AddQueryType<IssueTrackerQueries>()
+    .AddMutationType<IssueTrackerMutations>();
 
+builder.Services.AddIssueTrackerConfigurations(builder.Configuration);
 builder.Services.AddIssueTrackerMappers();
 builder.Services.AddIssueTrackerServices();
 builder.Services.AddGraphQLQueries();
@@ -61,8 +54,6 @@ using (var scope = app.Services.CreateScope())
 app.UseHttpsRedirection();
 
 app.MapGraphQL();
-
-// app.MapControllers();
 
 app.Run();
 

@@ -1,8 +1,8 @@
 using StarWarsProgressBarIssueTracker.Domain.Milestones;
 
-namespace StarWarsProgressBarIssueTracker.App.Milestones;
+namespace StarWarsProgressBarIssueTracker.App.Queries;
 
-public class MilestoneQueries(IMilestoneService milestoneService)
+public partial class IssueTrackerQueries
 {
     public async Task<IEnumerable<Milestone>> GetMilestones()
     {

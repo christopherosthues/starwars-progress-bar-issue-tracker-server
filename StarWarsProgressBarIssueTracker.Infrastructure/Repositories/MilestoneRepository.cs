@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using StarWarsProgressBarIssueTracker.Domain.Milestones;
 using StarWarsProgressBarIssueTracker.Infrastructure.Database;
 using StarWarsProgressBarIssueTracker.Infrastructure.Models;
@@ -8,6 +9,11 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Repositories;
 public class MilestoneRepository(IssueTrackerContext context, IMapper mapper)
     : IssueTrackerRepositoryBase<Milestone, DbMilestone>(context, mapper), IMilestoneRepository
 {
+    protected override IQueryable<DbMilestone> GetIncludingFields()
+    {
+        return DbSet.Include(dbMilestone => dbMilestone.Issues);
+    }
+
     protected override async Task<DbMilestone> Map(Milestone domain, bool add = false, bool update = false)
     {
         if (add)
@@ -37,5 +43,10 @@ public class MilestoneRepository(IssueTrackerContext context, IMapper mapper)
         }
 
         return dbMilestone;
+    }
+
+    protected override void DeleteRelationships(DbMilestone entity)
+    {
+        entity.Issues.Clear();
     }
 }

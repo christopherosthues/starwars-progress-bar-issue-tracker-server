@@ -40,4 +40,15 @@ public class AppearanceRepository(IssueTrackerContext context, IMapper mapper)
 
         return dbAppearance;
     }
+
+    protected override void DeleteRelationships(DbAppearance entity)
+    {
+        var dbVehicles = Context.Vehicles.Where(dbVehicle =>
+            dbVehicle.Appearances.Any(appearance => appearance.Id.Equals(entity.Id)));
+
+        foreach (var dbVehicle in dbVehicles)
+        {
+            dbVehicle.Appearances.Remove(entity);
+        }
+    }
 }

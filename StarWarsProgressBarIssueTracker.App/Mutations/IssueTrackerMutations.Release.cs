@@ -1,9 +1,8 @@
-using StarWarsProgressBarIssueTracker.Domain.Milestones;
 using StarWarsProgressBarIssueTracker.Domain.Releases;
 
-namespace StarWarsProgressBarIssueTracker.App.Releases;
+namespace StarWarsProgressBarIssueTracker.App.Mutations;
 
-public class ReleaseMutations(IReleaseService releaseService)
+public partial class IssueTrackerMutations
 {
     public async Task<Release> AddRelease(string title, string? releaseNotes, DateTime? releaseDate)
     {

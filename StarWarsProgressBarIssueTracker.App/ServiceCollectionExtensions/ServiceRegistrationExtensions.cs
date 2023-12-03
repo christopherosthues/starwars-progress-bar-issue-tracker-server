@@ -2,17 +2,25 @@ using StarWarsProgressBarIssueTracker.App.Appearances;
 using StarWarsProgressBarIssueTracker.App.Issues;
 using StarWarsProgressBarIssueTracker.App.Mappers;
 using StarWarsProgressBarIssueTracker.App.Milestones;
+using StarWarsProgressBarIssueTracker.App.Mutations;
+using StarWarsProgressBarIssueTracker.App.Queries;
 using StarWarsProgressBarIssueTracker.App.Releases;
 using StarWarsProgressBarIssueTracker.Domain.Appearances;
 using StarWarsProgressBarIssueTracker.Domain.Issues;
 using StarWarsProgressBarIssueTracker.Domain.Milestones;
 using StarWarsProgressBarIssueTracker.Domain.Releases;
+using StarWarsProgressBarIssueTracker.Infrastructure.Database;
 using StarWarsProgressBarIssueTracker.Infrastructure.Repositories;
 
 namespace StarWarsProgressBarIssueTracker.App.ServiceCollectionExtensions;
 
 public static class ServiceRegistrationExtensions
 {
+    public static void AddIssueTrackerConfigurations(this IServiceCollection serviceCollection, IConfiguration configuration)
+    {
+        serviceCollection.Configure<IssueTrackerDbConfig>(configuration.GetSection("IssueTrackerDbConfig"));
+    }
+
     public static void AddIssueTrackerServices(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddScoped<IAppearanceRepository, AppearanceRepository>();
@@ -32,17 +40,11 @@ public static class ServiceRegistrationExtensions
 
     public static void AddGraphQLQueries(this IServiceCollection serviceCollection)
     {
-        serviceCollection.AddScoped<AppearanceQueries>();
-        serviceCollection.AddScoped<IssueQueries>();
-        serviceCollection.AddScoped<MilestoneQueries>();
-        serviceCollection.AddScoped<ReleaseQueries>();
+        serviceCollection.AddScoped<IssueTrackerQueries>();
     }
 
     public static void AddGraphQLMutations(this IServiceCollection serviceCollection)
     {
-        serviceCollection.AddScoped<AppearanceMutations>();
-        serviceCollection.AddScoped<IssueMutations>();
-        serviceCollection.AddScoped<MilestoneMutations>();
-        serviceCollection.AddScoped<ReleaseMutations>();
+        serviceCollection.AddScoped<IssueTrackerMutations>();
     }
 }

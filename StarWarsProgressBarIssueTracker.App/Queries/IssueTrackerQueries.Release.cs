@@ -1,8 +1,8 @@
 using StarWarsProgressBarIssueTracker.Domain.Releases;
 
-namespace StarWarsProgressBarIssueTracker.App.Releases;
+namespace StarWarsProgressBarIssueTracker.App.Queries;
 
-public class ReleaseQueries(IReleaseService releaseService)
+public partial class IssueTrackerQueries
 {
     public async Task<IEnumerable<Release>> GetReleases()
     {

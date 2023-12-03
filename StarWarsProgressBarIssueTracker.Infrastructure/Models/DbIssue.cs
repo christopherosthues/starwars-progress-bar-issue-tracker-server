@@ -12,7 +12,7 @@ public class DbIssue : DbEntityBase
     [MaxLength(500)]
     public string? Description { get; set; }
 
-    public int Priority { get; set; }
+    public Priority Priority { get; set; }
 
     public IssueState IssueState { get; set; }
 
@@ -24,6 +24,6 @@ public class DbIssue : DbEntityBase
     [ForeignKey("ReleaseId")]
     public DbRelease? Release { get; set; }
 
-    [Column("VehicleId")]
+    [ForeignKey("VehicleId")]
     public DbVehicle? Vehicle { get; set; }
 }

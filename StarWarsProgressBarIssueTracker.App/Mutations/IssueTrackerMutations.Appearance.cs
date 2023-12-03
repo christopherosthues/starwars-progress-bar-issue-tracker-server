@@ -1,8 +1,8 @@
 using StarWarsProgressBarIssueTracker.Domain.Appearances;
 
-namespace StarWarsProgressBarIssueTracker.App.Appearances;
+namespace StarWarsProgressBarIssueTracker.App.Mutations;
 
-public class AppearanceMutations(IAppearanceService appearanceService)
+public partial class IssueTrackerMutations
 {
     public async Task<Appearance> AddAppearance(string title, string color, string textColor, string? description)
     {

@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using StarWarsProgressBarIssueTracker.Domain.Releases;
 using StarWarsProgressBarIssueTracker.Infrastructure.Database;
 using StarWarsProgressBarIssueTracker.Infrastructure.Models;
@@ -8,6 +9,11 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Repositories;
 public class ReleaseRepository(IssueTrackerContext context, IMapper mapper)
     : IssueTrackerRepositoryBase<Release, DbRelease>(context, mapper), IReleaseRepository
 {
+    protected override IQueryable<DbRelease> GetIncludingFields()
+    {
+        return DbSet.Include(dbRelease => dbRelease.Issues);
+    }
+
     protected override async Task<DbRelease> Map(Release domain, bool add = false, bool update = false)
     {
         if (add)
@@ -39,5 +45,10 @@ public class ReleaseRepository(IssueTrackerContext context, IMapper mapper)
         }
 
         return dbRelease;
+    }
+
+    protected override void DeleteRelationships(DbRelease entity)
+    {
+        entity.Issues.Clear();
     }
 }

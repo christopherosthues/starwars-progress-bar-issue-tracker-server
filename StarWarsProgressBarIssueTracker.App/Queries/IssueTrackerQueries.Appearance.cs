@@ -1,8 +1,8 @@
-﻿using StarWarsProgressBarIssueTracker.Domain.Appearances;
+using StarWarsProgressBarIssueTracker.Domain.Appearances;
 
-namespace StarWarsProgressBarIssueTracker.App.Appearances;
+namespace StarWarsProgressBarIssueTracker.App.Queries;
 
-public class AppearanceQueries(IAppearanceService appearanceService)
+public partial class IssueTrackerQueries
 {
     public async Task<IEnumerable<Appearance>> GetAppearances()
     {

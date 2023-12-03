@@ -1,8 +1,8 @@
 using StarWarsProgressBarIssueTracker.Domain.Milestones;
 
-namespace StarWarsProgressBarIssueTracker.App.Milestones;
+namespace StarWarsProgressBarIssueTracker.App.Mutations;
 
-public class MilestoneMutations(IMilestoneService milestoneService)
+public partial class IssueTrackerMutations
 {
     public async Task<Milestone> AddMilestone(string title, string? description)
     {

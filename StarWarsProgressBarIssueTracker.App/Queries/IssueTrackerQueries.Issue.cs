@@ -1,8 +1,8 @@
 using StarWarsProgressBarIssueTracker.Domain.Issues;
 
-namespace StarWarsProgressBarIssueTracker.App.Issues;
+namespace StarWarsProgressBarIssueTracker.App.Queries;
 
-public class IssueQueries(IIssueService issueService)
+public partial class IssueTrackerQueries
 {
     public async Task<IEnumerable<Issue>> GetIssues()
     {
