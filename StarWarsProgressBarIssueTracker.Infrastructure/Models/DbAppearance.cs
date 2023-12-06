@@ -2,7 +2,7 @@
 
 namespace StarWarsProgressBarIssueTracker.Infrastructure.Models;
 
-public class DbAppearance : DbEntityBase
+public record DbAppearance : DbEntityBase
 {
     [StringLength(50, MinimumLength = 1)]
     public required string Title { get; set; }

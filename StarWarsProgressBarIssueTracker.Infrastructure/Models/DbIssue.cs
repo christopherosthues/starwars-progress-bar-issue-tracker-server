@@ -4,7 +4,7 @@ using StarWarsProgressBarIssueTracker.Domain.Issues;
 
 namespace StarWarsProgressBarIssueTracker.Infrastructure.Models;
 
-public class DbIssue : DbEntityBase
+public record DbIssue : DbEntityBase
 {
     [MaxLength(255)]
     public required string Title { get; set; }

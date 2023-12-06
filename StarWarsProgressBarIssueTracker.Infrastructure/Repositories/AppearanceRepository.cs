@@ -1,5 +1,6 @@
 using AutoMapper;
 using StarWarsProgressBarIssueTracker.Domain.Appearances;
+using StarWarsProgressBarIssueTracker.Domain.Exceptions;
 using StarWarsProgressBarIssueTracker.Infrastructure.Database;
 using StarWarsProgressBarIssueTracker.Infrastructure.Models;
 
@@ -25,8 +26,7 @@ public class AppearanceRepository(IssueTrackerContext context, IMapper mapper)
 
         if (dbAppearance is null)
         {
-            // TODO: throw domain exception
-            throw new NullReferenceException($"Not found {domain.Id}");
+            throw new DomainIdNotFoundException(nameof(Appearance), domain.Id.ToString());
         }
 
         if (update)

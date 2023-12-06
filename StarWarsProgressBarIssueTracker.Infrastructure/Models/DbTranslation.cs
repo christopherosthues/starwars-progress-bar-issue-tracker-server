@@ -2,7 +2,7 @@
 
 namespace StarWarsProgressBarIssueTracker.Infrastructure.Models;
 
-public class DbTranslation
+public record DbTranslation
 {
     public Guid Id { get; set; } = Guid.NewGuid();
 

@@ -3,7 +3,7 @@ using StarWarsProgressBarIssueTracker.Domain.Issues;
 
 namespace StarWarsProgressBarIssueTracker.Infrastructure.Models;
 
-public class DbVehicle
+public record DbVehicle
 {
     public Guid Id { get; set; } = Guid.NewGuid();
 

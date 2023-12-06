@@ -3,7 +3,7 @@ using StarWarsProgressBarIssueTracker.Domain.Appearances;
 
 namespace StarWarsProgressBarIssueTracker.App.Tests.Helpers.GraphQL.Payloads;
 
-public class AddAppearancePayload
+public class UpdateAppearancePayload
 {
     public required Appearance Appearance { get; set; }
 
