@@ -9,13 +9,13 @@ using StarWarsProgressBarIssueTracker.Domain.Appearances;
 using StarWarsProgressBarIssueTracker.Domain.Issues;
 using StarWarsProgressBarIssueTracker.Infrastructure.Models;
 
-namespace StarWarsProgressBarIssueTracker.App.Tests.Integration;
+namespace StarWarsProgressBarIssueTracker.App.Tests.Integration.Mutations;
 
 [TestFixture(TestOf = typeof(IssueTrackerMutations))]
 public class AppearanceMutationsTests : IntegrationTestBase
 {
     private const string AllowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ß_#%";
-    private const string HexcodeColorChars = "0123456789abcdef";
+    private const string HexCodeColorChars = "0123456789abcdef";
 
     [TestCaseSource(nameof(AddAppearanceCases))]
     public async Task AddAppearanceShouldAddAppearance(Appearance expectedAppearance)
@@ -620,7 +620,6 @@ public class AppearanceMutationsTests : IntegrationTestBase
 
     private void AssertDeletedAppearance(GraphQLResponse<DeleteAppearanceResponse> response, Appearance expectedAppearance, DbAppearance? dbAppearance = null)
     {
-        DateTime endTime = DateTime.UtcNow;
         Appearance? deletedAppearance;
         using (new AssertionScope())
         {
@@ -674,8 +673,8 @@ public class AppearanceMutationsTests : IntegrationTestBase
             .RuleFor(appearance => appearance.Id, f => f.Random.Guid())
             .RuleFor(appearance => appearance.Title, f => f.Random.String2(1, 50, AllowedChars))
             .RuleFor(appearance => appearance.Description, f => f.Random.String2(0, 255, AllowedChars).OrNull(f, 0.3f))
-            .RuleFor(appearance => appearance.Color, f => f.Random.String2(6, 6, HexcodeColorChars))
-            .RuleFor(appearance => appearance.TextColor, f => f.Random.String2(6, 6, HexcodeColorChars));
+            .RuleFor(appearance => appearance.Color, f => f.Random.String2(6, 6, HexCodeColorChars))
+            .RuleFor(appearance => appearance.TextColor, f => f.Random.String2(6, 6, HexCodeColorChars));
         return faker.Generate();
     }
 
@@ -684,8 +683,8 @@ public class AppearanceMutationsTests : IntegrationTestBase
         var faker = new Faker<Appearance>()
             .RuleFor(appearance => appearance.Title, f => f.Random.String2(1, 50, AllowedChars))
             .RuleFor(appearance => appearance.Description, f => f.Random.String2(0, 255, AllowedChars).OrNull(f, 0.3f))
-            .RuleFor(appearance => appearance.Color, f => f.Random.String2(6, 6, HexcodeColorChars))
-            .RuleFor(appearance => appearance.TextColor, f => f.Random.String2(6, 6, HexcodeColorChars));
+            .RuleFor(appearance => appearance.Color, f => f.Random.String2(6, 6, HexCodeColorChars))
+            .RuleFor(appearance => appearance.TextColor, f => f.Random.String2(6, 6, HexCodeColorChars));
         return faker.Generate(20);
     }
 
