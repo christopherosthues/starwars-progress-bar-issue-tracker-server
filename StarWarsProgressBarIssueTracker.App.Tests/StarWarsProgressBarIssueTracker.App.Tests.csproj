@@ -31,4 +31,8 @@
     <ProjectReference Include="..\StarWarsProgressBarIssueTracker.App\StarWarsProgressBarIssueTracker.App.csproj"/>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Helpers\GraphQL\Payloads\Issues\" />
+  </ItemGroup>
+
 </Project>

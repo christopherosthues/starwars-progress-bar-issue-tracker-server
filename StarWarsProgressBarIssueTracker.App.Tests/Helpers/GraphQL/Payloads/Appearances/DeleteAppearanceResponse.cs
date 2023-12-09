@@ -1,4 +1,4 @@
-namespace StarWarsProgressBarIssueTracker.App.Tests.Helpers.GraphQL.Payloads;
+namespace StarWarsProgressBarIssueTracker.App.Tests.Helpers.GraphQL.Payloads.Appearances;
 
 public class DeleteAppearanceResponse
 {

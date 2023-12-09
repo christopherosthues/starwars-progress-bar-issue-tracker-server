@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.SystemTextJson;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -24,7 +25,11 @@ public class IntegrationTestBase
         HttpClient = ApiFactory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
         GraphQLClient =
             new GraphQLHttpClient(new GraphQLHttpClientOptions { EndPoint = new Uri("http://localhost:8080/graphql"), },
-                new SystemTextJsonSerializer(new JsonSerializerOptions { PropertyNameCaseInsensitive = true }),
+                new SystemTextJsonSerializer(new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                    Converters = { new JsonStringEnumConverter() }
+                }),
                 HttpClient);
     }
 

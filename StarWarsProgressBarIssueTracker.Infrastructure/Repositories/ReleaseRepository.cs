@@ -11,7 +11,11 @@ public class ReleaseRepository(IssueTrackerContext context, IMapper mapper)
 {
     protected override IQueryable<DbRelease> GetIncludingFields()
     {
-        return DbSet.Include(dbRelease => dbRelease.Issues);
+        return DbSet.Include(dbRelease => dbRelease.Issues)
+            .ThenInclude(dbIssue => dbIssue.Milestone)
+            .Include(dbRelease => dbRelease.Issues)
+            .ThenInclude(dbIssue => dbIssue.Vehicle)
+            .ThenInclude(dbVehicle => dbVehicle != null ? dbVehicle.Appearances : null);
     }
 
     protected override async Task<DbRelease> Map(Release domain, bool add = false, bool update = false)

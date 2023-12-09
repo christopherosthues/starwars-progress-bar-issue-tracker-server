@@ -1,9 +1,9 @@
 using HotChocolate;
 using StarWarsProgressBarIssueTracker.Domain.Appearances;
 
-namespace StarWarsProgressBarIssueTracker.App.Tests.Helpers.GraphQL.Payloads;
+namespace StarWarsProgressBarIssueTracker.App.Tests.Helpers.GraphQL.Payloads.Appearances;
 
-public class UpdateAppearancePayload
+public class AddAppearancePayload
 {
     public required Appearance Appearance { get; set; }
 

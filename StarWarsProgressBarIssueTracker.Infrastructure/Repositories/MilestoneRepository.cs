@@ -11,7 +11,11 @@ public class MilestoneRepository(IssueTrackerContext context, IMapper mapper)
 {
     protected override IQueryable<DbMilestone> GetIncludingFields()
     {
-        return DbSet.Include(dbMilestone => dbMilestone.Issues);
+        return DbSet.Include(dbMilestone => dbMilestone.Issues)
+            .ThenInclude(dbIssue => dbIssue.Vehicle)
+            .ThenInclude(dbVehicle => dbVehicle != null ? dbVehicle.Appearances : null)
+            .Include(dbMilestone => dbMilestone.Issues)
+            .ThenInclude(dbIssue => dbIssue.Release);
     }
 
     protected override async Task<DbMilestone> Map(Milestone domain, bool add = false, bool update = false)
