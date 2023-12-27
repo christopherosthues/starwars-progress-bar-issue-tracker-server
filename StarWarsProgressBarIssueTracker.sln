@@ -41,13 +41,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StarWarsProgressBarIssueTracker.App.Tests", "StarWarsProgressBarIssueTracker.App.Tests\StarWarsProgressBarIssueTracker.App.Tests.csproj", "{735AF988-6C10-41BC-B517-95321ADAC2C7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{BE060075-7C09-4ACE-A316-49097DF9E3B3}"
-	ProjectSection(SolutionItems) = preProject
-		StarWarsProgressBarIssueTracker.DB\Dockerfile = StarWarsProgressBarIssueTracker.DB\Dockerfile
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "docker-compose", "docker-compose.dcproj", "{572A772B-BDFC-4CA5-B3F2-C1CB8EA866F4}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".Workflows", ".Workflows", "{E401EFCA-A58F-43C4-A3B0-189ADD6D9B85}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".workflows", ".workflows", "{E401EFCA-A58F-43C4-A3B0-189ADD6D9B85}"
 	ProjectSection(SolutionItems) = preProject
 		.github\dependabot.yml = .github\dependabot.yml
 	EndProjectSection

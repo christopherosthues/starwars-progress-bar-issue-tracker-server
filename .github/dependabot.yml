@@ -47,7 +47,7 @@ updates:
       interval: "daily"
   # Maintain dependencies for Docker dependencies
   - package-ecosystem: "docker"
-    directory: "/"
+    directory: "/StarWarsProgressBarIssueTracker.App"
     target-branch: "develop"
     schedule:
       interval: "daily"
