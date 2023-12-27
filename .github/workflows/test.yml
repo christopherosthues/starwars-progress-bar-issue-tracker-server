@@ -38,6 +38,8 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    needs: [build]
+
     steps:
     - name: Test
       run: dotnet test StarWarsProgressBarIssueTracker.App.Tests/StarWarsProgressBarIssueTracker.App.Tests.csproj --no-build  --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=./.coverage/app-tests.xml --logger "trx;LogFileName=./.test-results/app-tests.trx" /p:ExcludeByFile="**/*.Tests/**" 2>&1 | tee test_output.txt
