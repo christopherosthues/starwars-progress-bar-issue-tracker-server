@@ -50,7 +50,7 @@ jobs:
 
     - name: Test
       run: |
-        dotnet test StarWarsProgressBarIssueTracker.App.Tests/ --no-build --verbosity q --logger "trx;LogFileName=./.test-results/app-tests.trx" /p:ExcludeByFile="**/*.Tests/**" 2>&1 | tee test_output.txt
+        dotnet test StarWarsProgressBarIssueTracker.App.Tests/ --no-build --verbosity normal --logger "trx;LogFileName=./.test-results/app-tests.trx" /p:ExcludeByFile="**/*.Tests/**" 2>&1 | tee test_output.txt
         if [[ ${PIPESTATUS[0]} -ne 0 ]]; then
           exit 1
         fi
