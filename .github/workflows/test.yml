@@ -9,20 +9,64 @@ on:
   pull_request:
     branches: [ "master" ]
 
+env:
+  HUSKY: 0
+
 jobs:
-  build:
+  appTests:
+    name: App tests
 
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 8.x
+
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore StarWarsProgressBarIssueTracker.App.Tests/StarWarsProgressBarIssueTracker.App.Tests.csproj
+
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build StarWarsProgressBarIssueTracker.App.Tests/StarWarsProgressBarIssueTracker.App.Tests.csproj --no-restore
+
     - name: Test
-      run: dotnet test --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=./.coverage/${{ matrix.name }}.xml --logger trx --verbosity normal
+      run: dotnet test StarWarsProgressBarIssueTracker.App.Tests/StarWarsProgressBarIssueTracker.App.Tests.csproj --no-build --verbosity q --logger "trx;LogFileName=App.trx" --results-directory "TestResults-App"
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      with:
+        name: App test results
+        path: TestResults-App
+      if: ${{ always() }}
+
+  domainTests:
+    name: Domain tests
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.x
+
+    - name: Restore dependencies
+      run: dotnet restore StarWarsProgressBarIssueTracker.Domain.Tests/StarWarsProgressBarIssueTracker.Domain.Tests.csproj
+
+    - name: Build
+      run: dotnet build StarWarsProgressBarIssueTracker.Domain.Tests/StarWarsProgressBarIssueTracker.Domain.Tests.csproj --no-restore
+
+    - name: Test
+      run: dotnet test StarWarsProgressBarIssueTracker.Domain.Tests/StarWarsProgressBarIssueTracker.Domain.Tests.csproj --no-build --verbosity q --logger "trx;LogFileName=Domain.trx" --results-directory "TestResults-Domain"
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      with:
+        name: Domain test results
+        path: TestResults-Domain
+      if: ${{ always() }}

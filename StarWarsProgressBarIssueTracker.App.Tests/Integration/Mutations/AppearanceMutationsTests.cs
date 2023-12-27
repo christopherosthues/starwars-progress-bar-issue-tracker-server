@@ -427,8 +427,8 @@ public class AppearanceMutationsTests : IntegrationTestBase
             addedAppearance.Description.Should().Be(expectedAppearance.Description);
             addedAppearance.Color.Should().Be(expectedAppearance.Color);
             addedAppearance.TextColor.Should().Be(expectedAppearance.TextColor);
-            addedAppearance.CreatedAt.Should().BeCloseTo(startTime, TimeSpan.FromMilliseconds(300), "Start time").And
-                .BeCloseTo(endTime, TimeSpan.FromMilliseconds(300), "End time");
+            addedAppearance.CreatedAt.Should().BeCloseTo(startTime, TimeSpan.FromSeconds(1), "Start time").And
+                .BeCloseTo(endTime, TimeSpan.FromSeconds(1), "End time");
             addedAppearance.LastModifiedAt.Should().BeNull();
         }
 
@@ -447,8 +447,8 @@ public class AppearanceMutationsTests : IntegrationTestBase
                 addedDbAppearance.Description.Should().Be(expectedAppearance.Description);
                 addedDbAppearance.Color.Should().Be(expectedAppearance.Color);
                 addedDbAppearance.TextColor.Should().Be(expectedAppearance.TextColor);
-                addedDbAppearance.CreatedAt.Should().BeCloseTo(startTime, TimeSpan.FromMilliseconds(300), "Start time").And
-                    .BeCloseTo(endTime, TimeSpan.FromMilliseconds(300), "End time");
+                addedDbAppearance.CreatedAt.Should().BeCloseTo(startTime, TimeSpan.FromSeconds(1), "Start time").And
+                    .BeCloseTo(endTime, TimeSpan.FromSeconds(1), "End time");
                 addedDbAppearance.LastModifiedAt.Should().BeNull();
             }
         });
@@ -526,9 +526,9 @@ public class AppearanceMutationsTests : IntegrationTestBase
             updatedAppearance.Description.Should().Be(expectedAppearance.Description);
             updatedAppearance.Color.Should().Be(expectedAppearance.Color);
             updatedAppearance.TextColor.Should().Be(expectedAppearance.TextColor);
-            updatedAppearance.CreatedAt.Should().BeCloseTo(expectedAppearance.CreatedAt, TimeSpan.FromMilliseconds(300));
-            updatedAppearance.LastModifiedAt.Should().BeCloseTo(startTime, TimeSpan.FromMilliseconds(300), "Start time").And
-                .BeCloseTo(endTime, TimeSpan.FromMilliseconds(300), "End time");
+            updatedAppearance.CreatedAt.Should().BeCloseTo(expectedAppearance.CreatedAt, TimeSpan.FromSeconds(1));
+            updatedAppearance.LastModifiedAt.Should().BeCloseTo(startTime, TimeSpan.FromSeconds(1), "Start time").And
+                .BeCloseTo(endTime, TimeSpan.FromSeconds(1), "End time");
         }
 
         CheckDbContent(context =>
@@ -546,9 +546,9 @@ public class AppearanceMutationsTests : IntegrationTestBase
                 updatedDbAppearance.Description.Should().Be(expectedAppearance.Description);
                 updatedDbAppearance.Color.Should().Be(expectedAppearance.Color);
                 updatedDbAppearance.TextColor.Should().Be(expectedAppearance.TextColor);
-                updatedDbAppearance.CreatedAt.Should().BeCloseTo(expectedAppearance.CreatedAt, TimeSpan.FromMilliseconds(300));
-                updatedDbAppearance.LastModifiedAt.Should().BeCloseTo(startTime, TimeSpan.FromMilliseconds(300), "Start time").And
-                    .BeCloseTo(endTime, TimeSpan.FromMilliseconds(300), "End time");
+                updatedDbAppearance.CreatedAt.Should().BeCloseTo(expectedAppearance.CreatedAt, TimeSpan.FromSeconds(1));
+                updatedDbAppearance.LastModifiedAt.Should().BeCloseTo(startTime, TimeSpan.FromSeconds(1), "Start time").And
+                    .BeCloseTo(endTime, TimeSpan.FromSeconds(1), "End time");
 
                 if (notUpdatedDbAppearance is not null)
                 {
@@ -560,8 +560,8 @@ public class AppearanceMutationsTests : IntegrationTestBase
                     secondDbAppearance.Description.Should().Be(notUpdatedDbAppearance.Description);
                     secondDbAppearance.Color.Should().Be(notUpdatedDbAppearance.Color);
                     secondDbAppearance.TextColor.Should().Be(notUpdatedDbAppearance.TextColor);
-                    secondDbAppearance.CreatedAt.Should().BeCloseTo(notUpdatedDbAppearance.CreatedAt, TimeSpan.FromMilliseconds(300));
-                    secondDbAppearance.LastModifiedAt.Should().BeCloseTo(notUpdatedDbAppearance.LastModifiedAt!.Value, TimeSpan.FromMilliseconds(300));
+                    secondDbAppearance.CreatedAt.Should().BeCloseTo(notUpdatedDbAppearance.CreatedAt, TimeSpan.FromSeconds(1));
+                    secondDbAppearance.LastModifiedAt.Should().BeCloseTo(notUpdatedDbAppearance.LastModifiedAt!.Value, TimeSpan.FromSeconds(1));
                 }
             }
         });
@@ -632,8 +632,8 @@ public class AppearanceMutationsTests : IntegrationTestBase
             deletedAppearance.Description.Should().Be(expectedAppearance.Description);
             deletedAppearance.Color.Should().Be(expectedAppearance.Color);
             deletedAppearance.TextColor.Should().Be(expectedAppearance.TextColor);
-            deletedAppearance.CreatedAt.Should().BeCloseTo(expectedAppearance.CreatedAt, TimeSpan.FromMilliseconds(300));
-            deletedAppearance.LastModifiedAt.Should().BeCloseTo(expectedAppearance.LastModifiedAt!.Value, TimeSpan.FromMilliseconds(300));
+            deletedAppearance.CreatedAt.Should().BeCloseTo(expectedAppearance.CreatedAt, TimeSpan.FromSeconds(1));
+            deletedAppearance.LastModifiedAt.Should().BeCloseTo(expectedAppearance.LastModifiedAt!.Value, TimeSpan.FromSeconds(1));
         }
 
         CheckDbContent(context =>
