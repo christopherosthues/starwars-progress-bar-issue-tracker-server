@@ -47,6 +47,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker", "Docker", "{BE0600
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "docker-compose", "docker-compose.dcproj", "{572A772B-BDFC-4CA5-B3F2-C1CB8EA866F4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".Workflows", ".Workflows", "{E401EFCA-A58F-43C4-A3B0-189ADD6D9B85}"
+	ProjectSection(SolutionItems) = preProject
+		.github\dependabot.yml = .github\dependabot.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,5 +96,6 @@ Global
 		{A854F50E-9FA0-420C-B764-E56137D66B62} = {86AE95DA-23E3-4778-BA05-A8AA47509F09}
 		{5D23A55C-DFFE-40D8-9168-6AE8CC9DDFFD} = {86AE95DA-23E3-4778-BA05-A8AA47509F09}
 		{BE060075-7C09-4ACE-A316-49097DF9E3B3} = {86AE95DA-23E3-4778-BA05-A8AA47509F09}
+		{E401EFCA-A58F-43C4-A3B0-189ADD6D9B85} = {86AE95DA-23E3-4778-BA05-A8AA47509F09}
 	EndGlobalSection
 EndGlobal

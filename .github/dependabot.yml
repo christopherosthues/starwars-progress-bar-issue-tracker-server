@@ -1,0 +1,59 @@
+# Dependabot configuration:
+# https://docs.github.com/en/free-pro-team@latest/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+updates:
+  # Maintain dependencies for App dependencies
+  - package-ecosystem: "nuget"
+    directory: "/StarWarsProgressBarIssueTracker.App"
+    target-branch: "develop"
+    schedule:
+      interval: "daily"
+  # Maintain dependencies for App tests dependencies
+  - package-ecosystem: "nuget"
+    directory: "/StarWarsProgressBarIssueTracker.App.Tests"
+    target-branch: "develop"
+    schedule:
+      interval: "daily"
+  # Maintain dependencies for Domain dependencies
+  - package-ecosystem: "nuget"
+    directory: "/StarWarsProgressBarIssueTracker.Domain"
+    target-branch: "develop"
+    schedule:
+      interval: "daily"
+  # Maintain dependencies for Domain tests dependencies
+  - package-ecosystem: "nuget"
+    directory: "/StarWarsProgressBarIssueTracker.Domain.Tests"
+    target-branch: "develop"
+    schedule:
+      interval: "daily"
+  # Maintain dependencies for Infrastructure dependencies
+  - package-ecosystem: "nuget"
+    directory: "/StarWarsProgressBarIssueTracker.Infrastructure"
+    target-branch: "develop"
+    schedule:
+      interval: "daily"
+  # Maintain dependencies for Infrastructure Github tests dependencies
+  - package-ecosystem: "nuget"
+    directory: "/StarWarsProgressBarIssueTracker.Infrastructure.Github"
+    target-branch: "develop"
+    schedule:
+      interval: "daily"
+  # Maintain dependencies for Infrastructure Gitlab tests dependencies
+  - package-ecosystem: "nuget"
+    directory: "/StarWarsProgressBarIssueTracker.Infrastructure.Gitlab"
+    target-branch: "develop"
+    schedule:
+      interval: "daily"
+  # Maintain dependencies for Docker dependencies
+  - package-ecosystem: "docker"
+    directory: "/"
+    target-branch: "develop"
+    schedule:
+      interval: "daily"
+  # Maintain dependencies for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    target-branch: "develop"
+    schedule:
+      interval: "daily"
