@@ -23,8 +23,8 @@ jobs:
       with:
         dotnet-version: 8.x
     - name: Restore dependencies
-      run: dotnet restore /StarWarsProgressBarIssueTracker.App.Tests
+      run: dotnet restore /StarWarsProgressBarIssueTracker.App.Tests/StarWarsProgressBarIssueTracker.App.Tests.csproj
     - name: Build
-      run: dotnet build /StarWarsProgressBarIssueTracker.App.Tests --no-restore
+      run: dotnet build /StarWarsProgressBarIssueTracker.App.Tests/StarWarsProgressBarIssueTracker.App.Tests.csproj --no-restore
     - name: Test
-      run: dotnet test /StarWarsProgressBarIssueTracker.App.Tests --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=./.coverage/${{ matrix.name }}.xml --logger trx --verbosity normal
+      run: dotnet test /StarWarsProgressBarIssueTracker.App.Tests/StarWarsProgressBarIssueTracker.App.Tests.csproj --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=./.coverage/${{ matrix.name }}.xml --logger trx --verbosity normal
