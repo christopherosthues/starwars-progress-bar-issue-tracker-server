@@ -22,12 +22,7 @@ public class AppearanceRepository(IssueTrackerContext context, IMapper mapper)
             };
         }
 
-        var dbAppearance = await DbSet.FindAsync(domain.Id);
-
-        if (dbAppearance is null)
-        {
-            throw new DomainIdNotFoundException(nameof(Appearance), domain.Id.ToString());
-        }
+        var dbAppearance = await DbSet.FindAsync(domain.Id) ?? throw new DomainIdNotFoundException(nameof(Appearance), domain.Id.ToString());
 
         if (update)
         {

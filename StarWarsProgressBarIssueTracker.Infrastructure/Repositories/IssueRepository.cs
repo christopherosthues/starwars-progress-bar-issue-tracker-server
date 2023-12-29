@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using StarWarsProgressBarIssueTracker.Domain.Exceptions;
 using StarWarsProgressBarIssueTracker.Domain.Issues;
 using StarWarsProgressBarIssueTracker.Infrastructure.Database;
 using StarWarsProgressBarIssueTracker.Infrastructure.Models;
@@ -42,13 +43,7 @@ public class IssueRepository(IssueTrackerContext context, IMapper mapper)
             return AddIssue(domain, vehicle, dbMilestone, dbRelease);
         }
 
-        var dbIssue = await GetIncludingFields().FirstOrDefaultAsync(dbIssue => dbIssue.Id.Equals(domain.Id));
-
-        if (dbIssue is null)
-        {
-            // TODO: throw domain exception
-            throw new NullReferenceException($"Not found {domain.Id}");
-        }
+        var dbIssue = await GetIncludingFields().SingleOrDefaultAsync(dbIssue => dbIssue.Id.Equals(domain.Id)) ?? throw new DomainIdNotFoundException(nameof(Issue), domain.Id.ToString());
 
         if (update)
         {

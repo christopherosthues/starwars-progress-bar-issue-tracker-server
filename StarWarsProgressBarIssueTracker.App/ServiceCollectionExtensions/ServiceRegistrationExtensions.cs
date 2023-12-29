@@ -1,5 +1,6 @@
 using StarWarsProgressBarIssueTracker.App.Appearances;
 using StarWarsProgressBarIssueTracker.App.Issues;
+using StarWarsProgressBarIssueTracker.App.Jobs;
 using StarWarsProgressBarIssueTracker.App.Mappers;
 using StarWarsProgressBarIssueTracker.App.Milestones;
 using StarWarsProgressBarIssueTracker.App.Mutations;
@@ -31,6 +32,10 @@ public static class ServiceRegistrationExtensions
         serviceCollection.AddScoped<IMilestoneService, MilestoneService>();
         serviceCollection.AddScoped<IReleaseRepository, ReleaseRepository>();
         serviceCollection.AddScoped<IReleaseService, ReleaseService>();
+        serviceCollection.AddScoped<ITaskRepository, TaskRepository>();
+        serviceCollection.AddScoped<IJobRepository, JobRepository>();
+
+        serviceCollection.AddScoped<JobSchedulingService>();
     }
 
     public static void AddIssueTrackerMappers(this IServiceCollection serviceCollection)
@@ -46,5 +51,10 @@ public static class ServiceRegistrationExtensions
     public static void AddGraphQLMutations(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddScoped<IssueTrackerMutations>();
+    }
+
+    public static void AddJobs(this IServiceCollection serviceCollection)
+    {
+        serviceCollection.AddScoped<JobScheduler>();
     }
 }

@@ -1,8 +1,12 @@
 using Microsoft.EntityFrameworkCore;
+using Polly;
+using Quartz;
+using Quartz.AspNetCore;
+using StarWarsProgressBarIssueTracker.App.Extensions;
+using StarWarsProgressBarIssueTracker.App.Jobs;
 using StarWarsProgressBarIssueTracker.App.Mutations;
 using StarWarsProgressBarIssueTracker.App.Queries;
 using StarWarsProgressBarIssueTracker.App.ServiceCollectionExtensions;
-using StarWarsProgressBarIssueTracker.Infrastructure.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,13 +18,42 @@ builder.Services.AddSwaggerGen();
 // builder.Services.AddGitlabClient();
 
 var connectionString = builder.Configuration.GetConnectionString("IssueTrackerContext");
-builder.Services.AddDbContext<IssueTrackerContext>(optionsBuilder => optionsBuilder.UseNpgsql(connectionString));
+builder.Services.RegisterDbContext(connectionString);
 
 builder.Services.AddGraphQLServer()
     .AddMutationConventions()
     .AddQueryType<IssueTrackerQueries>()
     .AddMutationType<IssueTrackerMutations>();
 
+builder.Services.AddResiliencePipeline("job-pipeline", pipelineBuilder =>
+{
+    pipelineBuilder.AddRetry(new Polly.Retry.RetryStrategyOptions()
+    {
+        Delay = TimeSpan.FromSeconds(1),
+        MaxRetryAttempts = 3,
+        UseJitter = true,
+        BackoffType = DelayBackoffType.Exponential
+    })
+    .AddTimeout(TimeSpan.FromSeconds(5))
+    .AddCircuitBreaker(new Polly.CircuitBreaker.CircuitBreakerStrategyOptions());
+});
+
+builder.Services.AddQuartz(q =>
+{
+    var jobKey = new JobKey(nameof(JobScheduler));
+    q.AddJob<JobScheduler>(opts => opts.WithIdentity(jobKey));
+
+    q.AddTrigger(opts => opts.ForJob(jobKey)
+                             .WithIdentity($"{nameof(JobScheduler)}-trigger")
+                             .WithCronSchedule("0 0 0 0/1 * ?"));
+});
+
+builder.Services.AddQuartzServer(options =>
+{
+    options.WaitForJobsToComplete = true;
+});
+
+builder.Services.AddJobs();
 builder.Services.AddIssueTrackerConfigurations(builder.Configuration);
 builder.Services.AddIssueTrackerMappers();
 builder.Services.AddIssueTrackerServices();
@@ -40,14 +73,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-
-    var context = services.GetRequiredService<IssueTrackerContext>();
-
-    await context.Database.MigrateAsync();
-}
+await app.Services.EnsureDbUpdatedAsync();
 
 // app.UseCors();
 

@@ -93,6 +93,9 @@ public class IntegrationTestBase
         dbContext.Vehicles.RemoveRange(dbContext.Vehicles);
         dbContext.Photos.RemoveRange(dbContext.Photos);
         dbContext.Translations.RemoveRange(dbContext.Translations);
+        dbContext.Jobs.RemoveRange(dbContext.Jobs);
+        dbContext.Tasks.RemoveRange(dbContext.Tasks);
+
         await dbContext.SaveChangesAsync();
     }
 

@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using StarWarsProgressBarIssueTracker.Domain.Exceptions;
 using StarWarsProgressBarIssueTracker.Domain.Milestones;
 using StarWarsProgressBarIssueTracker.Infrastructure.Database;
 using StarWarsProgressBarIssueTracker.Infrastructure.Models;
@@ -30,13 +31,7 @@ public class MilestoneRepository(IssueTrackerContext context, IMapper mapper)
             };
         }
 
-        var dbMilestone = await DbSet.FindAsync(domain.Id);
-
-        if (dbMilestone is null)
-        {
-            // TODO: throw domain exception
-            throw new NullReferenceException($"Not found {domain.Id}");
-        }
+        var dbMilestone = await DbSet.FindAsync(domain.Id) ?? throw new DomainIdNotFoundException(nameof(Milestone), domain.Id.ToString());
 
         if (update)
         {

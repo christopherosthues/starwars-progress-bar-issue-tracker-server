@@ -15,6 +15,8 @@ public class IssueTrackerContext(DbContextOptions<IssueTrackerContext> options, 
     public DbSet<DbVehicle> Vehicles { get; init; } = default!;
     public DbSet<DbPhoto> Photos { get; init; } = default!;
     public DbSet<DbTranslation> Translations { get; init; } = default!;
+    public DbSet<DbJob> Jobs { get; init; } = default!;
+    public DbSet<DbTask> Tasks { get; init; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -25,6 +27,8 @@ public class IssueTrackerContext(DbContextOptions<IssueTrackerContext> options, 
         modelBuilder.Entity<DbVehicle>().ToTable(nameof(Vehicles), _configuration.Schema);
         modelBuilder.Entity<DbPhoto>().ToTable(nameof(Photos), _configuration.Schema);
         modelBuilder.Entity<DbTranslation>().ToTable(nameof(Translations), _configuration.Schema);
+        modelBuilder.Entity<DbJob>().ToTable(nameof(Jobs), _configuration.Schema);
+        modelBuilder.Entity<DbTask>().ToTable(nameof(Tasks), _configuration.Schema);
 
         modelBuilder.Entity<DbIssue>()
             .HasOne<DbVehicle>();

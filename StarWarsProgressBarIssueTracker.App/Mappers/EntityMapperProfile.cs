@@ -23,5 +23,8 @@ public class EntityMapperProfile : Profile
         CreateMap<Release, DbRelease>().ReverseMap();
         CreateMap<DbPhoto, Photo>()
             .ForMember(dest => dest.PhotoData, opt => opt.ConvertUsing(new DbPhotoConverter(), src => src.PhotoData));
+
+        CreateMap<DbJob, DbJob>();
+        CreateMap<DbTask, DbTask>();
     }
 }

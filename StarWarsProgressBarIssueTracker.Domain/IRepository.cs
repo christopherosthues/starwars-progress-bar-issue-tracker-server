@@ -2,13 +2,13 @@
 
 public interface IRepository<TDbDomain>
 {
-    Task<TDbDomain?> GetById(Guid id);
+    Task<TDbDomain?> GetById(Guid id, CancellationToken cancellationToken = default);
 
-    Task<IEnumerable<TDbDomain>> GetAll();
+    Task<IEnumerable<TDbDomain>> GetAll(CancellationToken cancellationToken = default);
 
-    Task<TDbDomain> Add(TDbDomain domain);
+    Task<TDbDomain> Add(TDbDomain domain, CancellationToken cancellationToken = default);
 
-    Task<TDbDomain> Update(TDbDomain entity);
+    Task<TDbDomain> Update(TDbDomain entity, CancellationToken cancellationToken = default);
 
-    Task<TDbDomain> Delete(TDbDomain entity);
+    Task<TDbDomain> Delete(TDbDomain entity, CancellationToken cancellationToken = default);
 }

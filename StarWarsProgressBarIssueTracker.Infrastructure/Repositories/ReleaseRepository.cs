@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using StarWarsProgressBarIssueTracker.Domain.Exceptions;
 using StarWarsProgressBarIssueTracker.Domain.Releases;
 using StarWarsProgressBarIssueTracker.Infrastructure.Database;
 using StarWarsProgressBarIssueTracker.Infrastructure.Models;
@@ -31,13 +32,7 @@ public class ReleaseRepository(IssueTrackerContext context, IMapper mapper)
             };
         }
 
-        var dbRelease = await DbSet.FindAsync(domain.Id);
-
-        if (dbRelease is null)
-        {
-            // TODO: throw domain exception
-            throw new NullReferenceException($"Not found {domain.Id}");
-        }
+        var dbRelease = await DbSet.FindAsync(domain.Id) ?? throw new DomainIdNotFoundException(nameof(Release), domain.Id.ToString());
 
         if (update)
         {
