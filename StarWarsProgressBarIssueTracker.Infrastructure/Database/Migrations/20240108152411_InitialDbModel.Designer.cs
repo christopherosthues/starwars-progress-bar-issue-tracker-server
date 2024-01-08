@@ -12,8 +12,8 @@ using StarWarsProgressBarIssueTracker.Infrastructure.Database;
 namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(IssueTrackerContext))]
-    [Migration("20231203193424_Initial")]
-    partial class Initial
+    [Migration("20240108152411_InitialDbModel")]
+    partial class InitialDbModel
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,21 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("DbIssueDbIssue", b =>
+                {
+                    b.Property<Guid>("DbIssueId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("RelatedIssuesId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("DbIssueId", "RelatedIssuesId");
+
+                    b.HasIndex("RelatedIssuesId");
+
+                    b.ToTable("DbIssueDbIssue", "issue_tracker");
+                });
 
             modelBuilder.Entity("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbAppearance", b =>
                 {
@@ -121,6 +136,36 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                     b.ToTable("Issues", "issue_tracker");
                 });
 
+            modelBuilder.Entity("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbJob", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CronInterval")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsPaused")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("JobType")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("LastModifiedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("NextExecution")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Jobs", "issue_tracker");
+                });
+
             modelBuilder.Entity("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbMilestone", b =>
                 {
                     b.Property<Guid>("Id")
@@ -208,6 +253,37 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                     b.ToTable("Releases", "issue_tracker");
                 });
 
+            modelBuilder.Entity("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbTask", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("ExecuteAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("ExecutedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("JobId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("LastModifiedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("JobId");
+
+                    b.ToTable("Tasks", "issue_tracker");
+                });
+
             modelBuilder.Entity("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbTranslation", b =>
                 {
                     b.Property<Guid>("Id")
@@ -248,6 +324,21 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                     b.ToTable("Vehicles", "issue_tracker");
                 });
 
+            modelBuilder.Entity("DbIssueDbIssue", b =>
+                {
+                    b.HasOne("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbIssue", null)
+                        .WithMany()
+                        .HasForeignKey("DbIssueId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbIssue", null)
+                        .WithMany()
+                        .HasForeignKey("RelatedIssuesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbAppearance", b =>
                 {
                     b.HasOne("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbVehicle", null)
@@ -285,6 +376,17 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                     b.HasOne("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbVehicle", null)
                         .WithMany("Photos")
                         .HasForeignKey("PhotoId");
+                });
+
+            modelBuilder.Entity("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbTask", b =>
+                {
+                    b.HasOne("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbJob", "Job")
+                        .WithMany()
+                        .HasForeignKey("JobId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Job");
                 });
 
             modelBuilder.Entity("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbTranslation", b =>

@@ -6,13 +6,31 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class InitialDbModel : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
                 name: "issue_tracker");
+
+            migrationBuilder.CreateTable(
+                name: "Jobs",
+                schema: "issue_tracker",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CronInterval = table.Column<string>(type: "text", nullable: false),
+                    IsPaused = table.Column<bool>(type: "boolean", nullable: false),
+                    NextExecution = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    JobType = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Jobs", x => x.Id);
+                });
 
             migrationBuilder.CreateTable(
                 name: "Milestones",
@@ -60,6 +78,31 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Vehicles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tasks",
+                schema: "issue_tracker",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    JobId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    ExecuteAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ExecutedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tasks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Tasks_Jobs_JobId",
+                        column: x => x.JobId,
+                        principalSchema: "issue_tracker",
+                        principalTable: "Jobs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -177,11 +220,44 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                         principalColumn: "Id");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "DbIssueDbIssue",
+                schema: "issue_tracker",
+                columns: table => new
+                {
+                    DbIssueId = table.Column<Guid>(type: "uuid", nullable: false),
+                    RelatedIssuesId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DbIssueDbIssue", x => new { x.DbIssueId, x.RelatedIssuesId });
+                    table.ForeignKey(
+                        name: "FK_DbIssueDbIssue_Issues_DbIssueId",
+                        column: x => x.DbIssueId,
+                        principalSchema: "issue_tracker",
+                        principalTable: "Issues",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DbIssueDbIssue_Issues_RelatedIssuesId",
+                        column: x => x.RelatedIssuesId,
+                        principalSchema: "issue_tracker",
+                        principalTable: "Issues",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Appearances_AppearanceId",
                 schema: "issue_tracker",
                 table: "Appearances",
                 column: "AppearanceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DbIssueDbIssue_RelatedIssuesId",
+                schema: "issue_tracker",
+                table: "DbIssueDbIssue",
+                column: "RelatedIssuesId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Issues_DbVehicleId",
@@ -214,6 +290,12 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                 column: "PhotoId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Tasks_JobId",
+                schema: "issue_tracker",
+                table: "Tasks",
+                column: "JobId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Translations_TranslationId",
                 schema: "issue_tracker",
                 table: "Translations",
@@ -228,7 +310,7 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                 schema: "issue_tracker");
 
             migrationBuilder.DropTable(
-                name: "Issues",
+                name: "DbIssueDbIssue",
                 schema: "issue_tracker");
 
             migrationBuilder.DropTable(
@@ -236,7 +318,19 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                 schema: "issue_tracker");
 
             migrationBuilder.DropTable(
+                name: "Tasks",
+                schema: "issue_tracker");
+
+            migrationBuilder.DropTable(
                 name: "Translations",
+                schema: "issue_tracker");
+
+            migrationBuilder.DropTable(
+                name: "Issues",
+                schema: "issue_tracker");
+
+            migrationBuilder.DropTable(
+                name: "Jobs",
                 schema: "issue_tracker");
 
             migrationBuilder.DropTable(

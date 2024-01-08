@@ -26,4 +26,6 @@ public record DbIssue : DbEntityBase
 
     [ForeignKey("VehicleId")]
     public DbVehicle? Vehicle { get; set; }
+
+    public IList<DbIssue> RelatedIssues { get; set; } = [];
 }

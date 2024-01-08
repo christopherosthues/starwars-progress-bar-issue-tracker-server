@@ -7,4 +7,6 @@ public record DbJob : DbEntityBase
     public bool IsPaused { get; set; }
 
     public DateTime? NextExecution { get; set; }
+
+    public JobType JobType { get; set; }
 }

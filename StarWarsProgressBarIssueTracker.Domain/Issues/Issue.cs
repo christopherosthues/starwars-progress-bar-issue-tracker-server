@@ -21,4 +21,6 @@ public class Issue : EntityBase
     public Release? Release { get; set; }
 
     public Vehicle? Vehicle { get; set; }
+
+    public IList<Issue> RelatedIssues { get; set; } = [];
 }

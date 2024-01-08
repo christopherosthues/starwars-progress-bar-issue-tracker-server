@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using Polly;
 using Quartz;
 using Quartz.AspNetCore;
@@ -9,6 +8,8 @@ using StarWarsProgressBarIssueTracker.App.Queries;
 using StarWarsProgressBarIssueTracker.App.ServiceCollectionExtensions;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Logging.ClearProviders().AddConsole();
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -45,7 +46,21 @@ builder.Services.AddQuartz(q =>
 
     q.AddTrigger(opts => opts.ForJob(jobKey)
                              .WithIdentity($"{nameof(JobScheduler)}-trigger")
-                             .WithCronSchedule("0 0 0 0/1 * ?"));
+                             .WithCronSchedule("0 0 0 * * ?"));
+
+    jobKey = new JobKey(nameof(GitlabSynchronizationJobScheduler));
+    q.AddJob<GitlabSynchronizationJobScheduler>(opts => opts.WithIdentity(jobKey));
+
+    q.AddTrigger(opts => opts.ForJob(jobKey)
+                             .WithIdentity($"{nameof(GitlabSynchronizationJobScheduler)}-trigger")
+                             .WithCronSchedule("0 0 0 * * ?"));
+
+    jobKey = new JobKey(nameof(GitHubSynchronizationJobScheduler));
+    q.AddJob<GitHubSynchronizationJobScheduler>(opts => opts.WithIdentity(jobKey));
+
+    q.AddTrigger(opts => opts.ForJob(jobKey)
+                             .WithIdentity($"{nameof(GitHubSynchronizationJobScheduler)}-trigger")
+                             .WithCronSchedule("0 0 0 * * ?"));
 });
 
 builder.Services.AddQuartzServer(options =>

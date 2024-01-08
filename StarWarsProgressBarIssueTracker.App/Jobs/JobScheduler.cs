@@ -2,17 +2,19 @@
 
 namespace StarWarsProgressBarIssueTracker.App.Jobs;
 
-public class JobScheduler(JobSchedulingService jobSchedulingService) : Quartz.IJob
+public class JobScheduler(JobSchedulingService jobSchedulingService, ILogger<JobScheduler> logger) : Quartz.IJob
 {
     public async Task Execute(IJobExecutionContext context)
     {
         try
         {
+            logger.LogInformation("Scheduling job executions.");
             await jobSchedulingService.ScheduleTasksAsync(context.CancellationToken);
+            logger.LogInformation("Jobs scheduled.");
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-#warning TODO: log exception            
+            logger.LogError(ex, "Failed to schedule tasks.");
         }
     }
 }

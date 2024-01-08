@@ -32,5 +32,8 @@ public class IssueTrackerContext(DbContextOptions<IssueTrackerContext> options, 
 
         modelBuilder.Entity<DbIssue>()
             .HasOne<DbVehicle>();
+        modelBuilder.Entity<DbIssue>()
+            .HasMany(issues => issues.RelatedIssues)
+            .WithMany();
     }
 }

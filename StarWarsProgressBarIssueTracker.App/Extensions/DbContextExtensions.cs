@@ -17,8 +17,6 @@ public static class DbContextExtensions
 
         var context = services.GetRequiredService<IssueTrackerContext>();
 
-        await context.Database.EnsureCreatedAsync();
-
         await context.Database.MigrateAsync();
     }
 }

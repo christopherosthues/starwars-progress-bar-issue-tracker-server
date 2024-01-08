@@ -36,6 +36,8 @@ public static class ServiceRegistrationExtensions
         serviceCollection.AddScoped<IJobRepository, JobRepository>();
 
         serviceCollection.AddScoped<JobSchedulingService>();
+        serviceCollection.AddScoped<JobExecutionService>();
+        serviceCollection.AddScoped<JobFactory>();
     }
 
     public static void AddIssueTrackerMappers(this IServiceCollection serviceCollection)
@@ -56,5 +58,9 @@ public static class ServiceRegistrationExtensions
     public static void AddJobs(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddScoped<JobScheduler>();
+        serviceCollection.AddScoped<GitHubSynchronizationJobScheduler>();
+        serviceCollection.AddScoped<GitlabSynchronizationJobScheduler>();
+        serviceCollection.AddScoped<GitHubSynchronizationJob>();
+        serviceCollection.AddScoped<GitlabSynchronizationJob>();
     }
 }
