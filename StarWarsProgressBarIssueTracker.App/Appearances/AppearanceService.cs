@@ -32,22 +32,22 @@ public class AppearanceService(IAppearanceRepository repository) : IAppearanceSe
             errors.Add(new ValueNotSetException(nameof(Appearance.Title)));
         }
 
-        if (appearance.Title.Length < 1)
+        if (appearance.Title.Length < AppearanceConstants.MinTitleLength)
         {
             errors.Add(new StringTooShortException(appearance.Title, nameof(Appearance.Title),
-                $"The length of {nameof(Appearance.Title)} has to be between 1 and 50."));
+                $"The length of {nameof(Appearance.Title)} has to be between {AppearanceConstants.MinTitleLength} and {AppearanceConstants.MaxTitleLength}."));
         }
 
-        if (appearance.Title.Length > 50)
+        if (appearance.Title.Length > AppearanceConstants.MaxTitleLength)
         {
             errors.Add(new StringTooLongException(appearance.Title, nameof(Appearance.Title),
-                $"The length of {nameof(Appearance.Title)} has to be between 1 and 50."));
+                $"The length of {nameof(Appearance.Title)} has to be between {AppearanceConstants.MinTitleLength} and {AppearanceConstants.MaxTitleLength}."));
         }
 
-        if (appearance.Description is not null && appearance.Description.Length > 255)
+        if (appearance.Description is not null && appearance.Description.Length > AppearanceConstants.MaxDescriptionLength)
         {
             errors.Add(new StringTooLongException(appearance.Description, nameof(Appearance.Description),
-                $"The length of {nameof(Appearance.Description)} has to be less than 256."));
+                $"The length of {nameof(Appearance.Description)} has to be less than {AppearanceConstants.MaxDescriptionLength + 1}."));
         }
 
         if (string.IsNullOrWhiteSpace(appearance.Color))

@@ -1,18 +1,19 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using StarWarsProgressBarIssueTracker.Domain.Appearances;
 
 namespace StarWarsProgressBarIssueTracker.Infrastructure.Models;
 
 public record DbAppearance : DbEntityBase
 {
-    [StringLength(50, MinimumLength = 1)]
+    [StringLength(AppearanceConstants.MaxTitleLength, MinimumLength = AppearanceConstants.MinTitleLength)]
     public required string Title { get; set; }
 
-    [MaxLength(255)]
+    [MaxLength(AppearanceConstants.MaxDescriptionLength)]
     public string? Description { get; set; }
 
-    [StringLength(6, MinimumLength = 6)]
+    [StringLength(AppearanceConstants.ColorHexLength, MinimumLength = AppearanceConstants.ColorHexLength)]
     public required string Color { get; set; }
 
-    [StringLength(6, MinimumLength = 6)]
+    [StringLength(AppearanceConstants.ColorHexLength, MinimumLength = AppearanceConstants.ColorHexLength)]
     public required string TextColor { get; set; }
 }

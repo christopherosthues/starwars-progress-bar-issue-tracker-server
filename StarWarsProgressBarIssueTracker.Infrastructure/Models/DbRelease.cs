@@ -6,10 +6,10 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Models;
 
 public record DbRelease : DbEntityBase
 {
-    [MaxLength(255)]
+    [StringLength(ReleaseConstants.MaxTitleLength, MinimumLength = ReleaseConstants.MinTitleLength)]
     public required string Title { get; set; }
 
-    [MaxLength(500)]
+    [MaxLength(ReleaseConstants.MaxDescriptionLength)]
     public string? ReleaseNotes { get; set; }
 
     public ReleaseState ReleaseState { get; set; }

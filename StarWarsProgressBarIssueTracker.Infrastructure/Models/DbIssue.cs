@@ -6,10 +6,10 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Models;
 
 public record DbIssue : DbEntityBase
 {
-    [MaxLength(255)]
+    [StringLength(IssueConstants.MaxTitleLength, MinimumLength = IssueConstants.MinTitleLength)]
     public required string Title { get; set; }
 
-    [MaxLength(500)]
+    [MaxLength(IssueConstants.MaxDescriptionLength)]
     public string? Description { get; set; }
 
     public Priority Priority { get; set; }

@@ -6,10 +6,10 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Models;
 
 public record DbMilestone : DbEntityBase
 {
-    [MaxLength(50)]
+    [StringLength(MilestoneConstants.MaxTitleLength, MinimumLength = MilestoneConstants.MinTitleLength)]
     public required string Title { get; set; }
 
-    [MaxLength(255)]
+    [MaxLength(MilestoneConstants.MaxDescriptionLength)]
     public string? Description { get; set; }
 
     public MilestoneState MilestoneState { get; set; }
