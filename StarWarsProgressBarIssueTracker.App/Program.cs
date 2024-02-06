@@ -48,17 +48,17 @@ builder.Services.AddQuartz(q =>
                              .WithIdentity($"{nameof(JobScheduler)}-trigger")
                              .WithCronSchedule("0 0 0 * * ?"));
 
-    jobKey = new JobKey(nameof(GitlabSynchronizationJobScheduler));
-    q.AddJob<GitlabSynchronizationJobScheduler>(opts => opts.WithIdentity(jobKey));
+    var jobKey2 = new JobKey(nameof(GitlabSynchronizationJobScheduler));
+    q.AddJob<GitlabSynchronizationJobScheduler>(opts => opts.WithIdentity(jobKey2));
 
-    q.AddTrigger(opts => opts.ForJob(jobKey)
+    q.AddTrigger(opts => opts.ForJob(jobKey2)
                              .WithIdentity($"{nameof(GitlabSynchronizationJobScheduler)}-trigger")
                              .WithCronSchedule("0 0 0 * * ?"));
 
-    jobKey = new JobKey(nameof(GitHubSynchronizationJobScheduler));
-    q.AddJob<GitHubSynchronizationJobScheduler>(opts => opts.WithIdentity(jobKey));
+    var jobKey3 = new JobKey(nameof(GitHubSynchronizationJobScheduler));
+    q.AddJob<GitHubSynchronizationJobScheduler>(opts => opts.WithIdentity(jobKey3));
 
-    q.AddTrigger(opts => opts.ForJob(jobKey)
+    q.AddTrigger(opts => opts.ForJob(jobKey3)
                              .WithIdentity($"{nameof(GitHubSynchronizationJobScheduler)}-trigger")
                              .WithCronSchedule("0 0 0 * * ?"));
 });

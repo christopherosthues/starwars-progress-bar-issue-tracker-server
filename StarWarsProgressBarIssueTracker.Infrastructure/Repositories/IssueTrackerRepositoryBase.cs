@@ -20,7 +20,7 @@ public abstract class IssueTrackerRepositoryBase<TDomain, TDbEntity>(IssueTracke
 
     public async Task<IEnumerable<TDomain>> GetAll(CancellationToken cancellationToken = default)
     {
-        return mapper.Map<IEnumerable<TDbEntity>, IEnumerable<TDomain>>(await GetIncludingFields().ToListAsync(cancellationToken));
+        return mapper.Map<IEnumerable<TDbEntity>, IEnumerable<TDomain>>(await GetIncludingFields().ToListAsync(cancellationToken))!;
     }
 
     protected virtual IQueryable<TDbEntity> GetIncludingFields()
@@ -32,7 +32,7 @@ public abstract class IssueTrackerRepositoryBase<TDomain, TDbEntity>(IssueTracke
     {
         var resultEntry = await DbSet.AddAsync(await Map(domain, true), cancellationToken);
         await Context.SaveChangesAsync(cancellationToken);
-        return mapper.Map<TDbEntity, TDomain>(resultEntry.Entity);
+        return mapper.Map<TDbEntity, TDomain>(resultEntry.Entity)!;
     }
 
     public async Task<TDomain> Update(TDomain domain, CancellationToken cancellationToken = default)
@@ -41,7 +41,7 @@ public abstract class IssueTrackerRepositoryBase<TDomain, TDbEntity>(IssueTracke
         entry.State = EntityState.Modified;
         await Context.SaveChangesAsync(cancellationToken);
 
-        return mapper.Map<TDbEntity, TDomain>(entry.Entity);
+        return mapper.Map<TDbEntity, TDomain>(entry.Entity)!;
     }
 
     public async Task<TDomain> Delete(TDomain domain, CancellationToken cancellationToken = default)
@@ -50,7 +50,7 @@ public abstract class IssueTrackerRepositoryBase<TDomain, TDbEntity>(IssueTracke
         DeleteRelationships(dbEntity);
         var entity = DbSet.Remove(dbEntity).Entity;
         await Context.SaveChangesAsync(cancellationToken);
-        return mapper.Map<TDbEntity, TDomain>(entity);
+        return mapper.Map<TDbEntity, TDomain>(entity)!;
     }
 
     protected abstract Task<TDbEntity> Map(TDomain domain, bool add = false, bool update = false);
