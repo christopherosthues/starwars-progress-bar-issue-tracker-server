@@ -5,7 +5,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\StarWarsProgressBarIssueTracker.Domain\StarWarsProgressBarIssueTracker.Domain.csproj" />
-    <ProjectReference Include="..\StarWarsProgressBarIssueTracker.Infrastructure.Github\StarWarsProgressBarIssueTracker.Infrastructure.Github.csproj" />
+    <ProjectReference Include="..\StarWarsProgressBarIssueTracker.Infrastructure.GitHub\StarWarsProgressBarIssueTracker.Infrastructure.GitHub.csproj" />
     <ProjectReference Include="..\StarWarsProgressBarIssueTracker.Infrastructure.Gitlab\StarWarsProgressBarIssueTracker.Infrastructure.Gitlab.csproj" />
   </ItemGroup>
 

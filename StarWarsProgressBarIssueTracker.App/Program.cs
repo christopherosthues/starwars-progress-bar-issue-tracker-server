@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using Polly;
 using Quartz;
 using Quartz.AspNetCore;
@@ -16,7 +17,21 @@ builder.Logging.ClearProviders().AddConsole();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// builder.Services.AddGitlabClient();
+var token = builder.Configuration.GetValue<string>("ApiToken");
+var uri = new Uri(builder.Configuration.GetValue<string>("GraphQLUri") ?? string.Empty);
+builder.Services.AddGitlabClient().ConfigureHttpClient(client =>
+{
+    client.BaseAddress = GetGraphQLUri(uri);
+    client.DefaultRequestHeaders.Authorization =
+        new AuthenticationHeaderValue("Bearer", token);
+}
+    // httpClientBuilder => httpClientBuilder.AddPolly()
+    ).ConfigureWebSocketClient(client =>
+{
+    client.Uri = GetGraphQLStreamingUri(uri);
+    // client.Socket.Options.SetRequestHeader("Authorization", $"Bearer {token}");
+});
+builder.Services.AddGitHubClient();
 
 var connectionString = builder.Configuration.GetConnectionString("IssueTrackerContext");
 builder.Services.RegisterDbContext(connectionString);
@@ -97,6 +112,12 @@ app.UseHttpsRedirection();
 app.MapGraphQL();
 
 app.Run();
+return;
+
+
+static Uri GetGraphQLUri(in Uri uri) => new UriBuilder(Uri.UriSchemeHttps, uri.Host, uri.Port, uri.PathAndQuery).Uri;
+
+static Uri GetGraphQLStreamingUri(in Uri uri) => new UriBuilder(Uri.UriSchemeWs, uri.Host, uri.Port, uri.PathAndQuery).Uri;
 
 /// <summary>
 /// Used for integration tests. Entry point class has to accessible from the custom WebApplicationFactory.

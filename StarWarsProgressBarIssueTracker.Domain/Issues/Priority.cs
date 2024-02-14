@@ -2,11 +2,12 @@
 
 public enum Priority
 {
-    Minor = -3,
-    Lowest = -2,
-    Low = -1,
-    Medium = 0,
-    High = 1,
-    Highest = 2,
-    Blocker = 3
+    Unknown = 0,
+    Minor = 1,
+    Lowest = 2,
+    Low = 3,
+    Medium = 4,
+    High = 5,
+    Highest = 6,
+    Blocker = 7
 }
