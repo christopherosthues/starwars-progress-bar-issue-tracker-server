@@ -9,9 +9,9 @@ public partial class IssueTrackerMutations
         return await releaseService.AddRelease(new()
         {
             Title = title,
-            ReleaseNotes = releaseNotes,
-            ReleaseDate = releaseDate,
-            ReleaseState = ReleaseState.Open,
+            Notes = releaseNotes,
+            Date = releaseDate,
+            State = ReleaseState.Planned,
         });
     }
 
@@ -21,9 +21,9 @@ public partial class IssueTrackerMutations
         {
             Id = id,
             Title = title,
-            ReleaseNotes = releaseNotes,
-            ReleaseDate = releaseDate,
-            ReleaseState = state
+            Notes = releaseNotes,
+            Date = releaseDate,
+            State = state
         });
     }
 

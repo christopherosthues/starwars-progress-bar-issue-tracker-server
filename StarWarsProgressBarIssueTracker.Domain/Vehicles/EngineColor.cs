@@ -1,4 +1,4 @@
-﻿namespace StarWarsProgressBarIssueTracker.Domain.Issues;
+﻿namespace StarWarsProgressBarIssueTracker.Domain.Vehicles;
 
 public enum EngineColor
 {

@@ -1,15 +1,16 @@
-using StarWarsProgressBarIssueTracker.App.Appearances;
 using StarWarsProgressBarIssueTracker.App.Issues;
 using StarWarsProgressBarIssueTracker.App.Jobs;
+using StarWarsProgressBarIssueTracker.App.Labels;
 using StarWarsProgressBarIssueTracker.App.Mappers;
 using StarWarsProgressBarIssueTracker.App.Milestones;
 using StarWarsProgressBarIssueTracker.App.Mutations;
 using StarWarsProgressBarIssueTracker.App.Queries;
 using StarWarsProgressBarIssueTracker.App.Releases;
-using StarWarsProgressBarIssueTracker.Domain.Appearances;
 using StarWarsProgressBarIssueTracker.Domain.Issues;
+using StarWarsProgressBarIssueTracker.Domain.Labels;
 using StarWarsProgressBarIssueTracker.Domain.Milestones;
 using StarWarsProgressBarIssueTracker.Domain.Releases;
+using StarWarsProgressBarIssueTracker.Domain.Vehicles;
 using StarWarsProgressBarIssueTracker.Infrastructure.Database;
 using StarWarsProgressBarIssueTracker.Infrastructure.Repositories;
 
@@ -24,8 +25,8 @@ public static class ServiceRegistrationExtensions
 
     public static void AddIssueTrackerServices(this IServiceCollection serviceCollection)
     {
-        serviceCollection.AddScoped<IAppearanceRepository, AppearanceRepository>();
-        serviceCollection.AddScoped<IAppearanceService, AppearanceService>();
+        serviceCollection.AddScoped<ILabelRepository, LabelRepository>();
+        serviceCollection.AddScoped<ILabelService, LabelService>();
         serviceCollection.AddScoped<IIssueRepository, IssueRepository>();
         serviceCollection.AddScoped<IIssueService, IssueService>();
         serviceCollection.AddScoped<IMilestoneRepository, MilestoneRepository>();

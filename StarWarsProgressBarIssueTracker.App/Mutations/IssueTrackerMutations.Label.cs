@@ -1,6 +1,7 @@
 using HotChocolate.Types;
-using StarWarsProgressBarIssueTracker.Domain.Appearances;
 using StarWarsProgressBarIssueTracker.Domain.Exceptions;
+using StarWarsProgressBarIssueTracker.Domain.Labels;
+using StarWarsProgressBarIssueTracker.Domain.Vehicles;
 
 namespace StarWarsProgressBarIssueTracker.App.Mutations;
 
@@ -10,9 +11,9 @@ public partial class IssueTrackerMutations
     [Error<StringTooShortException>]
     [Error<StringTooLongException>]
     [Error<ColorFormatException>]
-    public async Task<Appearance> AddAppearance(string title, string color, string textColor, string? description)
+    public async Task<Label> AddLabel(string title, string color, string textColor, string? description)
     {
-        return await appearanceService.AddAppearance(new()
+        return await labelService.AddLabel(new()
         {
             Title = title,
             Description = description,
@@ -26,9 +27,9 @@ public partial class IssueTrackerMutations
     [Error<StringTooLongException>]
     [Error<ColorFormatException>]
     [Error<DomainIdNotFoundException>]
-    public async Task<Appearance> UpdateAppearance(Guid id, string title, string color, string textColor, string? description)
+    public async Task<Label> UpdateLabel(Guid id, string title, string color, string textColor, string? description)
     {
-        return await appearanceService.UpdateAppearance(new Appearance
+        return await labelService.UpdateLabel(new()
         {
             Id = id,
             Title = title,
@@ -39,9 +40,9 @@ public partial class IssueTrackerMutations
     }
 
     [Error<DomainIdNotFoundException>]
-    public async Task<Appearance> DeleteAppearance(Guid id)
+    public async Task<Label> DeleteLabel(Guid id)
     {
-        return await appearanceService.DeleteAppearance(new Appearance
+        return await labelService.DeleteLabel(new()
         {
             Id = id,
             Title = string.Empty,

@@ -1,8 +1,8 @@
-﻿using StarWarsProgressBarIssueTracker.Domain.Models;
+using StarWarsProgressBarIssueTracker.Domain.Models;
 
-namespace StarWarsProgressBarIssueTracker.Domain.Appearances;
+namespace StarWarsProgressBarIssueTracker.Domain.Labels;
 
-public class Appearance : EntityBase
+public class Label : DomainBase
 {
     public required string Title { get; set; }
 

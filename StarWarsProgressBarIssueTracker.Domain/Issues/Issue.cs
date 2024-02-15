@@ -1,10 +1,11 @@
 using StarWarsProgressBarIssueTracker.Domain.Milestones;
 using StarWarsProgressBarIssueTracker.Domain.Models;
 using StarWarsProgressBarIssueTracker.Domain.Releases;
+using StarWarsProgressBarIssueTracker.Domain.Vehicles;
 
 namespace StarWarsProgressBarIssueTracker.Domain.Issues;
 
-public class Issue : EntityBase
+public class Issue : DomainBase
 {
     public required string Title { get; set; }
 
@@ -12,9 +13,7 @@ public class Issue : EntityBase
 
     public Priority Priority { get; set; }
 
-    public IssueState IssueState { get; set; }
-
-    public IssueType IssueType { get; set; }
+    public IssueState State { get; set; }
 
     public Milestone? Milestone { get; set; }
 
@@ -22,5 +21,5 @@ public class Issue : EntityBase
 
     public Vehicle? Vehicle { get; set; }
 
-    public IList<Issue> RelatedIssues { get; set; } = [];
+    public IList<IssueLink> LinkedIssues { get; set; } = [];
 }

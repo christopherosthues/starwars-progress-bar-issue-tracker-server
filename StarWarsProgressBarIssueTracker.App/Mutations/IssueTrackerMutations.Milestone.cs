@@ -15,7 +15,7 @@ public partial class IssueTrackerMutations
         {
             Title = title,
             Description = description,
-            MilestoneState = MilestoneState.Open,
+            State = MilestoneState.Open,
         });
     }
 
@@ -30,7 +30,7 @@ public partial class IssueTrackerMutations
             Id = id,
             Title = title,
             Description = description,
-            MilestoneState = state
+            State = state
         });
     }
 

@@ -1,6 +1,6 @@
 namespace StarWarsProgressBarIssueTracker.Domain.Models;
 
-public abstract class EntityBase
+public abstract class DomainBase
 {
     public Guid Id { get; set; }
 

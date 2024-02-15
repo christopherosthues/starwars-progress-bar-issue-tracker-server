@@ -1,4 +1,4 @@
-namespace StarWarsProgressBarIssueTracker.Domain.Appearances;
+namespace StarWarsProgressBarIssueTracker.Domain.Vehicles;
 
 public class AppearanceConstants
 {

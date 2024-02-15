@@ -1,12 +1,13 @@
 using StarWarsProgressBarIssueTracker.Domain.Issues;
 using StarWarsProgressBarIssueTracker.Domain.Milestones;
 using StarWarsProgressBarIssueTracker.Domain.Releases;
+using StarWarsProgressBarIssueTracker.Domain.Vehicles;
 
 namespace StarWarsProgressBarIssueTracker.App.Mutations;
 
 public partial class IssueTrackerMutations
 {
-    public async Task<Issue> AddIssue(string title, string? description, Priority priority, IssueType issueType,
+    public async Task<Issue> AddIssue(string title, string? description, Priority priority,
         Guid? milestoneId, Guid? releaseId, Vehicle? vehicle)
     {
         Milestone? milestone = null;
@@ -25,15 +26,14 @@ public partial class IssueTrackerMutations
             Title = title,
             Description = description,
             Milestone = milestone,
-            IssueState = IssueState.Open,
+            State = IssueState.Open,
             Priority = priority,
-            IssueType = issueType,
             Release = release,
             Vehicle = vehicle
         });
     }
 
-    public async Task<Issue> UpdateIssue(Guid id, string title, string? description, Priority priority, IssueType issueType,
+    public async Task<Issue> UpdateIssue(Guid id, string title, string? description, Priority priority,
         Guid? milestoneId, Guid? releaseId, Vehicle? vehicle)
     {
         Milestone? milestone = null;
@@ -53,9 +53,8 @@ public partial class IssueTrackerMutations
             Title = title,
             Description = description,
             Milestone = milestone,
-            IssueState = IssueState.Open,
+            State = IssueState.Open,
             Priority = priority,
-            IssueType = issueType,
             Release = release,
             Vehicle = vehicle
         });

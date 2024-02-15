@@ -51,7 +51,7 @@ public class MilestoneQueriesTests : IntegrationTestBase
             Title = "issue title",
             IssueState = IssueState.Closed,
             IssueType = IssueType.Vehicle,
-            Release = new DbRelease { Title = "milestone title", ReleaseState = ReleaseState.Open },
+            Release = new DbRelease { Title = "milestone title", ReleaseState = ReleaseState.Planned },
             Vehicle = new DbVehicle
             {
                 Appearances =
@@ -103,7 +103,7 @@ public class MilestoneQueriesTests : IntegrationTestBase
             release.Id.Should().Be(dbMilestone.Id);
             release.Title.Should().Be(dbMilestone.Title);
             release.Description.Should().BeNull();
-            release.MilestoneState.Should().Be(dbMilestone.MilestoneState);
+            release.State.Should().Be(dbMilestone.MilestoneState);
             release.CreatedAt.Should().BeCloseTo(dbMilestone.CreatedAt, TimeSpan.FromMilliseconds(300));
             release.LastModifiedAt.Should().Be(dbMilestone.LastModifiedAt);
             release.Issues.Should().BeEmpty();
@@ -112,7 +112,7 @@ public class MilestoneQueriesTests : IntegrationTestBase
             release2.Id.Should().Be(dbMilestone2.Id);
             release2.Title.Should().Be(dbMilestone2.Title);
             release2.Description.Should().Be(dbMilestone2.Description);
-            release2.MilestoneState.Should().Be(dbMilestone2.MilestoneState);
+            release2.State.Should().Be(dbMilestone2.MilestoneState);
             release2.CreatedAt.Should().BeCloseTo(dbMilestone2.CreatedAt, TimeSpan.FromMilliseconds(300));
             release2.LastModifiedAt.Should().BeCloseTo(dbMilestone2.LastModifiedAt!.Value, TimeSpan.FromMilliseconds(300));
             release2.Issues.Should().NotBeEmpty();
@@ -191,7 +191,7 @@ public class MilestoneQueriesTests : IntegrationTestBase
             Title = "issue title",
             IssueState = IssueState.Closed,
             IssueType = IssueType.Vehicle,
-            Release = new DbRelease { Title = "milestone title", ReleaseState = ReleaseState.Open },
+            Release = new DbRelease { Title = "milestone title", ReleaseState = ReleaseState.Planned },
             Vehicle = new DbVehicle
             {
                 Appearances =
@@ -235,7 +235,7 @@ public class MilestoneQueriesTests : IntegrationTestBase
             milestone!.Id.Should().Be(dbMilestone.Id);
             milestone.Title.Should().Be(dbMilestone.Title);
             milestone.Description.Should().Be(dbMilestone.Description);
-            milestone.MilestoneState.Should().Be(dbMilestone.MilestoneState);
+            milestone.State.Should().Be(dbMilestone.MilestoneState);
             milestone.CreatedAt.Should().BeCloseTo(dbMilestone.CreatedAt, TimeSpan.FromMilliseconds(300));
             milestone.LastModifiedAt.Should().BeCloseTo(dbMilestone.LastModifiedAt!.Value, TimeSpan.FromMilliseconds(300));
             milestone.Issues.Should().NotBeEmpty();

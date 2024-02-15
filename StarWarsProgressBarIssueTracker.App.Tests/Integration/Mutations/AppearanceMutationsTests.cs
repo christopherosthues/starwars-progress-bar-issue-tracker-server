@@ -5,8 +5,8 @@ using GraphQL;
 using Microsoft.EntityFrameworkCore;
 using StarWarsProgressBarIssueTracker.App.Mutations;
 using StarWarsProgressBarIssueTracker.App.Tests.Helpers.GraphQL.Payloads.Appearances;
-using StarWarsProgressBarIssueTracker.Domain.Appearances;
 using StarWarsProgressBarIssueTracker.Domain.Issues;
+using StarWarsProgressBarIssueTracker.Domain.Vehicles;
 using StarWarsProgressBarIssueTracker.Infrastructure.Models;
 
 namespace StarWarsProgressBarIssueTracker.App.Tests.Integration.Mutations;

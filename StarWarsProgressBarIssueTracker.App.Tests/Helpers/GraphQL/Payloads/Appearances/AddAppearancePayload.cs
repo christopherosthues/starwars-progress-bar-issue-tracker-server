@@ -1,5 +1,5 @@
 using HotChocolate;
-using StarWarsProgressBarIssueTracker.Domain.Appearances;
+using StarWarsProgressBarIssueTracker.Domain.Vehicles;
 
 namespace StarWarsProgressBarIssueTracker.App.Tests.Helpers.GraphQL.Payloads.Appearances;
 

@@ -1,11 +1,9 @@
-using StarWarsProgressBarIssueTracker.Domain.Appearances;
+using StarWarsProgressBarIssueTracker.Domain.Models;
 
-namespace StarWarsProgressBarIssueTracker.Domain.Issues;
+namespace StarWarsProgressBarIssueTracker.Domain.Vehicles;
 
-public class Vehicle
+public class Vehicle : DomainBase
 {
-    public Guid Id { get; set; }
-
     public IEnumerable<Appearance> Appearances { get; set; } = [];
 
     public EngineColor EngineColor { get; set; }

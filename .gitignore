@@ -9,3 +9,4 @@ riderModule.iml
 *.csproj.user
 /.env
 *.bkp
+*.dtmp

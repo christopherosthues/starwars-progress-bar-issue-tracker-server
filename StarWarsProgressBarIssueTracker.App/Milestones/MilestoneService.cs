@@ -49,9 +49,9 @@ public class MilestoneService(IMilestoneRepository repository) : IMilestoneServi
                 $"The length of {nameof(Milestone.Description)} has to be less than {MilestoneConstants.MaxDescriptionLength + 1}."));
         }
 
-        if (!Enum.IsDefined(milestone.MilestoneState) || milestone.MilestoneState == MilestoneState.Unknown)
+        if (!Enum.IsDefined(milestone.State) || milestone.State == MilestoneState.Unknown)
         {
-            errors.Add(new ValueNotSetException(nameof(Milestone.MilestoneState)));
+            errors.Add(new ValueNotSetException(nameof(Milestone.State)));
         }
 
         if (errors.Count != 0)

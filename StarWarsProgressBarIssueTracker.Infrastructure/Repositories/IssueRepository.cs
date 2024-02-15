@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using StarWarsProgressBarIssueTracker.Domain.Exceptions;
 using StarWarsProgressBarIssueTracker.Domain.Issues;
+using StarWarsProgressBarIssueTracker.Domain.Vehicles;
 using StarWarsProgressBarIssueTracker.Infrastructure.Database;
 using StarWarsProgressBarIssueTracker.Infrastructure.Models;
 
@@ -65,7 +66,7 @@ public class IssueRepository(IssueTrackerContext context, IMapper mapper)
                 EngineColor = vehicle.EngineColor,
                 Photos = vehicle.Photos.Select(photo => new DbPhoto
                 {
-                    PhotoData = Convert.FromBase64String(photo.PhotoData)
+                    PhotoData = Convert.FromBase64String(photo.FilePath)
                 }).ToList(),
                 Translations = vehicle.Translations.Select(translation => new DbTranslation
                 {
@@ -80,12 +81,11 @@ public class IssueRepository(IssueTrackerContext context, IMapper mapper)
         {
             Title = domain.Title,
             Description = domain.Description,
-            IssueState = domain.IssueState,
+            IssueState = domain.State,
             Milestone = dbMilestone,
             Release = dbRelease,
             Vehicle = dbVehicle,
             Priority = domain.Priority,
-            IssueType = domain.IssueType,
         };
 
         dbMilestone?.Issues.Add(newIssue);
@@ -113,7 +113,7 @@ public class IssueRepository(IssueTrackerContext context, IMapper mapper)
                 addedPhotos = vehicle.Photos.Where(photo => !dbVehiclePhotos.Any(dbPhoto => photo.Id.Equals(dbPhoto.Id)))
                     .Select(photo => new DbPhoto
                     {
-                        PhotoData = Convert.FromBase64String(photo.PhotoData)
+                        PhotoData = Convert.FromBase64String(photo.FilePath)
                     });
 
                 var dbVehicleTranslations = dbVehicle.Translations;
@@ -131,7 +131,7 @@ public class IssueRepository(IssueTrackerContext context, IMapper mapper)
 
             foreach (var changedPhoto in changedPhotos)
             {
-                changedPhoto.PhotoData = Convert.FromBase64String(vehicle.Photos.First(photo => photo.Id.Equals(changedPhoto.Id)).PhotoData);
+                changedPhoto.PhotoData = Convert.FromBase64String(vehicle.Photos.First(photo => photo.Id.Equals(changedPhoto.Id)).FilePath);
             }
 
             var changedTranslations = dbVehicle?.Translations.Where(dbTranslation =>
@@ -153,12 +153,11 @@ public class IssueRepository(IssueTrackerContext context, IMapper mapper)
 
         dbIssue.Title = domain.Title;
         dbIssue.Description = domain.Description;
-        dbIssue.IssueState = domain.IssueState;
+        dbIssue.IssueState = domain.State;
         dbIssue.Milestone = dbMilestone;
         dbIssue.Release = dbRelease;
         dbIssue.Vehicle = dbVehicle;
         dbIssue.Priority = domain.Priority;
-        dbIssue.IssueType = domain.IssueType;
         dbIssue.LastModifiedAt = DateTime.UtcNow;
 
         var milestoneIssue = dbMilestone?.Issues.FirstOrDefault(issue => issue.Id.Equals(dbIssue.Id));

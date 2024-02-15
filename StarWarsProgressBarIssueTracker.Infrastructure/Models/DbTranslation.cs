@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using StarWarsProgressBarIssueTracker.Domain.Issues;
+using StarWarsProgressBarIssueTracker.Domain.Vehicles;
 
 namespace StarWarsProgressBarIssueTracker.Infrastructure.Models;
 

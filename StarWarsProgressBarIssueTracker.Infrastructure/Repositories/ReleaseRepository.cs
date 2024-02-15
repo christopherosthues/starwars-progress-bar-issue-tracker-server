@@ -26,9 +26,9 @@ public class ReleaseRepository(IssueTrackerContext context, IMapper mapper)
             return new DbRelease
             {
                 Title = domain.Title,
-                ReleaseNotes = domain.ReleaseNotes,
-                ReleaseDate = domain.ReleaseDate,
-                ReleaseState = domain.ReleaseState
+                ReleaseNotes = domain.Notes,
+                ReleaseDate = domain.Date,
+                ReleaseState = domain.State
             };
         }
 
@@ -37,9 +37,9 @@ public class ReleaseRepository(IssueTrackerContext context, IMapper mapper)
         if (update)
         {
             dbRelease.Title = domain.Title;
-            dbRelease.ReleaseNotes = domain.ReleaseNotes;
-            dbRelease.ReleaseDate = domain.ReleaseDate;
-            dbRelease.ReleaseState = domain.ReleaseState;
+            dbRelease.ReleaseNotes = domain.Notes;
+            dbRelease.ReleaseDate = domain.Date;
+            dbRelease.ReleaseState = domain.State;
             dbRelease.LastModifiedAt = DateTime.UtcNow;
         }
 

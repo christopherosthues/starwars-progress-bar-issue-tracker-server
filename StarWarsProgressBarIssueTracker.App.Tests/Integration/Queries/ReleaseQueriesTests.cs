@@ -42,7 +42,7 @@ public class ReleaseQueriesTests : IntegrationTestBase
         // Arrange
         var dbRelease = new DbRelease
         {
-            Title = "Release 1", ReleaseState = ReleaseState.Open
+            Title = "Release 1", ReleaseState = ReleaseState.Planned
         };
 
         var dbIssue = new DbIssue
@@ -63,7 +63,7 @@ public class ReleaseQueriesTests : IntegrationTestBase
         };
         var dbRelease2 = new DbRelease
         {
-            Title = "Release 2", ReleaseNotes = "Notes 2", ReleaseState = ReleaseState.Closed, ReleaseDate = DateTime.UtcNow,
+            Title = "Release 2", ReleaseNotes = "Notes 2", ReleaseState = ReleaseState.Released, ReleaseDate = DateTime.UtcNow,
             LastModifiedAt = DateTime.UtcNow.AddDays(-1),
             Issues =
             [
@@ -101,9 +101,9 @@ public class ReleaseQueriesTests : IntegrationTestBase
             var release = releases.Single(entity => entity.Id.Equals(dbRelease.Id));
             release.Id.Should().Be(dbRelease.Id);
             release.Title.Should().Be(dbRelease.Title);
-            release.ReleaseNotes.Should().BeNull();
-            release.ReleaseState.Should().Be(dbRelease.ReleaseState);
-            release.ReleaseDate.Should().BeNull();
+            release.Notes.Should().BeNull();
+            release.State.Should().Be(dbRelease.ReleaseState);
+            release.Date.Should().BeNull();
             release.CreatedAt.Should().BeCloseTo(dbRelease.CreatedAt, TimeSpan.FromMilliseconds(300));
             release.LastModifiedAt.Should().Be(dbRelease.LastModifiedAt);
             release.Issues.Should().BeEmpty();
@@ -111,9 +111,9 @@ public class ReleaseQueriesTests : IntegrationTestBase
             var release2 = releases.Single(entity => entity.Id.Equals(dbRelease2.Id));
             release2.Id.Should().Be(dbRelease2.Id);
             release2.Title.Should().Be(dbRelease2.Title);
-            release2.ReleaseNotes.Should().Be(dbRelease2.ReleaseNotes);
-            release2.ReleaseState.Should().Be(dbRelease2.ReleaseState);
-            release2.ReleaseDate.Should().BeCloseTo(dbRelease2.ReleaseDate!.Value, TimeSpan.FromMilliseconds(300));
+            release2.Notes.Should().Be(dbRelease2.ReleaseNotes);
+            release2.State.Should().Be(dbRelease2.ReleaseState);
+            release2.Date.Should().BeCloseTo(dbRelease2.ReleaseDate!.Value, TimeSpan.FromMilliseconds(300));
             release2.CreatedAt.Should().BeCloseTo(dbRelease2.CreatedAt, TimeSpan.FromMilliseconds(300));
             release2.LastModifiedAt.Should().BeCloseTo(dbRelease2.LastModifiedAt!.Value, TimeSpan.FromMilliseconds(300));
             release2.Issues.Should().NotBeEmpty();
@@ -138,7 +138,7 @@ public class ReleaseQueriesTests : IntegrationTestBase
             context.Releases.Add(new DbRelease
             {
                 Id = new Guid("5888CDB6-57E2-4774-B6E8-7AABE82E2A5F"),
-                Title = "Release 1", ReleaseNotes = "Notes 1", ReleaseState = ReleaseState.Closed, ReleaseDate = DateTime.UtcNow,
+                Title = "Release 1", ReleaseNotes = "Notes 1", ReleaseState = ReleaseState.Released, ReleaseDate = DateTime.UtcNow,
                 LastModifiedAt = DateTime.UtcNow.AddDays(-1)
             });
         });
@@ -206,7 +206,7 @@ public class ReleaseQueriesTests : IntegrationTestBase
         var dbRelease = new DbRelease
         {
             Id = new Guid(id),
-            Title = "Release 2", ReleaseNotes = "Notes 2", ReleaseState = ReleaseState.Closed, ReleaseDate = DateTime.UtcNow,
+            Title = "Release 2", ReleaseNotes = "Notes 2", ReleaseState = ReleaseState.Released, ReleaseDate = DateTime.UtcNow,
             LastModifiedAt = DateTime.UtcNow.AddDays(-1),
             Issues = [dbIssue]
         };
@@ -215,7 +215,7 @@ public class ReleaseQueriesTests : IntegrationTestBase
             context.Releases.Add(new DbRelease
             {
                 Id = new Guid("5888CDB6-57E2-4774-B6E8-7AABE82E2A5F"),
-                Title = "Release 1", ReleaseState = ReleaseState.Open
+                Title = "Release 1", ReleaseState = ReleaseState.Planned
             });
             context.Releases.Add(dbRelease);
         });
@@ -235,9 +235,9 @@ public class ReleaseQueriesTests : IntegrationTestBase
             release.Should().NotBeNull();
             release!.Id.Should().Be(dbRelease.Id);
             release.Title.Should().Be(dbRelease.Title);
-            release.ReleaseNotes.Should().Be(dbRelease.ReleaseNotes);
-            release.ReleaseState.Should().Be(dbRelease.ReleaseState);
-            release.ReleaseDate.Should().BeCloseTo(dbRelease.ReleaseDate!.Value, TimeSpan.FromMilliseconds(300));
+            release.Notes.Should().Be(dbRelease.ReleaseNotes);
+            release.State.Should().Be(dbRelease.ReleaseState);
+            release.Date.Should().BeCloseTo(dbRelease.ReleaseDate!.Value, TimeSpan.FromMilliseconds(300));
             release.CreatedAt.Should().BeCloseTo(dbRelease.CreatedAt, TimeSpan.FromMilliseconds(300));
             release.LastModifiedAt.Should().BeCloseTo(dbRelease.LastModifiedAt!.Value, TimeSpan.FromMilliseconds(300));
             release.Issues.Should().NotBeEmpty();
