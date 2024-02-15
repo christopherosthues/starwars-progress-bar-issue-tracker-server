@@ -2,5 +2,5 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Models;
 
 public record DbPhoto : DbEntityBase
 {
-    public required byte[] PhotoData { get; set; }
+    public required string FilePath { get; set; }
 }

@@ -4,11 +4,11 @@ namespace StarWarsProgressBarIssueTracker.Domain.Vehicles;
 
 public class Vehicle : DomainBase
 {
-    public IEnumerable<Appearance> Appearances { get; set; } = [];
+    public IList<Appearance> Appearances { get; set; } = [];
 
     public EngineColor EngineColor { get; set; }
 
-    public IEnumerable<Translation> Translations { get; set; } = [];
+    public IList<Translation> Translations { get; set; } = [];
 
-    public IEnumerable<Photo> Photos { get; set; } = [];
+    public IList<Photo> Photos { get; set; } = [];
 }

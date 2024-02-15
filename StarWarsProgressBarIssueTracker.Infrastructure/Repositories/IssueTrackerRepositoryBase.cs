@@ -6,21 +6,21 @@ using StarWarsProgressBarIssueTracker.Infrastructure.Models;
 
 namespace StarWarsProgressBarIssueTracker.Infrastructure.Repositories;
 
-public abstract class IssueTrackerRepositoryBase<TDomain, TDbEntity>(IssueTrackerContext context, IMapper mapper)
-    : IRepository<TDomain>
+public abstract class IssueTrackerRepositoryBase<TDbEntity>(IssueTrackerContext context, IMapper mapper)
+    : IRepository<TDbEntity>
     where TDbEntity : DbEntityBase
 {
     protected readonly DbSet<TDbEntity> DbSet = context.Set<TDbEntity>();
     protected readonly IssueTrackerContext Context = context;
 
-    public async Task<TDomain?> GetById(Guid id, CancellationToken cancellationToken = default)
+    public async Task<TDbEntity?> GetById(Guid id, CancellationToken cancellationToken = default)
     {
-        return mapper.Map<TDbEntity?, TDomain?>(await GetIncludingFields().FirstOrDefaultAsync(dbEntity => dbEntity.Id.Equals(id), cancellationToken));
+        return await GetIncludingFields().FirstOrDefaultAsync(dbEntity => dbEntity.Id.Equals(id), cancellationToken);
     }
 
-    public async Task<IEnumerable<TDomain>> GetAll(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<TDbEntity>> GetAll(CancellationToken cancellationToken = default)
     {
-        return mapper.Map<IEnumerable<TDbEntity>, IEnumerable<TDomain>>(await GetIncludingFields().ToListAsync(cancellationToken))!;
+        return await GetIncludingFields().ToListAsync(cancellationToken);
     }
 
     protected virtual IQueryable<TDbEntity> GetIncludingFields()
@@ -28,32 +28,32 @@ public abstract class IssueTrackerRepositoryBase<TDomain, TDbEntity>(IssueTracke
         return DbSet;
     }
 
-    public async Task<TDomain> Add(TDomain domain, CancellationToken cancellationToken = default)
+    public async Task<TDbEntity> Add(TDbEntity entity, CancellationToken cancellationToken = default)
     {
-        var resultEntry = await DbSet.AddAsync(await Map(domain, true), cancellationToken);
+        var resultEntry = await DbSet.AddAsync(await Map(entity, true), cancellationToken);
         await Context.SaveChangesAsync(cancellationToken);
-        return mapper.Map<TDbEntity, TDomain>(resultEntry.Entity)!;
+        return resultEntry.Entity;
     }
 
-    public async Task<TDomain> Update(TDomain domain, CancellationToken cancellationToken = default)
+    public async Task<TDbEntity> Update(TDbEntity entity, CancellationToken cancellationToken = default)
     {
-        var entry = Context.Entry(await Map(domain, update: true));
+        var entry = Context.Entry(await Map(entity, update: true));
         entry.State = EntityState.Modified;
         await Context.SaveChangesAsync(cancellationToken);
 
-        return mapper.Map<TDbEntity, TDomain>(entry.Entity)!;
+        return entry.Entity;
     }
 
-    public async Task<TDomain> Delete(TDomain domain, CancellationToken cancellationToken = default)
+    public async Task<TDbEntity> Delete(TDbEntity entity, CancellationToken cancellationToken = default)
     {
-        var dbEntity = await Map(domain);
+        var dbEntity = await Map(entity);
         DeleteRelationships(dbEntity);
-        var entity = DbSet.Remove(dbEntity).Entity;
+        var returnEntity = DbSet.Remove(dbEntity).Entity;
         await Context.SaveChangesAsync(cancellationToken);
-        return mapper.Map<TDbEntity, TDomain>(entity)!;
+        return returnEntity;
     }
 
-    protected abstract Task<TDbEntity> Map(TDomain domain, bool add = false, bool update = false);
+    protected abstract Task<TDbEntity> Map(TDbEntity domain, bool add = false, bool update = false);
 
     protected abstract void DeleteRelationships(TDbEntity entity);
 }

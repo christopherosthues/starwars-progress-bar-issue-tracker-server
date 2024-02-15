@@ -14,9 +14,7 @@ public record DbIssue : DbEntityBase
 
     public Priority Priority { get; set; }
 
-    public IssueState IssueState { get; set; }
-
-    public IssueType IssueType { get; set; }
+    public IssueState State { get; set; }
 
     [ForeignKey("MilestoneId")]
     public DbMilestone? Milestone { get; set; }
@@ -27,5 +25,5 @@ public record DbIssue : DbEntityBase
     [ForeignKey("VehicleId")]
     public DbVehicle? Vehicle { get; set; }
 
-    public IList<DbIssue> RelatedIssues { get; set; } = [];
+    public virtual IList<DbIssueLink> RelatedIssues { get; set; } = [];
 }

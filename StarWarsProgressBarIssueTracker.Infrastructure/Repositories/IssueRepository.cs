@@ -9,7 +9,7 @@ using StarWarsProgressBarIssueTracker.Infrastructure.Models;
 namespace StarWarsProgressBarIssueTracker.Infrastructure.Repositories;
 
 public class IssueRepository(IssueTrackerContext context, IMapper mapper)
-    : IssueTrackerRepositoryBase<Issue, DbIssue>(context, mapper), IIssueRepository
+    : IssueTrackerRepositoryBase<DbIssue>(context, mapper)
 {
     protected override IQueryable<DbIssue> GetIncludingFields()
     {
@@ -23,7 +23,7 @@ public class IssueRepository(IssueTrackerContext context, IMapper mapper)
             .ThenInclude(dbVehicle => dbVehicle != null ? dbVehicle.Translations : null);
     }
 
-    protected override async Task<DbIssue> Map(Issue domain, bool add = false, bool update = false)
+    protected override async Task<DbIssue> Map(DbIssue domain, bool add = false, bool update = false)
     {
         DbMilestone? dbMilestone = null;
         if (domain.Milestone != null)
@@ -54,7 +54,7 @@ public class IssueRepository(IssueTrackerContext context, IMapper mapper)
         return dbIssue;
     }
 
-    private DbIssue AddIssue(Issue domain, Vehicle? vehicle, DbMilestone? dbMilestone, DbRelease? dbRelease)
+    private DbIssue AddIssue(DbIssue domain, DbVehicle? vehicle, DbMilestone? dbMilestone, DbRelease? dbRelease)
     {
         DbVehicle? dbVehicle = null;
         if (vehicle is not null)
@@ -66,7 +66,7 @@ public class IssueRepository(IssueTrackerContext context, IMapper mapper)
                 EngineColor = vehicle.EngineColor,
                 Photos = vehicle.Photos.Select(photo => new DbPhoto
                 {
-                    PhotoData = Convert.FromBase64String(photo.FilePath)
+                    FilePath = photo.FilePath
                 }).ToList(),
                 Translations = vehicle.Translations.Select(translation => new DbTranslation
                 {
@@ -81,7 +81,7 @@ public class IssueRepository(IssueTrackerContext context, IMapper mapper)
         {
             Title = domain.Title,
             Description = domain.Description,
-            IssueState = domain.State,
+            State = domain.State,
             Milestone = dbMilestone,
             Release = dbRelease,
             Vehicle = dbVehicle,
@@ -94,7 +94,7 @@ public class IssueRepository(IssueTrackerContext context, IMapper mapper)
         return newIssue;
     }
 
-    private async Task UpdateIssue(Issue domain, Vehicle? vehicle, DbIssue dbIssue, DbMilestone? dbMilestone,
+    private async Task UpdateIssue(DbIssue domain, DbVehicle? vehicle, DbIssue dbIssue, DbMilestone? dbMilestone,
         DbRelease? dbRelease)
     {
         var dbVehicle = await Context.Vehicles.Include(dbVehicle => dbVehicle.Photos)
@@ -113,7 +113,7 @@ public class IssueRepository(IssueTrackerContext context, IMapper mapper)
                 addedPhotos = vehicle.Photos.Where(photo => !dbVehiclePhotos.Any(dbPhoto => photo.Id.Equals(dbPhoto.Id)))
                     .Select(photo => new DbPhoto
                     {
-                        PhotoData = Convert.FromBase64String(photo.FilePath)
+                        FilePath = photo.FilePath
                     });
 
                 var dbVehicleTranslations = dbVehicle.Translations;
@@ -131,7 +131,7 @@ public class IssueRepository(IssueTrackerContext context, IMapper mapper)
 
             foreach (var changedPhoto in changedPhotos)
             {
-                changedPhoto.PhotoData = Convert.FromBase64String(vehicle.Photos.First(photo => photo.Id.Equals(changedPhoto.Id)).FilePath);
+                changedPhoto.FilePath = vehicle.Photos.First(photo => photo.Id.Equals(changedPhoto.Id)).FilePath;
             }
 
             var changedTranslations = dbVehicle?.Translations.Where(dbTranslation =>
@@ -153,7 +153,7 @@ public class IssueRepository(IssueTrackerContext context, IMapper mapper)
 
         dbIssue.Title = domain.Title;
         dbIssue.Description = domain.Description;
-        dbIssue.IssueState = domain.State;
+        dbIssue.State = domain.State;
         dbIssue.Milestone = dbMilestone;
         dbIssue.Release = dbRelease;
         dbIssue.Vehicle = dbVehicle;

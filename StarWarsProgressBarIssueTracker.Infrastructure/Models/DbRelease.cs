@@ -10,12 +10,12 @@ public record DbRelease : DbEntityBase
     public required string Title { get; set; }
 
     [MaxLength(ReleaseConstants.MaxDescriptionLength)]
-    public string? ReleaseNotes { get; set; }
+    public string? Notes { get; set; }
 
-    public ReleaseState ReleaseState { get; set; }
+    public ReleaseState State { get; set; }
 
-    public DateTime? ReleaseDate { get; set; }
+    public DateTime? Date { get; set; }
 
     [Column("IssueId")]
-    public virtual List<DbIssue> Issues { get; set; } = [];
+    public virtual IList<DbIssue> Issues { get; set; } = [];
 }

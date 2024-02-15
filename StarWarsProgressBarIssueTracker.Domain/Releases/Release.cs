@@ -13,5 +13,5 @@ public class Release : DomainBase
 
     public DateTime? Date { get; set; }
 
-    public IEnumerable<Issue> Issues { get; set; } = [];
+    public IList<Issue> Issues { get; set; } = [];
 }

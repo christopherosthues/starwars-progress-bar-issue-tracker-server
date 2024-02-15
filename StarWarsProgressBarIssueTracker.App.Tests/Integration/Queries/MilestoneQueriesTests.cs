@@ -43,15 +43,15 @@ public class MilestoneQueriesTests : IntegrationTestBase
         // Arrange
         var dbMilestone = new DbMilestone
         {
-            Title = "Milestone 1", MilestoneState = MilestoneState.Open
+            Title = "Milestone 1", State = MilestoneState.Open
         };
 
         var dbIssue = new DbIssue
         {
             Title = "issue title",
-            IssueState = IssueState.Closed,
+            State = IssueState.Closed,
             IssueType = IssueType.Vehicle,
-            Release = new DbRelease { Title = "milestone title", ReleaseState = ReleaseState.Planned },
+            Release = new DbRelease { Title = "milestone title", State = ReleaseState.Planned },
             Vehicle = new DbVehicle
             {
                 Appearances =
@@ -64,7 +64,7 @@ public class MilestoneQueriesTests : IntegrationTestBase
         };
         var dbMilestone2 = new DbMilestone
         {
-            Title = "Milestone 2", Description = "Notes 2", MilestoneState = MilestoneState.Closed,
+            Title = "Milestone 2", Description = "Notes 2", State = MilestoneState.Closed,
             LastModifiedAt = DateTime.UtcNow.AddDays(-1),
             Issues =
             [
@@ -103,7 +103,7 @@ public class MilestoneQueriesTests : IntegrationTestBase
             release.Id.Should().Be(dbMilestone.Id);
             release.Title.Should().Be(dbMilestone.Title);
             release.Description.Should().BeNull();
-            release.State.Should().Be(dbMilestone.MilestoneState);
+            release.State.Should().Be(dbMilestone.State);
             release.CreatedAt.Should().BeCloseTo(dbMilestone.CreatedAt, TimeSpan.FromMilliseconds(300));
             release.LastModifiedAt.Should().Be(dbMilestone.LastModifiedAt);
             release.Issues.Should().BeEmpty();
@@ -112,7 +112,7 @@ public class MilestoneQueriesTests : IntegrationTestBase
             release2.Id.Should().Be(dbMilestone2.Id);
             release2.Title.Should().Be(dbMilestone2.Title);
             release2.Description.Should().Be(dbMilestone2.Description);
-            release2.State.Should().Be(dbMilestone2.MilestoneState);
+            release2.State.Should().Be(dbMilestone2.State);
             release2.CreatedAt.Should().BeCloseTo(dbMilestone2.CreatedAt, TimeSpan.FromMilliseconds(300));
             release2.LastModifiedAt.Should().BeCloseTo(dbMilestone2.LastModifiedAt!.Value, TimeSpan.FromMilliseconds(300));
             release2.Issues.Should().NotBeEmpty();
@@ -137,7 +137,7 @@ public class MilestoneQueriesTests : IntegrationTestBase
             context.Milestones.Add(new DbMilestone
             {
                 Id = new Guid("5888CDB6-57E2-4774-B6E8-7AABE82E2A5F"),
-                Title = "Milestone 1", Description = "Notes 1", MilestoneState = MilestoneState.Closed,
+                Title = "Milestone 1", Description = "Notes 1", State = MilestoneState.Closed,
                 LastModifiedAt = DateTime.UtcNow.AddDays(-1)
             });
         });
@@ -189,9 +189,9 @@ public class MilestoneQueriesTests : IntegrationTestBase
         var dbIssue = new DbIssue
         {
             Title = "issue title",
-            IssueState = IssueState.Closed,
+            State = IssueState.Closed,
             IssueType = IssueType.Vehicle,
-            Release = new DbRelease { Title = "milestone title", ReleaseState = ReleaseState.Planned },
+            Release = new DbRelease { Title = "milestone title", State = ReleaseState.Planned },
             Vehicle = new DbVehicle
             {
                 Appearances =
@@ -205,7 +205,7 @@ public class MilestoneQueriesTests : IntegrationTestBase
         var dbMilestone = new DbMilestone
         {
             Id = new Guid(id),
-            Title = "Milestone 2", Description = "Notes 2", MilestoneState = MilestoneState.Closed,
+            Title = "Milestone 2", Description = "Notes 2", State = MilestoneState.Closed,
             LastModifiedAt = DateTime.UtcNow.AddDays(-1),
             Issues = [dbIssue]
         };
@@ -214,7 +214,7 @@ public class MilestoneQueriesTests : IntegrationTestBase
             context.Milestones.Add(new DbMilestone
             {
                 Id = new Guid("5888CDB6-57E2-4774-B6E8-7AABE82E2A5F"),
-                Title = "Milestone 1", MilestoneState = MilestoneState.Open
+                Title = "Milestone 1", State = MilestoneState.Open
             });
             context.Milestones.Add(dbMilestone);
         });
@@ -235,7 +235,7 @@ public class MilestoneQueriesTests : IntegrationTestBase
             milestone!.Id.Should().Be(dbMilestone.Id);
             milestone.Title.Should().Be(dbMilestone.Title);
             milestone.Description.Should().Be(dbMilestone.Description);
-            milestone.State.Should().Be(dbMilestone.MilestoneState);
+            milestone.State.Should().Be(dbMilestone.State);
             milestone.CreatedAt.Should().BeCloseTo(dbMilestone.CreatedAt, TimeSpan.FromMilliseconds(300));
             milestone.LastModifiedAt.Should().BeCloseTo(dbMilestone.LastModifiedAt!.Value, TimeSpan.FromMilliseconds(300));
             milestone.Issues.Should().NotBeEmpty();

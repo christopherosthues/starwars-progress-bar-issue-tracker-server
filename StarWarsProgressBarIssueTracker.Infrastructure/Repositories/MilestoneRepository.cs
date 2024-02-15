@@ -27,7 +27,7 @@ public class MilestoneRepository(IssueTrackerContext context, IMapper mapper)
             {
                 Title = domain.Title,
                 Description = domain.Description,
-                MilestoneState = domain.State
+                State = domain.State
             };
         }
 
@@ -37,7 +37,7 @@ public class MilestoneRepository(IssueTrackerContext context, IMapper mapper)
         {
             dbMilestone.Title = domain.Title;
             dbMilestone.Description = domain.Description;
-            dbMilestone.MilestoneState = domain.State;
+            dbMilestone.State = domain.State;
             dbMilestone.LastModifiedAt = DateTime.UtcNow;
         }
 

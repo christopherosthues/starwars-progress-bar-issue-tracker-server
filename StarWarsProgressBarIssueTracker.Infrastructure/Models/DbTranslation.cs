@@ -4,10 +4,8 @@ using StarWarsProgressBarIssueTracker.Domain.Vehicles;
 
 namespace StarWarsProgressBarIssueTracker.Infrastructure.Models;
 
-public record DbTranslation
+public record DbTranslation : DbEntityBase
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
-
     [StringLength(TranslationConstants.MaxCountryLength, MinimumLength = TranslationConstants.MinCountryLength)]
     public required string Country { get; set; }
 

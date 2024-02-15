@@ -11,5 +11,5 @@ public class Milestone : DomainBase
 
     public MilestoneState State { get; set; }
 
-    public IEnumerable<Issue> Issues { get; set; } = [];
+    public IList<Issue> Issues { get; set; } = [];
 }

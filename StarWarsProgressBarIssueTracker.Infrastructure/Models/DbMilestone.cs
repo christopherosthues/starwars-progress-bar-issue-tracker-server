@@ -12,8 +12,8 @@ public record DbMilestone : DbEntityBase
     [MaxLength(MilestoneConstants.MaxDescriptionLength)]
     public string? Description { get; set; }
 
-    public MilestoneState MilestoneState { get; set; }
+    public MilestoneState State { get; set; }
 
     [Column("IssueId")]
-    public virtual List<DbIssue> Issues { get; set; } = [];
+    public virtual IList<DbIssue> Issues { get; set; } = [];
 }

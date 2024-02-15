@@ -1,5 +1,4 @@
-﻿using StarWarsProgressBarIssueTracker.Domain;
-using StarWarsProgressBarIssueTracker.Infrastructure.Models;
+﻿using StarWarsProgressBarIssueTracker.Infrastructure.Models;
 
 namespace StarWarsProgressBarIssueTracker.Infrastructure.Repositories;
 
