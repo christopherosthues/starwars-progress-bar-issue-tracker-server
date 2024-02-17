@@ -6,62 +6,77 @@ using StarWarsProgressBarIssueTracker.App.Milestones;
 using StarWarsProgressBarIssueTracker.App.Mutations;
 using StarWarsProgressBarIssueTracker.App.Queries;
 using StarWarsProgressBarIssueTracker.App.Releases;
+using StarWarsProgressBarIssueTracker.Domain;
 using StarWarsProgressBarIssueTracker.Domain.Issues;
 using StarWarsProgressBarIssueTracker.Domain.Labels;
 using StarWarsProgressBarIssueTracker.Domain.Milestones;
 using StarWarsProgressBarIssueTracker.Domain.Releases;
-using StarWarsProgressBarIssueTracker.Domain.Vehicles;
 using StarWarsProgressBarIssueTracker.Infrastructure.Database;
-using StarWarsProgressBarIssueTracker.Infrastructure.Repositories;
 
 namespace StarWarsProgressBarIssueTracker.App.ServiceCollectionExtensions;
 
 public static class ServiceRegistrationExtensions
 {
-    public static void AddIssueTrackerConfigurations(this IServiceCollection serviceCollection, IConfiguration configuration)
+    public static IServiceCollection AddIssueTrackerConfigurations(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
         serviceCollection.Configure<IssueTrackerDbConfig>(configuration.GetSection("IssueTrackerDbConfig"));
+
+        return serviceCollection;
     }
 
-    public static void AddIssueTrackerServices(this IServiceCollection serviceCollection)
+    public static IServiceCollection AddDataPorts(this IServiceCollection serviceCollection)
     {
-        serviceCollection.AddScoped<ILabelRepository, LabelRepository>();
-        serviceCollection.AddScoped<ILabelService, LabelService>();
-        serviceCollection.AddScoped<IIssueRepository, IssueRepository>();
+        serviceCollection.AddScoped<IDataPort<Issue>, IssueDataPort>();
+        serviceCollection.AddScoped<IDataPort<Label>, LabelDataPort>();
+        serviceCollection.AddScoped<IDataPort<Milestone>, MilestoneDataPort>();
+        serviceCollection.AddScoped<IDataPort<Release>, ReleaseDataPort>();
+
+        return serviceCollection;
+    }
+
+    public static IServiceCollection AddIssueTrackerServices(this IServiceCollection serviceCollection)
+    {
         serviceCollection.AddScoped<IIssueService, IssueService>();
-        serviceCollection.AddScoped<IMilestoneRepository, MilestoneRepository>();
+        serviceCollection.AddScoped<ILabelService, LabelService>();
         serviceCollection.AddScoped<IMilestoneService, MilestoneService>();
-        serviceCollection.AddScoped<IReleaseRepository, ReleaseRepository>();
         serviceCollection.AddScoped<IReleaseService, ReleaseService>();
-        serviceCollection.AddScoped<ITaskRepository, TaskRepository>();
-        serviceCollection.AddScoped<IJobRepository, JobRepository>();
 
         serviceCollection.AddScoped<JobSchedulingService>();
         serviceCollection.AddScoped<JobExecutionService>();
         serviceCollection.AddScoped<JobFactory>();
+
+        return serviceCollection;
     }
 
-    public static void AddIssueTrackerMappers(this IServiceCollection serviceCollection)
+    public static IServiceCollection AddIssueTrackerMappers(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddAutoMapper(typeof(EntityMapperProfile));
+
+        return serviceCollection;
     }
 
-    public static void AddGraphQLQueries(this IServiceCollection serviceCollection)
+    public static IServiceCollection AddGraphQLQueries(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddScoped<IssueTrackerQueries>();
+
+        return serviceCollection;
     }
 
-    public static void AddGraphQLMutations(this IServiceCollection serviceCollection)
+    public static IServiceCollection AddGraphQLMutations(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddScoped<IssueTrackerMutations>();
+
+        return serviceCollection;
     }
 
-    public static void AddJobs(this IServiceCollection serviceCollection)
+    public static IServiceCollection AddJobs(this IServiceCollection serviceCollection)
     {
         serviceCollection.AddScoped<JobScheduler>();
         serviceCollection.AddScoped<GitHubSynchronizationJobScheduler>();
         serviceCollection.AddScoped<GitlabSynchronizationJobScheduler>();
         serviceCollection.AddScoped<GitHubSynchronizationJob>();
         serviceCollection.AddScoped<GitlabSynchronizationJob>();
+
+        return serviceCollection;
     }
 }

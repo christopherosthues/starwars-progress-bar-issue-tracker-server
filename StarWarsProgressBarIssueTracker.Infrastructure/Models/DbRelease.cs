@@ -9,7 +9,7 @@ public record DbRelease : DbEntityBase
     [StringLength(ReleaseConstants.MaxTitleLength, MinimumLength = ReleaseConstants.MinTitleLength)]
     public required string Title { get; set; }
 
-    [MaxLength(ReleaseConstants.MaxDescriptionLength)]
+    [MaxLength(ReleaseConstants.MaxNotesLength)]
     public string? Notes { get; set; }
 
     public ReleaseState State { get; set; }

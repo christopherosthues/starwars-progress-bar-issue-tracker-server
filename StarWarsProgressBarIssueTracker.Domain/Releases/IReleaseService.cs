@@ -2,13 +2,13 @@ namespace StarWarsProgressBarIssueTracker.Domain.Releases;
 
 public interface IReleaseService
 {
-    public Task<IEnumerable<Release>> GetAllReleases();
+    Task<IEnumerable<Release>> GetAllReleasesAsync(CancellationToken cancellationToken);
 
-    public Task<Release?> GetRelease(Guid id);
+    Task<Release?> GetReleaseAsync(Guid id, CancellationToken cancellationToken);
 
-    public Task<Release> AddRelease(Release release);
+    Task<Release> AddReleaseAsync(Release release, CancellationToken cancellationToken);
 
-    public Task<Release> UpdateRelease(Release release);
+    Task<Release> UpdateReleaseAsync(Release release, CancellationToken cancellationToken);
 
-    public Task<Release> DeleteRelease(Release release);
+    Task<Release> DeleteReleaseAsync(Guid id, CancellationToken cancellationToken);
 }

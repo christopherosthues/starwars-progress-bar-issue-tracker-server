@@ -1,28 +1,26 @@
 using System.Text.RegularExpressions;
 using StarWarsProgressBarIssueTracker.Domain.Exceptions;
-using StarWarsProgressBarIssueTracker.Domain.Labels;
 using StarWarsProgressBarIssueTracker.Domain.Vehicles;
-using StarWarsProgressBarIssueTracker.Infrastructure.Repositories;
 
-namespace StarWarsProgressBarIssueTracker.App.Labels;
+namespace StarWarsProgressBarIssueTracker.Domain.Labels;
 
-public class LabelService(ILabelRepository repository) : ILabelService
+public partial class LabelService(IDataPort<Label> dataPort) : ILabelService
 {
-    public Task<IEnumerable<Label>> GetAllLabels()
+    public async Task<IEnumerable<Label>> GetAllLabelsAsync(CancellationToken cancellationToken)
     {
-        return repository.GetAll();
+        return await dataPort.GetAllAsync(cancellationToken);
     }
 
-    public Task<Label?> GetLabel(Guid id)
+    public async Task<Label?> GetLabelAsync(Guid id, CancellationToken cancellationToken)
     {
-        return repository.GetById(id);
+        return await dataPort.GetByIdAsync(id, cancellationToken);
     }
 
-    public Task<Label> AddLabel(Label label)
+    public async Task<Label> AddLabelAsync(Label label, CancellationToken cancellationToken)
     {
         ValidateLabel(label);
 
-        return repository.Add(label);
+        return await dataPort.AddAsync(label, cancellationToken);
     }
 
     private static void ValidateLabel(Label label)
@@ -56,8 +54,7 @@ public class LabelService(ILabelRepository repository) : ILabelService
             errors.Add(new ValueNotSetException(nameof(Appearance.Color)));
         }
 
-        var regex = @"^[a-fA-F0-9]{6}$";
-        var regexMatcher = new Regex(regex);
+        var regexMatcher = ColorHexCodeRegex();
         if (!regexMatcher.Match(label.Color).Success)
         {
             errors.Add(new ColorFormatException(label.Color, nameof(Label.Color)));
@@ -79,14 +76,28 @@ public class LabelService(ILabelRepository repository) : ILabelService
         }
     }
 
-    public Task<Label> UpdateLabel(Label label)
+    public async Task<Label> UpdateLabelAsync(Label label, CancellationToken cancellationToken)
     {
         ValidateLabel(label);
-        return repository.Update(label);
+
+        if (!(await dataPort.ExistsAsync(label.Id, cancellationToken)))
+        {
+            throw new DomainIdNotFoundException(nameof(Label), label.Id.ToString());
+        }
+
+        return await dataPort.UpdateAsync(label, cancellationToken);
     }
 
-    public Task<Label> DeleteLabel(Label label)
+    public async Task<Label> DeleteLabelAsync(Guid id, CancellationToken cancellationToken)
     {
-        return repository.Delete(label);
+        if (!(await dataPort.ExistsAsync(id, cancellationToken)))
+        {
+            throw new DomainIdNotFoundException(nameof(Label), id.ToString());
+        }
+
+        return await dataPort.DeleteAsync(id, cancellationToken);
     }
+
+    [GeneratedRegex("^[a-fA-F0-9]{6}$")]
+    private static partial Regex ColorHexCodeRegex();
 }

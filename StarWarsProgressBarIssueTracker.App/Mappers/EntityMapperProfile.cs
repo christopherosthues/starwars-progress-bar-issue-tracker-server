@@ -1,6 +1,6 @@
 using AutoMapper;
-using StarWarsProgressBarIssueTracker.App.Mappers.Converters;
 using StarWarsProgressBarIssueTracker.Domain.Issues;
+using StarWarsProgressBarIssueTracker.Domain.Labels;
 using StarWarsProgressBarIssueTracker.Domain.Milestones;
 using StarWarsProgressBarIssueTracker.Domain.Releases;
 using StarWarsProgressBarIssueTracker.Domain.Vehicles;
@@ -14,17 +14,12 @@ public class EntityMapperProfile : Profile
     {
         CreateMap<Appearance, DbAppearance>().ReverseMap();
         CreateMap<Issue, DbIssue>().ReverseMap();
-        CreateMap<Photo, DbPhoto>()
-            .ForMember(dest => dest.PhotoData, opt => opt.ConvertUsing(new PhotoConverter(), src => src.FilePath));
-        CreateMap<Translation, DbTranslation>().ReverseMap();
-        CreateMap<Vehicle, DbVehicle>()
-            .ReverseMap();
+        CreateMap<IssueLink, DbIssueLink>().ReverseMap();
+        CreateMap<Label, DbLabel>().ReverseMap();
         CreateMap<Milestone, DbMilestone>().ReverseMap();
+        CreateMap<Photo, DbPhoto>().ReverseMap();
         CreateMap<Release, DbRelease>().ReverseMap();
-        CreateMap<DbPhoto, Photo>()
-            .ForMember(dest => dest.FilePath, opt => opt.ConvertUsing(new DbPhotoConverter(), src => src.PhotoData));
-
-        CreateMap<DbJob, DbJob>();
-        CreateMap<DbTask, DbTask>();
+        CreateMap<Translation, DbTranslation>().ReverseMap();
+        CreateMap<Vehicle, DbVehicle>().ReverseMap();
     }
 }

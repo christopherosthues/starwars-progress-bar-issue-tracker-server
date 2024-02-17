@@ -87,6 +87,8 @@ public class IntegrationTestBase
     protected virtual async Task ResetDatabase(IssueTrackerContext dbContext)
     {
         dbContext.Issues.RemoveRange(dbContext.Issues);
+        dbContext.IssueLinks.RemoveRange(dbContext.IssueLinks);
+        dbContext.Labels.RemoveRange(dbContext.Labels);
         dbContext.Milestones.RemoveRange(dbContext.Milestones);
         dbContext.Appearances.RemoveRange(dbContext.Appearances);
         dbContext.Releases.RemoveRange(dbContext.Releases);

@@ -16,7 +16,7 @@ public class JobExecutionService(ITaskRepository taskRepository, JobFactory jobF
             if (task.Status == Infrastructure.Models.TaskStatus.Planned)
             {
                 task.Status = Infrastructure.Models.TaskStatus.Running;
-                await taskRepository.Update(task, cancellationToken);
+                await taskRepository.UpdateAsync(task, cancellationToken);
 
                 var job = jobFactory.CreateJob(jobType);
 
@@ -29,25 +29,25 @@ public class JobExecutionService(ITaskRepository taskRepository, JobFactory jobF
                         try
                         {
                             task.Status = Infrastructure.Models.TaskStatus.Running;
-                            await taskRepository.Update(task, cancellationToken);
+                            await taskRepository.UpdateAsync(task, cancellationToken);
 
                             await job.ExecuteAsync(cancellationToken);
 
                             task.Status = Infrastructure.Models.TaskStatus.Completed;
                             task.ExecutedAt = DateTime.UtcNow;
-                            await taskRepository.Update(task, cancellationToken);
+                            await taskRepository.UpdateAsync(task, cancellationToken);
                         }
                         catch
                         {
                             task.Status = Infrastructure.Models.TaskStatus.FailureWaitingForRetry;
-                            await taskRepository.Update(task, cancellationToken);
+                            await taskRepository.UpdateAsync(task, cancellationToken);
                         }
                     }, cancellationToken);
                 }
                 catch
                 {
                     task.Status = Infrastructure.Models.TaskStatus.Error;
-                    await taskRepository.Update(task, cancellationToken);
+                    await taskRepository.UpdateAsync(task, cancellationToken);
                 }
             }
         }

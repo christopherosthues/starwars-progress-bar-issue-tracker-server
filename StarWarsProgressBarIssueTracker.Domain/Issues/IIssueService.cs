@@ -2,13 +2,13 @@ namespace StarWarsProgressBarIssueTracker.Domain.Issues;
 
 public interface IIssueService
 {
-    public Task<IEnumerable<Issue>> GetAllIssues();
+    Task<IEnumerable<Issue>> GetAllIssuesAsync(CancellationToken cancellationToken);
 
-    public Task<Issue?> GetIssue(Guid id);
+    Task<Issue?> GetIssueAsync(Guid id, CancellationToken cancellationToken);
 
-    public Task<Issue> AddIssue(Issue issue);
+    Task<Issue> AddIssueAsync(Issue issue, CancellationToken cancellationToken);
 
-    public Task<Issue> UpdateIssue(Issue issue);
+    Task<Issue> UpdateIssueAsync(Issue issue, CancellationToken cancellationToken);
 
-    public Task<Issue> DeleteIssue(Issue issue);
+    Task<Issue> DeleteIssueAsync(Guid id, CancellationToken cancellationToken);
 }

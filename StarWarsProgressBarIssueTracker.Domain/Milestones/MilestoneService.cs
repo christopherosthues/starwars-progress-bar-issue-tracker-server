@@ -1,26 +1,24 @@
 using StarWarsProgressBarIssueTracker.Domain.Exceptions;
-using StarWarsProgressBarIssueTracker.Domain.Milestones;
-using StarWarsProgressBarIssueTracker.Infrastructure.Repositories;
 
-namespace StarWarsProgressBarIssueTracker.App.Milestones;
+namespace StarWarsProgressBarIssueTracker.Domain.Milestones;
 
-public class MilestoneService(IMilestoneRepository repository) : IMilestoneService
+public class MilestoneService(IDataPort<Milestone> dataPort) : IMilestoneService
 {
-    public Task<IEnumerable<Milestone>> GetAllMilestones()
+    public async Task<IEnumerable<Milestone>> GetAllMilestonesAsync(CancellationToken cancellationToken)
     {
-        return repository.GetAll();
+        return await dataPort.GetAllAsync(cancellationToken);
     }
 
-    public Task<Milestone?> GetMilestone(Guid id)
+    public async Task<Milestone?> GetMilestoneAsync(Guid id, CancellationToken cancellationToken)
     {
-        return repository.GetById(id);
+        return await dataPort.GetByIdAsync(id, cancellationToken);
     }
 
-    public Task<Milestone> AddMilestone(Milestone milestone)
+    public async Task<Milestone> AddMilestoneAsync(Milestone milestone, CancellationToken cancellationToken)
     {
         ValidateMilestone(milestone);
 
-        return repository.Add(milestone);
+        return await dataPort.AddAsync(milestone, cancellationToken);
     }
 
     private static void ValidateMilestone(Milestone milestone)
@@ -60,13 +58,25 @@ public class MilestoneService(IMilestoneRepository repository) : IMilestoneServi
         }
     }
 
-    public Task<Milestone> UpdateMilestone(Milestone milestone)
+    public async Task<Milestone> UpdateMilestoneAsync(Milestone milestone, CancellationToken cancellationToken)
     {
-        return repository.Update(milestone);
+        ValidateMilestone(milestone);
+
+        if (!(await dataPort.ExistsAsync(milestone.Id, cancellationToken)))
+        {
+            throw new DomainIdNotFoundException(nameof(Milestone), milestone.Id.ToString());
+        }
+
+        return await dataPort.UpdateAsync(milestone, cancellationToken);
     }
 
-    public Task<Milestone> DeleteMilestone(Milestone milestone)
+    public async Task<Milestone> DeleteMilestoneAsync(Guid id, CancellationToken cancellationToken)
     {
-        return repository.Delete(milestone);
+        if (!(await dataPort.ExistsAsync(id, cancellationToken)))
+        {
+            throw new DomainIdNotFoundException(nameof(Milestone), id.ToString());
+        }
+
+        return await dataPort.DeleteAsync(id, cancellationToken);
     }
 }

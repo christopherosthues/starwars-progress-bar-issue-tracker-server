@@ -4,35 +4,31 @@ namespace StarWarsProgressBarIssueTracker.App.Mutations;
 
 public partial class IssueTrackerMutations
 {
-    public async Task<Release> AddRelease(string title, string? releaseNotes, DateTime? releaseDate)
+    public async Task<Release> AddRelease(string title, string? releaseNotes, DateTime? releaseDate, CancellationToken cancellationToken)
     {
-        return await releaseService.AddRelease(new()
+        return await releaseService.AddReleaseAsync(new()
         {
             Title = title,
             Notes = releaseNotes,
             Date = releaseDate,
             State = ReleaseState.Planned,
-        });
+        }, cancellationToken);
     }
 
-    public async Task<Release> UpdateRelease(Guid id, string title, ReleaseState state, string? releaseNotes, DateTime? releaseDate)
+    public async Task<Release> UpdateRelease(Guid id, string title, ReleaseState state, string? releaseNotes, DateTime? releaseDate, CancellationToken cancellationToken)
     {
-        return await releaseService.UpdateRelease(new Release
+        return await releaseService.UpdateReleaseAsync(new Release
         {
             Id = id,
             Title = title,
             Notes = releaseNotes,
             Date = releaseDate,
             State = state
-        });
+        }, cancellationToken);
     }
 
-    public async Task<Release> DeleteRelease(Guid id)
+    public async Task<Release> DeleteRelease(Guid id, CancellationToken cancellationToken)
     {
-        return await releaseService.DeleteRelease(new Release
-        {
-            Id = id,
-            Title = string.Empty
-        });
+        return await releaseService.DeleteReleaseAsync(id, cancellationToken);
     }
 }

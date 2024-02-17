@@ -1,14 +1,20 @@
-﻿namespace StarWarsProgressBarIssueTracker.Infrastructure.Repositories;
+﻿using StarWarsProgressBarIssueTracker.Infrastructure.Database;
+
+namespace StarWarsProgressBarIssueTracker.Infrastructure.Repositories;
 
 public interface IRepository<TEntity>
 {
-    Task<TEntity?> GetById(Guid id, CancellationToken cancellationToken = default);
+    IssueTrackerContext Context { get; set; }
 
-    Task<IEnumerable<TEntity>> GetAll(CancellationToken cancellationToken = default);
+    Task<TEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
-    Task<TEntity> Add(TEntity entity, CancellationToken cancellationToken = default);
+    Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken = default);
 
-    Task<TEntity> Update(TEntity entity, CancellationToken cancellationToken = default);
+    IQueryable<TEntity> GetAll();
 
-    Task<TEntity> Delete(TEntity entity, CancellationToken cancellationToken = default);
+    Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken = default);
+
+    Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
+
+    Task<TEntity> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default);
 }

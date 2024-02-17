@@ -4,13 +4,13 @@ namespace StarWarsProgressBarIssueTracker.App.Queries;
 
 public partial class IssueTrackerQueries
 {
-    public async Task<IEnumerable<Release>> GetReleases()
+    public async Task<IEnumerable<Release>> GetReleases(CancellationToken cancellationToken)
     {
-        return await releaseService.GetAllReleases();
+        return await releaseService.GetAllReleasesAsync(cancellationToken);
     }
 
-    public async Task<Release?> GetRelease(Guid id)
+    public async Task<Release?> GetRelease(Guid id, CancellationToken cancellationToken)
     {
-        return await releaseService.GetRelease(id);
+        return await releaseService.GetReleaseAsync(id, cancellationToken);
     }
 }

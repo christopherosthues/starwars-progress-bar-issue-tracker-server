@@ -1,26 +1,42 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using StarWarsProgressBarIssueTracker.Domain;
+﻿using Microsoft.EntityFrameworkCore;
 using StarWarsProgressBarIssueTracker.Infrastructure.Database;
 using StarWarsProgressBarIssueTracker.Infrastructure.Models;
 
 namespace StarWarsProgressBarIssueTracker.Infrastructure.Repositories;
 
-public abstract class IssueTrackerRepositoryBase<TDbEntity>(IssueTrackerContext context, IMapper mapper)
-    : IRepository<TDbEntity>
-    where TDbEntity : DbEntityBase
+public class IssueTrackerRepositoryBase<TDbEntity> : IRepository<TDbEntity> where TDbEntity : DbEntityBase
 {
-    protected readonly DbSet<TDbEntity> DbSet = context.Set<TDbEntity>();
-    protected readonly IssueTrackerContext Context = context;
+    protected DbSet<TDbEntity> DbSet => Context.Set<TDbEntity>();
 
-    public async Task<TDbEntity?> GetById(Guid id, CancellationToken cancellationToken = default)
+    private IssueTrackerContext? _context;
+
+    public IssueTrackerContext Context
+    {
+        get => _context ?? throw new InvalidOperationException("The DB context is not initialized.");
+        set
+        {
+            if (_context != null)
+            {
+                throw new InvalidOperationException("THe DB context is already initialized.");
+            }
+
+            _context = value;
+        }
+    }
+
+    public async Task<TDbEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         return await GetIncludingFields().FirstOrDefaultAsync(dbEntity => dbEntity.Id.Equals(id), cancellationToken);
     }
 
-    public async Task<IEnumerable<TDbEntity>> GetAll(CancellationToken cancellationToken = default)
+    public async Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        return await GetIncludingFields().ToListAsync(cancellationToken);
+        return await DbSet.AnyAsync(entity => entity.Id.Equals(id), cancellationToken);
+    }
+
+    public IQueryable<TDbEntity> GetAll()
+    {
+        return GetIncludingFields();
     }
 
     protected virtual IQueryable<TDbEntity> GetIncludingFields()
@@ -28,32 +44,26 @@ public abstract class IssueTrackerRepositoryBase<TDbEntity>(IssueTrackerContext 
         return DbSet;
     }
 
-    public async Task<TDbEntity> Add(TDbEntity entity, CancellationToken cancellationToken = default)
+    public async Task<TDbEntity> AddAsync(TDbEntity entity, CancellationToken cancellationToken = default)
     {
-        var resultEntry = await DbSet.AddAsync(await Map(entity, true), cancellationToken);
+        var resultEntry = await DbSet.AddAsync(entity, cancellationToken);
         await Context.SaveChangesAsync(cancellationToken);
         return resultEntry.Entity;
     }
 
-    public async Task<TDbEntity> Update(TDbEntity entity, CancellationToken cancellationToken = default)
+    public async Task<TDbEntity> UpdateAsync(TDbEntity entity, CancellationToken cancellationToken = default)
     {
-        var entry = Context.Entry(await Map(entity, update: true));
+        var entry = Context.Entry(entity);
         entry.State = EntityState.Modified;
         await Context.SaveChangesAsync(cancellationToken);
 
         return entry.Entity;
     }
 
-    public async Task<TDbEntity> Delete(TDbEntity entity, CancellationToken cancellationToken = default)
+    public async Task<TDbEntity> DeleteAsync(TDbEntity entity, CancellationToken cancellationToken = default)
     {
-        var dbEntity = await Map(entity);
-        DeleteRelationships(dbEntity);
-        var returnEntity = DbSet.Remove(dbEntity).Entity;
+        var deletedEntity = DbSet.Remove(entity).Entity;
         await Context.SaveChangesAsync(cancellationToken);
-        return returnEntity;
+        return deletedEntity;
     }
-
-    protected abstract Task<TDbEntity> Map(TDbEntity domain, bool add = false, bool update = false);
-
-    protected abstract void DeleteRelationships(TDbEntity entity);
 }

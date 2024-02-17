@@ -7,6 +7,7 @@ using StarWarsProgressBarIssueTracker.App.Jobs;
 using StarWarsProgressBarIssueTracker.App.Mutations;
 using StarWarsProgressBarIssueTracker.App.Queries;
 using StarWarsProgressBarIssueTracker.App.ServiceCollectionExtensions;
+using StarWarsProgressBarIssueTracker.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,21 +18,21 @@ builder.Logging.ClearProviders().AddConsole();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var token = builder.Configuration.GetValue<string>("ApiToken");
-var uri = new Uri(builder.Configuration.GetValue<string>("GraphQLUri") ?? string.Empty);
-builder.Services.AddGitlabClient().ConfigureHttpClient(client =>
-{
-    client.BaseAddress = GetGraphQLUri(uri);
-    client.DefaultRequestHeaders.Authorization =
-        new AuthenticationHeaderValue("Bearer", token);
-}
-    // httpClientBuilder => httpClientBuilder.AddPolly()
-    ).ConfigureWebSocketClient(client =>
-{
-    client.Uri = GetGraphQLStreamingUri(uri);
-    // client.Socket.Options.SetRequestHeader("Authorization", $"Bearer {token}");
-});
-builder.Services.AddGitHubClient();
+// var token = builder.Configuration.GetValue<string>("ApiToken");
+// var uri = new Uri(builder.Configuration.GetValue<string>("GraphQLUri") ?? string.Empty);
+// builder.Services.AddGitlabClient().ConfigureHttpClient(client =>
+// {
+//     client.BaseAddress = GetGraphQLUri(uri);
+//     client.DefaultRequestHeaders.Authorization =
+//         new AuthenticationHeaderValue("Bearer", token);
+// }
+//     // httpClientBuilder => httpClientBuilder.AddPolly()
+//     ).ConfigureWebSocketClient(client =>
+// {
+//     client.Uri = GetGraphQLStreamingUri(uri);
+//     // client.Socket.Options.SetRequestHeader("Authorization", $"Bearer {token}");
+// });
+// builder.Services.AddGitHubClient();
 
 var connectionString = builder.Configuration.GetConnectionString("IssueTrackerContext");
 builder.Services.RegisterDbContext(connectionString);
@@ -84,6 +85,8 @@ builder.Services.AddQuartzServer(options =>
 });
 
 builder.Services.AddJobs();
+builder.Services.AddRepositories();
+builder.Services.AddDataPorts();
 builder.Services.AddIssueTrackerConfigurations(builder.Configuration);
 builder.Services.AddIssueTrackerMappers();
 builder.Services.AddIssueTrackerServices();
@@ -115,9 +118,9 @@ app.Run();
 return;
 
 
-static Uri GetGraphQLUri(in Uri uri) => new UriBuilder(Uri.UriSchemeHttps, uri.Host, uri.Port, uri.PathAndQuery).Uri;
-
-static Uri GetGraphQLStreamingUri(in Uri uri) => new UriBuilder(Uri.UriSchemeWs, uri.Host, uri.Port, uri.PathAndQuery).Uri;
+// static Uri GetGraphQLUri(in Uri uri) => new UriBuilder(Uri.UriSchemeHttps, uri.Host, uri.Port, uri.PathAndQuery).Uri;
+//
+// static Uri GetGraphQLStreamingUri(in Uri uri) => new UriBuilder(Uri.UriSchemeWs, uri.Host, uri.Port, uri.PathAndQuery).Uri;
 
 /// <summary>
 /// Used for integration tests. Entry point class has to accessible from the custom WebApplicationFactory.

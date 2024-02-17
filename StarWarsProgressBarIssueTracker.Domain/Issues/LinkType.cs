@@ -4,6 +4,9 @@ public enum LinkType
 {
     Unknown = 0,
     Blocks = 1,
-    RelatesTo = 2,
-    Duplicates = 3
+    IsBlockedBy = 2,
+    RelatesTo = 3,
+    IsRelatedTo = 4,
+    Duplicates = 5,
+    IsDuplicatedBy = 6,
 }

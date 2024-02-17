@@ -2,13 +2,13 @@ namespace StarWarsProgressBarIssueTracker.Domain.Labels;
 
 public interface ILabelService
 {
-    Task<IEnumerable<Label>> GetAllLabels();
+    Task<IEnumerable<Label>> GetAllLabelsAsync(CancellationToken cancellationToken);
 
-    Task<Label?> GetLabel(Guid id);
+    Task<Label?> GetLabelAsync(Guid id, CancellationToken cancellationToken = default);
 
-    Task<Label> AddLabel(Label label);
+    Task<Label> AddLabelAsync(Label label, CancellationToken cancellationToken = default);
 
-    Task<Label> UpdateLabel(Label label);
+    Task<Label> UpdateLabelAsync(Label label, CancellationToken cancellationToken = default);
 
-    Task<Label> DeleteLabel(Label label);
+    Task<Label> DeleteLabelAsync(Guid id, CancellationToken cancellationToken = default);
 }

@@ -2,13 +2,13 @@ namespace StarWarsProgressBarIssueTracker.Domain.Milestones;
 
 public interface IMilestoneService
 {
-    public Task<IEnumerable<Milestone>> GetAllMilestones();
+    Task<IEnumerable<Milestone>> GetAllMilestonesAsync(CancellationToken cancellationToken);
 
-    public Task<Milestone?> GetMilestone(Guid id);
+    Task<Milestone?> GetMilestoneAsync(Guid id, CancellationToken cancellationToken);
 
-    public Task<Milestone> AddMilestone(Milestone milestone);
+    Task<Milestone> AddMilestoneAsync(Milestone milestone, CancellationToken cancellationToken);
 
-    public Task<Milestone> UpdateMilestone(Milestone milestone);
+    Task<Milestone> UpdateMilestoneAsync(Milestone milestone, CancellationToken cancellationToken);
 
-    public Task<Milestone> DeleteMilestone(Milestone milestone);
+    Task<Milestone> DeleteMilestoneAsync(Guid id, CancellationToken cancellationToken);
 }

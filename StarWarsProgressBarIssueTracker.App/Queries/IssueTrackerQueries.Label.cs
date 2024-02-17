@@ -1,17 +1,16 @@
 using StarWarsProgressBarIssueTracker.Domain.Labels;
-using StarWarsProgressBarIssueTracker.Domain.Vehicles;
 
 namespace StarWarsProgressBarIssueTracker.App.Queries;
 
 public partial class IssueTrackerQueries
 {
-    public async Task<IEnumerable<Label>> GetLabels()
+    public async Task<IEnumerable<Label>> GetLabels(CancellationToken cancellationToken)
     {
-        return await labelService.GetAllLabels();
+        return await labelService.GetAllLabelsAsync(cancellationToken);
     }
 
-    public async Task<Label?> GetLabel(Guid id)
+    public async Task<Label?> GetLabel(Guid id, CancellationToken cancellationToken)
     {
-        return await labelService.GetLabel(id);
+        return await labelService.GetLabelAsync(id, cancellationToken);
     }
 }

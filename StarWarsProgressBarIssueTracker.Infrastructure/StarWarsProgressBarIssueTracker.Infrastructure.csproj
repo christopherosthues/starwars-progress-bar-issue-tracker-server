@@ -16,7 +16,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Database\Migrations\20240108152411_InitialDbModel.cs">
+    <Folder Include="Database\Migrations\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Database\Migrations\20240217010120_InitialDbModel.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Update="Database\Migrations\IssueTrackerContextModelSnapshot.cs">

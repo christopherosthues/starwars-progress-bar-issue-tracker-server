@@ -2,7 +2,6 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using GraphQL;
 using StarWarsProgressBarIssueTracker.App.Queries;
-using StarWarsProgressBarIssueTracker.App.Tests.Helpers.GraphQL.Payloads;
 using StarWarsProgressBarIssueTracker.App.Tests.Helpers.GraphQL.Payloads.Milestones;
 using StarWarsProgressBarIssueTracker.Domain.Issues;
 using StarWarsProgressBarIssueTracker.Domain.Milestones;
@@ -50,7 +49,6 @@ public class MilestoneQueriesTests : IntegrationTestBase
         {
             Title = "issue title",
             State = IssueState.Closed,
-            IssueType = IssueType.Vehicle,
             Release = new DbRelease { Title = "milestone title", State = ReleaseState.Planned },
             Vehicle = new DbVehicle
             {
@@ -59,7 +57,7 @@ public class MilestoneQueriesTests : IntegrationTestBase
                     new DbAppearance { Title = "Appearance title", Color = "112233", TextColor = "334455" }
                 ],
                 Translations = [new DbTranslation { Country = "en", Text = "translation" }],
-                Photos = [new DbPhoto { PhotoData = Array.Empty<byte>() }]
+                Photos = [new DbPhoto { FilePath = string.Empty }]
             }
         };
         var dbMilestone2 = new DbMilestone
@@ -190,7 +188,6 @@ public class MilestoneQueriesTests : IntegrationTestBase
         {
             Title = "issue title",
             State = IssueState.Closed,
-            IssueType = IssueType.Vehicle,
             Release = new DbRelease { Title = "milestone title", State = ReleaseState.Planned },
             Vehicle = new DbVehicle
             {
@@ -199,7 +196,7 @@ public class MilestoneQueriesTests : IntegrationTestBase
                     new DbAppearance { Title = "Appearance title", Color = "112233", TextColor = "334455" }
                 ],
                 Translations = [new DbTranslation { Country = "en", Text = "translation" }],
-                Photos = [new DbPhoto { PhotoData = Array.Empty<byte>() }]
+                Photos = [new DbPhoto { FilePath = string.Empty }]
             }
         };
         var dbMilestone = new DbMilestone
@@ -263,7 +260,7 @@ public class MilestoneQueriesTests : IntegrationTestBase
                             id
                             title
                             description
-                            milestoneState
+                            state
                             createdAt
                             lastModifiedAt
                             issues
@@ -307,7 +304,7 @@ public class MilestoneQueriesTests : IntegrationTestBase
                             id
                             title
                             description
-                            milestoneState
+                            state
                             createdAt
                             lastModifiedAt
                             issues

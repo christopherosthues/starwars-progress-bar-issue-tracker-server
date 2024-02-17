@@ -49,7 +49,6 @@ public class ReleaseQueriesTests : IntegrationTestBase
         {
             Title = "issue title",
             State = IssueState.Closed,
-            IssueType = IssueType.Vehicle,
             Milestone = new DbMilestone { Title = "milestone title", State = MilestoneState.Open },
             Vehicle = new DbVehicle
             {
@@ -58,7 +57,7 @@ public class ReleaseQueriesTests : IntegrationTestBase
                     new DbAppearance { Title = "Appearance title", Color = "112233", TextColor = "334455" }
                 ],
                 Translations = [new DbTranslation { Country = "en", Text = "translation" }],
-                Photos = [new DbPhoto { PhotoData = Array.Empty<byte>() }]
+                Photos = [new DbPhoto { FilePath = string.Empty }]
             }
         };
         var dbRelease2 = new DbRelease
@@ -191,7 +190,6 @@ public class ReleaseQueriesTests : IntegrationTestBase
         {
             Title = "issue title",
             State = IssueState.Closed,
-            IssueType = IssueType.Vehicle,
             Milestone = new DbMilestone { Title = "milestone title", State = MilestoneState.Open },
             Vehicle = new DbVehicle
             {
@@ -200,7 +198,7 @@ public class ReleaseQueriesTests : IntegrationTestBase
                     new DbAppearance { Title = "Appearance title", Color = "112233", TextColor = "334455" }
                 ],
                 Translations = [new DbTranslation { Country = "en", Text = "translation" }],
-                Photos = [new DbPhoto { PhotoData = Array.Empty<byte>() }]
+                Photos = [new DbPhoto { FilePath = string.Empty }]
             }
         };
         var dbRelease = new DbRelease
@@ -264,9 +262,9 @@ public class ReleaseQueriesTests : IntegrationTestBase
                         {
                             id
                             title
-                            releaseNotes
-                            releaseState
-                            releaseDate
+                            notes
+                            state
+                            date
                             createdAt
                             lastModifiedAt
                             issues
@@ -309,9 +307,9 @@ public class ReleaseQueriesTests : IntegrationTestBase
                         {
                             id
                             title
-                            releaseNotes
-                            releaseState
-                            releaseDate
+                            notes
+                            state
+                            date
                             createdAt
                             lastModifiedAt
                             issues
