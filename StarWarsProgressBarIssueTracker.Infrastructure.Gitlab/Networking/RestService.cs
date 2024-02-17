@@ -1,6 +1,7 @@
 using System.Net.Http.Headers;
 using System.Text.Json;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using StarWarsProgressBarIssueTracker.Domain.Configuration;
 using StarWarsProgressBarIssueTracker.Infrastructure.Gitlab.Networking.Models;
 
 namespace StarWarsProgressBarIssueTracker.Infrastructure.Gitlab.Networking;
@@ -9,10 +10,10 @@ public class RestService
 {
     private readonly HttpClient _client;
 
-    public RestService(HttpClient client, IConfiguration configuration)
+    public RestService(HttpClient client, IOptions<IssuesConnectionConfig> configuration)
     {
-        var restUri = configuration.GetValue<string>("RESTUri") ?? throw new ArgumentException("The REST API Uri must not be null!");
-        var token = configuration.GetValue<string>("ApiToken") ?? throw new ArgumentException("The token must not be null!");
+        var restUri = configuration.Value.RestURL ?? throw new ArgumentException("The REST API Uri must not be null!");
+        var token = configuration.Value.Token ?? throw new ArgumentException("The token must not be null!");
         _client = client;
         _client.BaseAddress = new Uri(restUri);
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -46,10 +47,6 @@ public class RestService
 
     public async Task<IList<LinkIssue>?> GetIssueLinks(int projectId, string issueIid)
     {
-        // var request = new RestRequest("projects/{id}/issues/{issue_iid}/links")
-        //     .AddUrlSegment("id", projectId)
-        //     .AddUrlSegment("issue_iid", issueIid);
-
         var response = await _client.GetAsync($"\"projects/{projectId}/issues/{issueIid}/links\"", CancellationToken.None);
         response.EnsureSuccessStatusCode();
 
