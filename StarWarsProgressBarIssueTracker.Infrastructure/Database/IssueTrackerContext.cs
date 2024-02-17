@@ -37,4 +37,33 @@ public class IssueTrackerContext(DbContextOptions<IssueTrackerContext> options, 
         modelBuilder.Entity<DbIssue>()
             .HasOne<DbVehicle>();
     }
+
+    public override int SaveChanges()
+    {
+        UpdateAuditProperties();
+        return base.SaveChanges();
+    }
+
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+    {
+        UpdateAuditProperties();
+        return base.SaveChangesAsync(cancellationToken);
+    }
+
+    private void UpdateAuditProperties()
+    {
+        var entries = ChangeTracker.Entries<DbEntityBase>();
+        foreach (var entry in entries)
+        {
+            DateTime utcNow = DateTime.UtcNow;
+            if (entry.State == EntityState.Added)
+            {
+                entry.Entity.CreatedAt = utcNow;
+            }
+            else if (entry.State == EntityState.Modified)
+            {
+                entry.Entity.LastModifiedAt = utcNow;
+            }
+        }
+    }
 }

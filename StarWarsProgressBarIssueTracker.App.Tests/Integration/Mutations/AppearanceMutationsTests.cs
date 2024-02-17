@@ -46,8 +46,7 @@ public class AppearanceMutationsTests : IntegrationTestBase
             Description = "Desc",
             Color = "001122",
             TextColor = "334455",
-            CreatedAt = DateTime.UtcNow.AddDays(-2),
-            LastModifiedAt = DateTime.UtcNow.AddDays(-1)
+            LastModifiedAt = DateTime.UtcNow.AddDays(1)
         };
         await SeedDatabase(context =>
         {
@@ -96,15 +95,14 @@ public class AppearanceMutationsTests : IntegrationTestBase
             Description = "Desc",
             Color = "001122",
             TextColor = "334455",
-            CreatedAt = DateTime.UtcNow.AddDays(-2),
-            LastModifiedAt = DateTime.UtcNow.AddDays(-1)
+            LastModifiedAt = DateTime.UtcNow.AddDays(1)
         };
-        expectedAppearance.Id = dbAppearance.Id;
-        expectedAppearance.CreatedAt = dbAppearance.CreatedAt;
         await SeedDatabase(context =>
         {
             context.Appearances.Add(dbAppearance);
         });
+        expectedAppearance.Id = dbAppearance.Id;
+        expectedAppearance.CreatedAt = dbAppearance.CreatedAt;
         CheckDbContent(context =>
         {
             context.Appearances.Should().Contain(dbAppearance);
@@ -131,8 +129,7 @@ public class AppearanceMutationsTests : IntegrationTestBase
             Description = "Desc",
             Color = "001122",
             TextColor = "334455",
-            CreatedAt = DateTime.UtcNow.AddDays(-2),
-            LastModifiedAt = DateTime.UtcNow.AddDays(-1)
+            LastModifiedAt = DateTime.UtcNow.AddDays(1)
         };
         var dbAppearance2 = new DbAppearance
         {
@@ -141,18 +138,17 @@ public class AppearanceMutationsTests : IntegrationTestBase
             Description = "Desc 2",
             Color = "221100",
             TextColor = "554433",
-            CreatedAt = DateTime.UtcNow.AddDays(-3),
-            LastModifiedAt = DateTime.UtcNow.AddDays(-2)
+            LastModifiedAt = DateTime.UtcNow.AddDays(2)
         };
 
-        expectedAppearance.Id = dbAppearance.Id;
-        expectedAppearance.CreatedAt = dbAppearance.CreatedAt;
 
         await SeedDatabase(context =>
         {
             context.Appearances.Add(dbAppearance);
             context.Appearances.Add(dbAppearance2);
         });
+        expectedAppearance.Id = dbAppearance.Id;
+        expectedAppearance.CreatedAt = dbAppearance.CreatedAt;
         CheckDbContent(context =>
         {
             context.Appearances.Should().Contain(dbAppearance);
@@ -216,15 +212,14 @@ public class AppearanceMutationsTests : IntegrationTestBase
             Description = appearance.Description,
             Color = appearance.Color,
             TextColor = appearance.TextColor,
-            CreatedAt = DateTime.UtcNow.AddDays(-1),
-            LastModifiedAt = DateTime.UtcNow.AddDays(-2)
+            LastModifiedAt = DateTime.UtcNow.AddDays(1)
         };
-        appearance.CreatedAt = dbAppearance.CreatedAt;
-        appearance.LastModifiedAt = dbAppearance.LastModifiedAt;
         await SeedDatabase(context =>
         {
             context.Appearances.Add(dbAppearance);
         });
+        appearance.CreatedAt = dbAppearance.CreatedAt;
+        appearance.LastModifiedAt = dbAppearance.LastModifiedAt;
         CheckDbContent(context =>
         {
             context.Appearances.Should().Contain(dbAppearance);
@@ -250,11 +245,8 @@ public class AppearanceMutationsTests : IntegrationTestBase
             Description = appearance.Description,
             Color = appearance.Color,
             TextColor = appearance.TextColor,
-            CreatedAt = DateTime.UtcNow.AddDays(-1),
-            LastModifiedAt = DateTime.UtcNow.AddDays(-2)
+            LastModifiedAt = DateTime.UtcNow.AddDays(1)
         };
-        appearance.CreatedAt = dbAppearance.CreatedAt;
-        appearance.LastModifiedAt = dbAppearance.LastModifiedAt;
         var dbAppearance2 = new DbAppearance
         {
             Id = new Guid("B961A621-9848-429A-8B44-B1AF1F0182CE"),
@@ -282,6 +274,8 @@ public class AppearanceMutationsTests : IntegrationTestBase
             context.Vehicles.Add(dbVehicle);
             context.Vehicles.Add(dbVehicle2);
         });
+        appearance.CreatedAt = dbAppearance.CreatedAt;
+        appearance.LastModifiedAt = dbAppearance.LastModifiedAt;
         CheckDbContent(context =>
         {
             context.Appearances.Should().Contain(dbAppearance);
@@ -317,8 +311,7 @@ public class AppearanceMutationsTests : IntegrationTestBase
             Description = appearance.Description,
             Color = appearance.Color,
             TextColor = appearance.TextColor,
-            CreatedAt = DateTime.UtcNow.AddDays(-2),
-            LastModifiedAt = DateTime.UtcNow.AddDays(-1)
+            LastModifiedAt = DateTime.UtcNow.AddDays(1)
         };
         var dbAppearance2 = new DbAppearance
         {
@@ -331,14 +324,14 @@ public class AppearanceMutationsTests : IntegrationTestBase
             LastModifiedAt = DateTime.UtcNow.AddDays(-2)
         };
 
-        appearance.CreatedAt = dbAppearance.CreatedAt;
-        appearance.LastModifiedAt = dbAppearance.LastModifiedAt;
 
         await SeedDatabase(context =>
         {
             context.Appearances.Add(dbAppearance);
             context.Appearances.Add(dbAppearance2);
         });
+        appearance.CreatedAt = dbAppearance.CreatedAt;
+        appearance.LastModifiedAt = dbAppearance.LastModifiedAt;
         CheckDbContent(context =>
         {
             context.Appearances.Should().Contain(dbAppearance);

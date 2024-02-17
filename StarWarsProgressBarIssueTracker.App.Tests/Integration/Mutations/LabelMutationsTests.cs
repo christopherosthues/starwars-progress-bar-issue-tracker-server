@@ -46,8 +46,7 @@ public class LabelMutationsTests : IntegrationTestBase
             Description = "Desc",
             Color = "001122",
             TextColor = "334455",
-            CreatedAt = DateTime.UtcNow.AddDays(-2),
-            LastModifiedAt = DateTime.UtcNow.AddDays(-1)
+            LastModifiedAt = DateTime.UtcNow.AddDays(1)
         };
         await SeedDatabase(context =>
         {
@@ -96,15 +95,14 @@ public class LabelMutationsTests : IntegrationTestBase
             Description = "Desc",
             Color = "001122",
             TextColor = "334455",
-            CreatedAt = DateTime.UtcNow.AddDays(-2),
-            LastModifiedAt = DateTime.UtcNow.AddDays(-1)
+            LastModifiedAt = DateTime.UtcNow.AddDays(1)
         };
-        expectedLabel.Id = dbLabel.Id;
-        expectedLabel.CreatedAt = dbLabel.CreatedAt;
         await SeedDatabase(context =>
         {
             context.Labels.Add(dbLabel);
         });
+        expectedLabel.Id = dbLabel.Id;
+        expectedLabel.CreatedAt = dbLabel.CreatedAt;
         CheckDbContent(context =>
         {
             context.Labels.Should().Contain(dbLabel);
@@ -131,8 +129,7 @@ public class LabelMutationsTests : IntegrationTestBase
             Description = "Desc",
             Color = "001122",
             TextColor = "334455",
-            CreatedAt = DateTime.UtcNow.AddDays(-2),
-            LastModifiedAt = DateTime.UtcNow.AddDays(-1)
+            LastModifiedAt = DateTime.UtcNow.AddDays(1)
         };
         var dbLabel2 = new DbLabel
         {
@@ -141,18 +138,17 @@ public class LabelMutationsTests : IntegrationTestBase
             Description = "Desc 2",
             Color = "221100",
             TextColor = "554433",
-            CreatedAt = DateTime.UtcNow.AddDays(-3),
-            LastModifiedAt = DateTime.UtcNow.AddDays(-2)
+            LastModifiedAt = DateTime.UtcNow.AddDays(2)
         };
 
-        expectedLabel.Id = dbLabel.Id;
-        expectedLabel.CreatedAt = dbLabel.CreatedAt;
 
         await SeedDatabase(context =>
         {
             context.Labels.Add(dbLabel);
             context.Labels.Add(dbLabel2);
         });
+        expectedLabel.Id = dbLabel.Id;
+        expectedLabel.CreatedAt = dbLabel.CreatedAt;
         CheckDbContent(context =>
         {
             context.Labels.Should().Contain(dbLabel);
@@ -216,15 +212,14 @@ public class LabelMutationsTests : IntegrationTestBase
             Description = label.Description,
             Color = label.Color,
             TextColor = label.TextColor,
-            CreatedAt = DateTime.UtcNow.AddDays(-1),
-            LastModifiedAt = DateTime.UtcNow.AddDays(-2)
+            LastModifiedAt = DateTime.UtcNow.AddDays(1)
         };
-        label.CreatedAt = dbLabel.CreatedAt;
-        label.LastModifiedAt = dbLabel.LastModifiedAt;
         await SeedDatabase(context =>
         {
             context.Labels.Add(dbLabel);
         });
+        label.CreatedAt = dbLabel.CreatedAt;
+        label.LastModifiedAt = dbLabel.LastModifiedAt;
         CheckDbContent(context =>
         {
             context.Labels.Should().Contain(dbLabel);
@@ -250,11 +245,8 @@ public class LabelMutationsTests : IntegrationTestBase
             Description = label.Description,
             Color = label.Color,
             TextColor = label.TextColor,
-            CreatedAt = DateTime.UtcNow.AddDays(-1),
-            LastModifiedAt = DateTime.UtcNow.AddDays(-2)
+            LastModifiedAt = DateTime.UtcNow.AddDays(1)
         };
-        label.CreatedAt = dbLabel.CreatedAt;
-        label.LastModifiedAt = dbLabel.LastModifiedAt;
         var dbLabel2 = new DbLabel
         {
             Id = new Guid("B961A621-9848-429A-8B44-B1AF1F0182CE"),
@@ -282,6 +274,8 @@ public class LabelMutationsTests : IntegrationTestBase
             context.Issues.Add(dbIssue);
             context.Issues.Add(dbIssue2);
         });
+        label.CreatedAt = dbLabel.CreatedAt;
+        label.LastModifiedAt = dbLabel.LastModifiedAt;
         CheckDbContent(context =>
         {
             context.Labels.Should().Contain(dbLabel);
@@ -317,8 +311,7 @@ public class LabelMutationsTests : IntegrationTestBase
             Description = label.Description,
             Color = label.Color,
             TextColor = label.TextColor,
-            CreatedAt = DateTime.UtcNow.AddDays(-2),
-            LastModifiedAt = DateTime.UtcNow.AddDays(-1)
+            LastModifiedAt = DateTime.UtcNow.AddDays(1)
         };
         var dbLabel2 = new DbLabel
         {
@@ -327,18 +320,17 @@ public class LabelMutationsTests : IntegrationTestBase
             Description = "Desc 2",
             Color = "221100",
             TextColor = "554433",
-            CreatedAt = DateTime.UtcNow.AddDays(-3),
-            LastModifiedAt = DateTime.UtcNow.AddDays(-2)
+            LastModifiedAt = DateTime.UtcNow.AddDays(2)
         };
 
-        label.CreatedAt = dbLabel.CreatedAt;
-        label.LastModifiedAt = dbLabel.LastModifiedAt;
 
         await SeedDatabase(context =>
         {
             context.Labels.Add(dbLabel);
             context.Labels.Add(dbLabel2);
         });
+        label.CreatedAt = dbLabel.CreatedAt;
+        label.LastModifiedAt = dbLabel.LastModifiedAt;
         CheckDbContent(context =>
         {
             context.Labels.Should().Contain(dbLabel);

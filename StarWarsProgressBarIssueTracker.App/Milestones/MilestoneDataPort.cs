@@ -62,6 +62,15 @@ public class MilestoneDataPort : IDataPort<Milestone>
     {
         DbMilestone milestone = (await _repository.GetByIdAsync(id, cancellationToken))!;
 
+        foreach (var dbIssue in milestone.Issues)
+        {
+            dbIssue.Milestone = null;
+        }
+
+        milestone.Issues.Clear();
+
+        await _repository.UpdateAsync(milestone, cancellationToken);
+
         return _mapper.Map<Milestone>(await _repository.DeleteAsync(milestone, cancellationToken));
     }
 }
