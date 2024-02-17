@@ -12,7 +12,7 @@ using StarWarsProgressBarIssueTracker.Infrastructure.Database;
 namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(IssueTrackerContext))]
-    [Migration("20240217010120_InitialDbModel")]
+    [Migration("20240217134832_InitialDbModel")]
     partial class InitialDbModel
     {
         /// <inheritdoc />
@@ -187,6 +187,9 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid?>("DbIssueId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Description")
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
@@ -205,6 +208,8 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                         .HasColumnType("character varying(50)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DbIssueId");
 
                     b.ToTable("Labels", "issue_tracker");
                 });
@@ -422,6 +427,13 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                     b.Navigation("LinkedIssue");
                 });
 
+            modelBuilder.Entity("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbLabel", b =>
+                {
+                    b.HasOne("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbIssue", null)
+                        .WithMany("Labels")
+                        .HasForeignKey("DbIssueId");
+                });
+
             modelBuilder.Entity("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbPhoto", b =>
                 {
                     b.HasOne("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbVehicle", null)
@@ -449,6 +461,8 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
 
             modelBuilder.Entity("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbIssue", b =>
                 {
+                    b.Navigation("Labels");
+
                     b.Navigation("LinkedIssues");
                 });
 

@@ -6,11 +6,13 @@ using StarWarsProgressBarIssueTracker.App.Milestones;
 using StarWarsProgressBarIssueTracker.App.Mutations;
 using StarWarsProgressBarIssueTracker.App.Queries;
 using StarWarsProgressBarIssueTracker.App.Releases;
+using StarWarsProgressBarIssueTracker.App.Vehicles;
 using StarWarsProgressBarIssueTracker.Domain;
 using StarWarsProgressBarIssueTracker.Domain.Issues;
 using StarWarsProgressBarIssueTracker.Domain.Labels;
 using StarWarsProgressBarIssueTracker.Domain.Milestones;
 using StarWarsProgressBarIssueTracker.Domain.Releases;
+using StarWarsProgressBarIssueTracker.Domain.Vehicles;
 using StarWarsProgressBarIssueTracker.Infrastructure.Database;
 
 namespace StarWarsProgressBarIssueTracker.App.ServiceCollectionExtensions;
@@ -26,6 +28,7 @@ public static class ServiceRegistrationExtensions
 
     public static IServiceCollection AddDataPorts(this IServiceCollection serviceCollection)
     {
+        serviceCollection.AddScoped<IDataPort<Appearance>, AppearanceDataPort>();
         serviceCollection.AddScoped<IDataPort<Issue>, IssueDataPort>();
         serviceCollection.AddScoped<IDataPort<Label>, LabelDataPort>();
         serviceCollection.AddScoped<IDataPort<Milestone>, MilestoneDataPort>();
@@ -36,6 +39,7 @@ public static class ServiceRegistrationExtensions
 
     public static IServiceCollection AddIssueTrackerServices(this IServiceCollection serviceCollection)
     {
+        serviceCollection.AddScoped<IAppearanceService, AppearanceService>();
         serviceCollection.AddScoped<IIssueService, IssueService>();
         serviceCollection.AddScoped<ILabelService, LabelService>();
         serviceCollection.AddScoped<IMilestoneService, MilestoneService>();

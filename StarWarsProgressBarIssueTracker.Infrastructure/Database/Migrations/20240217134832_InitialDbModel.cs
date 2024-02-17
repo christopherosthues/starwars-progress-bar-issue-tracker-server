@@ -33,24 +33,6 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Labels",
-                schema: "issue_tracker",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Title = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    Description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    Color = table.Column<string>(type: "character varying(6)", maxLength: 6, nullable: false),
-                    TextColor = table.Column<string>(type: "character varying(6)", maxLength: 6, nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Labels", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Milestones",
                 schema: "issue_tracker",
                 columns: table => new
@@ -264,6 +246,31 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Labels",
+                schema: "issue_tracker",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Title = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    Color = table.Column<string>(type: "character varying(6)", maxLength: 6, nullable: false),
+                    TextColor = table.Column<string>(type: "character varying(6)", maxLength: 6, nullable: false),
+                    DbIssueId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Labels", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Labels_Issues_DbIssueId",
+                        column: x => x.DbIssueId,
+                        principalSchema: "issue_tracker",
+                        principalTable: "Issues",
+                        principalColumn: "Id");
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Appearances_AppearanceId",
                 schema: "issue_tracker",
@@ -299,6 +306,12 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                 schema: "issue_tracker",
                 table: "Issues",
                 column: "VehicleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Labels_DbIssueId",
+                schema: "issue_tracker",
+                table: "Labels",
+                column: "DbIssueId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Photos_PhotoId",

@@ -25,6 +25,9 @@ public record DbIssue : DbEntityBase
     [ForeignKey("VehicleId")]
     public DbVehicle? Vehicle { get; set; }
 
+    [Column("LabelId")]
+    public virtual IList<DbLabel> Labels { get; set; } = [];
+
     [Column("LinkedIssueId")]
     public virtual IList<DbIssueLink> LinkedIssues { get; set; } = [];
 }

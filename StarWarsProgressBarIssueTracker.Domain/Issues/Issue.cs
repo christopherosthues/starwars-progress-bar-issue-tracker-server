@@ -1,3 +1,4 @@
+using StarWarsProgressBarIssueTracker.Domain.Labels;
 using StarWarsProgressBarIssueTracker.Domain.Milestones;
 using StarWarsProgressBarIssueTracker.Domain.Models;
 using StarWarsProgressBarIssueTracker.Domain.Releases;
@@ -20,6 +21,8 @@ public class Issue : DomainBase
     public Release? Release { get; set; }
 
     public Vehicle? Vehicle { get; set; }
+
+    public IList<Label> Labels { get; set; } = [];
 
     public IList<IssueLink> LinkedIssues { get; set; } = [];
 }
