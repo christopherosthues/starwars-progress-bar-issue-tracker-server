@@ -12,7 +12,7 @@ using StarWarsProgressBarIssueTracker.Infrastructure.Database;
 namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(IssueTrackerContext))]
-    [Migration("20240217134832_InitialDbModel")]
+    [Migration("20240218120729_InitialDbModel")]
     partial class InitialDbModel
     {
         /// <inheritdoc />

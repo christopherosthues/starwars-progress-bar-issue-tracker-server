@@ -25,4 +25,10 @@ public class Issue : DomainBase
     public IList<Label> Labels { get; set; } = [];
 
     public IList<IssueLink> LinkedIssues { get; set; } = [];
+
+    public string? GitlabId { get; set; }
+
+    public string? GitlabIid { get; set; }
+
+    public string? GitHubId { get; set; }
 }

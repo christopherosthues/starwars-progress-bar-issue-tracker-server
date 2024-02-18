@@ -9,6 +9,7 @@ public class IssueRepository : IssueTrackerRepositoryBase<DbIssue>
     {
         return Context.Issues.Include(dbIssue => dbIssue.Milestone)
             .Include(dbIssue => dbIssue.Release)
+            .Include(dbIssue => dbIssue.Labels)
             .Include(dbIssue => dbIssue.Vehicle)
             .ThenInclude(dbVehicle => dbVehicle != null ? dbVehicle.Appearances : null)
             .Include(dbIssue => dbIssue.Vehicle)

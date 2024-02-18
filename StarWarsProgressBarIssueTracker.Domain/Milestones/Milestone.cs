@@ -12,4 +12,10 @@ public class Milestone : DomainBase
     public MilestoneState State { get; set; }
 
     public IList<Issue> Issues { get; set; } = [];
+
+    public string? GitlabId { get; set; }
+
+    public string? GitlabIid { get; set; }
+
+    public string? GitHubId { get; set; }
 }

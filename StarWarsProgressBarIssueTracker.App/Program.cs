@@ -109,7 +109,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-await app.Services.EnsureDbUpdatedAsync();
+if (app.Environment.IsDevelopment())
+{
+    await app.Services.ConfigureDatabaseAsync();
+}
+else
+{
+    // TODO: seed only production relevant data
+    await app.Services.ConfigureDatabaseAsync();
+}
 
 // app.UseCors();
 

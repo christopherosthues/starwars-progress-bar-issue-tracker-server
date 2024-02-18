@@ -29,6 +29,12 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore StarWarsProgressBarIssueTracker.App.Tests/StarWarsProgressBarIssueTracker.App.Tests.csproj
 
+    - name: Generate GitHub GraphQL client
+      run: dotnet build StarWarsProgressBarIssueTracker.Infrastructure.GitHub/StarWarsProgressBarIssueTracker.Infrastructure.GitHub.csproj
+
+    - name: Generate Gitlab GraphQL client
+      run: dotnet build StarWarsProgressBarIssueTracker.Infrastructure.Gitlab/StarWarsProgressBarIssueTracker.Infrastructure.Gitlab.csproj
+
     - name: Build
       run: dotnet build StarWarsProgressBarIssueTracker.App.Tests/StarWarsProgressBarIssueTracker.App.Tests.csproj --no-restore
 

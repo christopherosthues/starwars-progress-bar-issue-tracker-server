@@ -1,10 +1,10 @@
 ﻿
 using StarWarsProgressBarIssueTracker.Domain.Issues;
-using StarWarsProgressBarIssueTracker.Domain.Labels;
 using StarWarsProgressBarIssueTracker.Domain.Milestones;
 using StarWarsProgressBarIssueTracker.Domain.Releases;
 using StarWarsProgressBarIssueTracker.Infrastructure.Gitlab.GraphQL;
 using StarWarsProgressBarIssueTracker.Infrastructure.Gitlab.Networking;
+using StarWarsProgressBarIssueTracker.Infrastructure.Models;
 using IssueState = StarWarsProgressBarIssueTracker.Infrastructure.Gitlab.GraphQL.IssueState;
 
 namespace StarWarsProgressBarIssueTracker.App.Jobs;
@@ -39,16 +39,20 @@ public class GitlabSynchronizationJob(GraphQLService graphQlService
 
     private async Task SynchronizeLabelsAsync(IEnumerable<IGetAll_Project_Labels_Nodes> gitlabLabels)
     {
-        IList<Label> labels = [];
+        IList<DbLabelExternalIds> labels = [];
         foreach (var gitlabLabel in gitlabLabels)
         {
-            labels.Add(new Label
+            labels.Add(new DbLabelExternalIds
             {
-                Title = gitlabLabel.Title,
-                Description = gitlabLabel.Description,
-                Color = gitlabLabel.Color,
-                TextColor = gitlabLabel.TextColor,
-                LastModifiedAt = DateTime.Parse(gitlabLabel.UpdatedAt)
+                GitlabId = gitlabLabel.Id,
+                Label = new DbLabel
+                {
+                    Title = gitlabLabel.Title,
+                    Description = gitlabLabel.Description,
+                    Color = gitlabLabel.Color,
+                    TextColor = gitlabLabel.TextColor,
+                    LastModifiedAt = DateTime.Parse(gitlabLabel.UpdatedAt)
+                },
             });
         }
 
