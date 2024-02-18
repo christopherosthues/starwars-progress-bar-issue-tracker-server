@@ -16,4 +16,10 @@ public record DbMilestone : DbEntityBase
 
     [Column("IssueId")]
     public virtual IList<DbIssue> Issues { get; set; } = [];
+
+    public string? GitlabId { get; set; }
+
+    public string? GitlabIid { get; set; }
+
+    public string? GitHubId { get; set; }
 }

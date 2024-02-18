@@ -98,6 +98,23 @@ public partial class LabelService(IDataPort<Label> dataPort) : ILabelService
         return await dataPort.DeleteAsync(id, cancellationToken);
     }
 
+    public async Task SynchronizeAsync(IList<Label> labels, CancellationToken cancellationToken = default)
+    {
+        var existingLabels = await dataPort.GetAllAsync(cancellationToken);
+
+        var labelsToAdd = labels.Where(label =>
+            !existingLabels.Any(existingLabel => label.GitlabId!.Equals(existingLabel.GitlabId)));
+
+        var labelsToDelete = existingLabels.Where(existingLabel => existingLabel.GitlabId != null &&
+            !labels.Any(label => label.GitlabId!.Equals(existingLabel.GitlabId)));
+
+        await dataPort.AddRangeAsync(labelsToAdd, cancellationToken);
+
+        await dataPort.DeleteRangeAsync(labelsToDelete, cancellationToken);
+
+        // TODO: Update label, resolve conflicts
+    }
+
     [GeneratedRegex("^[a-fA-F0-9]{6}$")]
     private static partial Regex ColorHexCodeRegex();
 }

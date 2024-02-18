@@ -54,7 +54,7 @@ public class LabelMutationsTests : IntegrationTestBase
         });
         CheckDbContent(context =>
         {
-            context.Labels.Should().Contain(dbLabel);
+            context.Labels.Should().ContainEquivalentOf(dbLabel);
         });
         var mutationRequest = CreateAddRequest(expectedLabel);
 
@@ -105,7 +105,7 @@ public class LabelMutationsTests : IntegrationTestBase
         expectedLabel.CreatedAt = dbLabel.CreatedAt;
         CheckDbContent(context =>
         {
-            context.Labels.Should().Contain(dbLabel);
+            context.Labels.Should().ContainEquivalentOf(dbLabel);
         });
         var mutationRequest = CreateUpdateRequest(expectedLabel);
 
@@ -151,8 +151,8 @@ public class LabelMutationsTests : IntegrationTestBase
         expectedLabel.CreatedAt = dbLabel.CreatedAt;
         CheckDbContent(context =>
         {
-            context.Labels.Should().Contain(dbLabel);
-            context.Labels.Should().Contain(dbLabel2);
+            context.Labels.Should().ContainEquivalentOf(dbLabel);
+            context.Labels.Should().ContainEquivalentOf(dbLabel2);
         });
         var mutationRequest = CreateUpdateRequest(expectedLabel);
 
@@ -222,7 +222,7 @@ public class LabelMutationsTests : IntegrationTestBase
         label.LastModifiedAt = dbLabel.LastModifiedAt;
         CheckDbContent(context =>
         {
-            context.Labels.Should().Contain(dbLabel);
+            context.Labels.Should().ContainEquivalentOf(dbLabel);
         });
         var mutationRequest = CreateDeleteRequest(label);
 
@@ -264,12 +264,12 @@ public class LabelMutationsTests : IntegrationTestBase
                 dbLabel2
             ]
         };
+        var dbIssue = new DbIssue
+        {
+            Id = new Guid("87A2F9BF-CAB7-41D3-84F9-155135FA41D7"), Title = "Issue", Labels = [dbLabel]
+        };
         await SeedDatabase(context =>
         {
-            var dbIssue = new DbIssue
-            {
-                Id = new Guid("87A2F9BF-CAB7-41D3-84F9-155135FA41D7"), Title = "Issue", Labels = [dbLabel]
-            };
             context.Labels.Add(dbLabel);
             context.Issues.Add(dbIssue);
             context.Issues.Add(dbIssue2);
@@ -278,7 +278,7 @@ public class LabelMutationsTests : IntegrationTestBase
         label.LastModifiedAt = dbLabel.LastModifiedAt;
         CheckDbContent(context =>
         {
-            context.Labels.Should().Contain(dbLabel);
+            context.Labels.Should().ContainEquivalentOf(dbLabel, config => config.Excluding(l => l.Issues));
         });
         var mutationRequest = CreateDeleteRequest(label);
 
@@ -289,13 +289,15 @@ public class LabelMutationsTests : IntegrationTestBase
         AssertDeletedLabel(response, label);
         CheckDbContent(context =>
         {
-            var dbIssues = context.Issues.Include(dbIssue => dbIssue.Labels).ToList();
-            foreach (var dbIssue in dbIssues)
+            var dbIssues = context.Issues.Include(entity => entity.Labels).ToList();
+            dbIssues.Should().Contain(i => i.Id.Equals(dbIssue.Id));
+            dbIssues.Should().Contain(i => i.Id.Equals(dbIssue2.Id));
+            foreach (var entity in dbIssues)
             {
-                dbIssue.Labels.Should().NotContain(dbLabel);
+                dbIssue.Labels.Should().NotContain(l => l.Id.Equals(entity.Id));
             }
 
-            dbIssues.First(dbIssue => dbIssue.Id.Equals(dbIssue2.Id)).Labels.Should().Contain(dbLabel2);
+            dbIssues.First(entity => entity.Id.Equals(dbIssue2.Id)).Labels.Should().ContainEquivalentOf(dbLabel2, config => config.Excluding(l => l.Issues));
         });
     }
 
@@ -333,8 +335,8 @@ public class LabelMutationsTests : IntegrationTestBase
         label.LastModifiedAt = dbLabel.LastModifiedAt;
         CheckDbContent(context =>
         {
-            context.Labels.Should().Contain(dbLabel);
-            context.Labels.Should().Contain(dbLabel2);
+            context.Labels.Should().ContainEquivalentOf(dbLabel);
+            context.Labels.Should().ContainEquivalentOf(dbLabel2);
         });
         var mutationRequest = CreateDeleteRequest(label);
 

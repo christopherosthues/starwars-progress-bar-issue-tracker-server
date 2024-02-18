@@ -15,10 +15,10 @@ public class IssueTrackerRepositoryBase<TDbEntity> : IRepository<TDbEntity> wher
         get => _context ?? throw new InvalidOperationException("The DB context is not initialized.");
         set
         {
-            if (_context != null)
-            {
-                throw new InvalidOperationException("THe DB context is already initialized.");
-            }
+            // if (_context != null)
+            // {
+                // throw new InvalidOperationException("THe DB context is already initialized.");
+            // }
 
             _context = value;
         }
@@ -51,6 +51,11 @@ public class IssueTrackerRepositoryBase<TDbEntity> : IRepository<TDbEntity> wher
         return resultEntry.Entity;
     }
 
+    public async Task AddRangeAsync(IEnumerable<TDbEntity> entities, CancellationToken cancellationToken = default)
+    {
+        await DbSet.AddRangeAsync(entities, cancellationToken);
+    }
+
     public async Task<TDbEntity> UpdateAsync(TDbEntity entity, CancellationToken cancellationToken = default)
     {
         var entry = Context.Entry(entity);
@@ -65,5 +70,10 @@ public class IssueTrackerRepositoryBase<TDbEntity> : IRepository<TDbEntity> wher
         var deletedEntity = DbSet.Remove(entity).Entity;
         await Context.SaveChangesAsync(cancellationToken);
         return deletedEntity;
+    }
+
+    public void DeleteRange(IEnumerable<TDbEntity> entities, CancellationToken cancellationToken = default)
+    {
+        DbSet.RemoveRange(entities);
     }
 }

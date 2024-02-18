@@ -30,4 +30,10 @@ public record DbIssue : DbEntityBase
 
     [Column("LinkedIssueId")]
     public virtual IList<DbIssueLink> LinkedIssues { get; set; } = [];
+
+    public string? GitlabId { get; set; }
+
+    public string? GitlabIid { get; set; }
+
+    public string? GitHubId { get; set; }
 }

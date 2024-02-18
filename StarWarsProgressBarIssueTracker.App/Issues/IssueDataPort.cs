@@ -64,6 +64,10 @@ public class IssueDataPort : IDataPort<Issue>
     {
         DbIssue issue = (await _repository.GetByIdAsync(id, cancellationToken))!;
 
+        issue.Milestone = null;
+        issue.Vehicle?.Appearances.Clear();
+        issue.Release = null;
+        issue.Labels.Clear();
         // TODO: cascade delete only issue / vehicle related entities. Appearances, Milestones and Labels should stay.
         // Vehicle, Translations, Photos, Links should also be deleted
 

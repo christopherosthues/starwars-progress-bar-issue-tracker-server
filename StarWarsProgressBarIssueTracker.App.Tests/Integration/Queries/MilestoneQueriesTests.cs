@@ -186,6 +186,7 @@ public class MilestoneQueriesTests : IntegrationTestBase
         const string id = "F1378377-9846-4168-A595-E763CD61CD9F";
         var dbIssue = new DbIssue
         {
+            Id = new Guid("CB547CF5-CB28-412E-8DA4-2A7F10E3A5FE"),
             Title = "issue title",
             State = IssueState.Closed,
             Release = new DbRelease { Title = "milestone title", State = ReleaseState.Planned },
@@ -236,7 +237,7 @@ public class MilestoneQueriesTests : IntegrationTestBase
             milestone.CreatedAt.Should().BeCloseTo(dbMilestone.CreatedAt, TimeSpan.FromMilliseconds(300));
             milestone.LastModifiedAt.Should().BeCloseTo(dbMilestone.LastModifiedAt!.Value, TimeSpan.FromMilliseconds(300));
             milestone.Issues.Should().NotBeEmpty();
-            milestone.Issues.Count().Should().Be(1);
+            milestone.Issues.Should().HaveCount(1);
             var issue = milestone.Issues.First();
             issue.Id.Should().Be(dbIssue.Id);
             issue.Release.Should().NotBeNull();

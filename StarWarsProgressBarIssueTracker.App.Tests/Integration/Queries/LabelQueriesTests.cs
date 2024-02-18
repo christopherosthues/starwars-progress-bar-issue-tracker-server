@@ -3,6 +3,8 @@ using FluentAssertions.Execution;
 using GraphQL;
 using StarWarsProgressBarIssueTracker.App.Queries;
 using StarWarsProgressBarIssueTracker.App.Tests.Helpers.GraphQL.Payloads.Labels;
+using StarWarsProgressBarIssueTracker.Domain.Issues;
+using StarWarsProgressBarIssueTracker.Domain.Releases;
 using StarWarsProgressBarIssueTracker.Infrastructure.Models;
 
 namespace StarWarsProgressBarIssueTracker.App.Tests.Integration.Queries;
@@ -52,8 +54,8 @@ public class LabelQueriesTests : IntegrationTestBase
         });
         CheckDbContent(context =>
         {
-            context.Labels.Should().Contain(dbLabel);
-            context.Labels.Should().Contain(dbLabel2);
+            context.Labels.Should().ContainEquivalentOf(dbLabel);
+            context.Labels.Should().ContainEquivalentOf(dbLabel2);
         });
         var request = CreateGetLabelsRequest();
 
@@ -146,16 +148,34 @@ public class LabelQueriesTests : IntegrationTestBase
     {
         // Arrange
         const string id = "F1378377-9846-4168-A595-E763CD61CD9F";
+        var dbIssue = new DbIssue
+        {
+            Id = new Guid("CB547CF5-CB28-412E-8DA4-2A7F10E3A5FE"),
+            Title = "issue title",
+            State = IssueState.Closed,
+            Release = new DbRelease { Title = "milestone title", State = ReleaseState.Planned },
+            Vehicle = new DbVehicle
+            {
+                Appearances =
+                [
+                    new DbAppearance { Title = "Appearance title", Color = "112233", TextColor = "334455" }
+                ],
+                Translations = [new DbTranslation { Country = "en", Text = "translation" }],
+                Photos = [new DbPhoto { FilePath = string.Empty }]
+            }
+        };
         var dbLabel = new DbLabel
         {
             Id = new Guid(id),
             Color = "112233",
             TextColor = "334455",
             Title = "Label 2",
-            Description = "Description 2"
+            Description = "Description 2",
+            Issues = [dbIssue]
         };
         await SeedDatabase(context =>
         {
+            context.Issues.Add(dbIssue);
             context.Labels.Add(new DbLabel
             {
                 Id = new Guid("5888CDB6-57E2-4774-B6E8-7AABE82E2A5F"),
@@ -182,6 +202,7 @@ public class LabelQueriesTests : IntegrationTestBase
             label.Description.Should().Be(dbLabel.Description);
             label.Color.Should().Be(dbLabel.Color);
             label.TextColor.Should().Be(dbLabel.TextColor);
+            label.Issues.Should().Contain(i => i.Id.Equals(dbIssue.Id));
             label.CreatedAt.Should().BeCloseTo(dbLabel.CreatedAt, TimeSpan.FromMilliseconds(300));
             label.LastModifiedAt.Should().Be(dbLabel.LastModifiedAt);
         }
@@ -203,6 +224,10 @@ public class LabelQueriesTests : IntegrationTestBase
                             textColor
                             createdAt
                             lastModifiedAt
+                            issues {
+                                id
+                                title
+                            }
                         }
                     }
                     """,
@@ -227,6 +252,10 @@ public class LabelQueriesTests : IntegrationTestBase
                             textColor
                             createdAt
                             lastModifiedAt
+                            issues {
+                                id
+                                title
+                            }
                         }
                     }
                     """,

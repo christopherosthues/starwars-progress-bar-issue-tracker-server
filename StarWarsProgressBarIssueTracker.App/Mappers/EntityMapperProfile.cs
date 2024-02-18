@@ -12,21 +12,9 @@ public class EntityMapperProfile : Profile
 {
     public EntityMapperProfile()
     {
-        CreateMap<Label, DbLabel>();
-        CreateMap<Issue, DbIssue>();
-        CreateMap<Milestone, DbMilestone>();
-        CreateMap<DbLabel, Label>()
-            .ForMember(dest => dest.GitlabId, options => options.Ignore())
-            .ForMember(dest => dest.GitHubId, options => options.Ignore());
-        CreateMap<DbIssue, Issue>()
-            .ForMember(dest => dest.GitlabId, options => options.Ignore())
-            .ForMember(dest => dest.GitlabIid, options => options.Ignore())
-            .ForMember(dest => dest.GitHubId, options => options.Ignore());
-        CreateMap<DbMilestone, Milestone>()
-            .ForMember(dest => dest.GitlabId, options => options.Ignore())
-            .ForMember(dest => dest.GitlabIid, options => options.Ignore())
-            .ForMember(dest => dest.GitHubId, options => options.Ignore());
-
+        CreateMap<Label, DbLabel>().ReverseMap();
+        CreateMap<Issue, DbIssue>().ReverseMap();
+        CreateMap<Milestone, DbMilestone>().ReverseMap();
         CreateMap<Appearance, DbAppearance>().ReverseMap();
         CreateMap<IssueLink, DbIssueLink>().ReverseMap();
         CreateMap<Photo, DbPhoto>().ReverseMap();

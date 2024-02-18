@@ -33,6 +33,26 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Labels",
+                schema: "issue_tracker",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Title = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    Color = table.Column<string>(type: "character varying(6)", maxLength: 6, nullable: false),
+                    TextColor = table.Column<string>(type: "character varying(6)", maxLength: 6, nullable: false),
+                    GitlabId = table.Column<string>(type: "text", nullable: true),
+                    GitHubId = table.Column<string>(type: "text", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Labels", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Milestones",
                 schema: "issue_tracker",
                 columns: table => new
@@ -41,6 +61,9 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                     Title = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     Description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
                     State = table.Column<int>(type: "integer", nullable: false),
+                    GitlabId = table.Column<string>(type: "text", nullable: true),
+                    GitlabIid = table.Column<string>(type: "text", nullable: true),
+                    GitHubId = table.Column<string>(type: "text", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
@@ -145,6 +168,9 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                     MilestoneId = table.Column<Guid>(type: "uuid", nullable: true),
                     ReleaseId = table.Column<Guid>(type: "uuid", nullable: true),
                     VehicleId = table.Column<Guid>(type: "uuid", nullable: true),
+                    GitlabId = table.Column<string>(type: "text", nullable: true),
+                    GitlabIid = table.Column<string>(type: "text", nullable: true),
+                    GitHubId = table.Column<string>(type: "text", nullable: true),
                     DbVehicleId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
@@ -224,6 +250,33 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DbIssueDbLabel",
+                schema: "issue_tracker",
+                columns: table => new
+                {
+                    IssuesId = table.Column<Guid>(type: "uuid", nullable: false),
+                    LabelsId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DbIssueDbLabel", x => new { x.IssuesId, x.LabelsId });
+                    table.ForeignKey(
+                        name: "FK_DbIssueDbLabel_Issues_IssuesId",
+                        column: x => x.IssuesId,
+                        principalSchema: "issue_tracker",
+                        principalTable: "Issues",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DbIssueDbLabel_Labels_LabelsId",
+                        column: x => x.LabelsId,
+                        principalSchema: "issue_tracker",
+                        principalTable: "Labels",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "IssueLinks",
                 schema: "issue_tracker",
                 columns: table => new
@@ -246,36 +299,17 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Labels",
-                schema: "issue_tracker",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Title = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    Description = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
-                    Color = table.Column<string>(type: "character varying(6)", maxLength: 6, nullable: false),
-                    TextColor = table.Column<string>(type: "character varying(6)", maxLength: 6, nullable: false),
-                    DbIssueId = table.Column<Guid>(type: "uuid", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Labels", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Labels_Issues_DbIssueId",
-                        column: x => x.DbIssueId,
-                        principalSchema: "issue_tracker",
-                        principalTable: "Issues",
-                        principalColumn: "Id");
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_Appearances_AppearanceId",
                 schema: "issue_tracker",
                 table: "Appearances",
                 column: "AppearanceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DbIssueDbLabel_LabelsId",
+                schema: "issue_tracker",
+                table: "DbIssueDbLabel",
+                column: "LabelsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_IssueLinks_LinkedIssueId",
@@ -308,12 +342,6 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                 column: "VehicleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Labels_DbIssueId",
-                schema: "issue_tracker",
-                table: "Labels",
-                column: "DbIssueId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Photos_PhotoId",
                 schema: "issue_tracker",
                 table: "Photos",
@@ -340,11 +368,11 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                 schema: "issue_tracker");
 
             migrationBuilder.DropTable(
-                name: "IssueLinks",
+                name: "DbIssueDbLabel",
                 schema: "issue_tracker");
 
             migrationBuilder.DropTable(
-                name: "Labels",
+                name: "IssueLinks",
                 schema: "issue_tracker");
 
             migrationBuilder.DropTable(
@@ -357,6 +385,10 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
 
             migrationBuilder.DropTable(
                 name: "Translations",
+                schema: "issue_tracker");
+
+            migrationBuilder.DropTable(
+                name: "Labels",
                 schema: "issue_tracker");
 
             migrationBuilder.DropTable(

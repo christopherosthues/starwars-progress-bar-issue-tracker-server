@@ -15,4 +15,10 @@ public interface IDataPort<TDomain> where TDomain : DomainBase
     Task<TDomain> UpdateAsync(TDomain domain, CancellationToken cancellationToken = default);
 
     Task<TDomain> DeleteAsync(Guid id, CancellationToken cancellationToken = default);
+
+    Task AddRangeAsync(IEnumerable<TDomain> domains, CancellationToken cancellationToken = default) =>
+        Task.CompletedTask;
+
+    Task DeleteRangeAsync(IEnumerable<TDomain> domains, CancellationToken cancellationToken = default) =>
+        Task.CompletedTask;
 }

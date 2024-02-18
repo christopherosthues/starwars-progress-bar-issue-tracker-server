@@ -1,16 +1,20 @@
 ﻿
 using StarWarsProgressBarIssueTracker.Domain.Issues;
+using StarWarsProgressBarIssueTracker.Domain.Labels;
 using StarWarsProgressBarIssueTracker.Domain.Milestones;
 using StarWarsProgressBarIssueTracker.Domain.Releases;
 using StarWarsProgressBarIssueTracker.Infrastructure.Gitlab.GraphQL;
 using StarWarsProgressBarIssueTracker.Infrastructure.Gitlab.Networking;
-using StarWarsProgressBarIssueTracker.Infrastructure.Models;
 using IssueState = StarWarsProgressBarIssueTracker.Infrastructure.Gitlab.GraphQL.IssueState;
 
 namespace StarWarsProgressBarIssueTracker.App.Jobs;
 
-public class GitlabSynchronizationJob(GraphQLService graphQlService
+public class GitlabSynchronizationJob(GraphQLService graphQlService,
     // RestService restService
+    ILabelService labelService//,
+    // IMilestoneService milestoneService,
+    // IIssueService issueService,
+    // IReleaseService releaseService
     )
     : IJob
 {
@@ -18,9 +22,9 @@ public class GitlabSynchronizationJob(GraphQLService graphQlService
     {
         var all = await graphQlService.GetAllAsync(cancellationToken);
 
-        var labels = all?.Labels?.Nodes ?? [];
+        await SynchronizeLabelsAsync(all?.Labels, cancellationToken);
 
-        var milestones = all?.Milestones;
+        await SynchronizeMilestonesAsync(all?.Milestones, cancellationToken);
 
         var issues = all?.Issues;
 
@@ -37,41 +41,34 @@ public class GitlabSynchronizationJob(GraphQLService graphQlService
         }
     }
 
-    private async Task SynchronizeLabelsAsync(IEnumerable<IGetAll_Project_Labels_Nodes> gitlabLabels)
+    private async Task SynchronizeLabelsAsync(IGetAll_Project_Labels? gitlabLabelData, CancellationToken cancellationToken)
     {
-        IList<DbLabelExternalIds> labels = [];
-        foreach (var gitlabLabel in gitlabLabels)
-        {
-            labels.Add(new DbLabelExternalIds
+        IEnumerable<IGetAll_Project_Labels_Nodes> gitlabLabels = (gitlabLabelData?.Nodes ?? []).Where(gitlabLabel => gitlabLabel != null).Cast<IGetAll_Project_Labels_Nodes>();
+        IList<Label> labels = gitlabLabels.Select(gitlabLabel =>
+            new Label
             {
                 GitlabId = gitlabLabel.Id,
-                Label = new DbLabel
-                {
-                    Title = gitlabLabel.Title,
-                    Description = gitlabLabel.Description,
-                    Color = gitlabLabel.Color,
-                    TextColor = gitlabLabel.TextColor,
-                    LastModifiedAt = DateTime.Parse(gitlabLabel.UpdatedAt)
-                },
-            });
-        }
+                Title = gitlabLabel.Title,
+                Description = gitlabLabel.Description,
+                Color = gitlabLabel.Color,
+                TextColor = gitlabLabel.TextColor,
+                LastModifiedAt = DateTime.Parse(gitlabLabel.UpdatedAt)
+            }).ToList();
 
-        await Task.CompletedTask;
+        await labelService.SynchronizeAsync(labels, cancellationToken);
     }
 
-    private async Task SynchronizeMilestonesAsync(IEnumerable<IGetAll_Project_Milestones_Nodes> gitlabMilestones)
+    private async Task SynchronizeMilestonesAsync(IGetAll_Project_Milestones? gitlabMilestoneData, CancellationToken cancellationToken)
     {
-        IList<Milestone> milestones = [];
-        foreach (var gitlabMilestone in gitlabMilestones)
-        {
-            milestones.Add(new Milestone
+        IEnumerable<IGetAll_Project_Milestones_Nodes> gitlabMilestones = (gitlabMilestoneData?.Nodes ?? []).Where(gitlabMilestone => gitlabMilestone != null).Cast<IGetAll_Project_Milestones_Nodes>();
+        IList<Milestone> milestones = gitlabMilestones.Select(gitlabMilestone =>
+            new Milestone
             {
                 Title = gitlabMilestone.Title,
                 Description = gitlabMilestone.Description,
                 State = MapMilestoneState(gitlabMilestone.State),
                 LastModifiedAt = DateTime.Parse(gitlabMilestone.UpdatedAt)
-            });
-        }
+            }).ToList();
 
         await Task.CompletedTask;
     }
