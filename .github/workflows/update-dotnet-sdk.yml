@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: 'dev' # Checkout the dev branch instead of the default branch
+          ref: 'develop' # Checkout the develop branch instead of the default branch
       - uses: martincostello/update-dotnet-sdk@v3
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
