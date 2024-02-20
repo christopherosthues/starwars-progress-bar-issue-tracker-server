@@ -1,5 +1,5 @@
 
-name: update-dotnet-sdk
+name: update-nuget-packages
 
 on:
   schedule:
