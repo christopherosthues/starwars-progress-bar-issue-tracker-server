@@ -58,7 +58,7 @@ jobs:
           gh pr create \
             --title "NuGet package updates" \
             --body "Updated NuGet packages to latest versions" \
-            --base "develop"
+            --base "develop" \
             --head $BRANCH
         else
           echo "All NuGet packages are out-to-date"
