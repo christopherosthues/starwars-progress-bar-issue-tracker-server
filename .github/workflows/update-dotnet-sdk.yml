@@ -35,7 +35,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         dotnet tool install -g dotnet-outdated-tool
-        dotnet restore
+        dotnet restore StarWarsProgressBarIssueTracker.sln
         dotnet outdated -u
         
         gitDiffOutput=$(git diff)
