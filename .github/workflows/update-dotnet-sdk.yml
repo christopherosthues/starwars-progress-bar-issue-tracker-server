@@ -27,7 +27,7 @@ jobs:
     - name: Update .NET SKD
       uses: martincostello/update-dotnet-sdk@v3
       with:
-        branch-name: ${{ BRANCH }}
+        branch-name: $BRANCH
         repo-token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Setup .NET SDK
@@ -47,7 +47,6 @@ jobs:
         
         if [ -n "$gitDiffOutput" ]; then
           echo "Updated NuGet packages. Creating PR"
-          BRANCH=${{ BRANCH }}
 
           git config user.email "action@github.com"
           git config user.name "GitHub Action"
