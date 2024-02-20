@@ -44,6 +44,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".workflows", ".workflows", 
 	ProjectSection(SolutionItems) = preProject
 		.github\dependabot.yml = .github\dependabot.yml
 		.github\workflows\test.yml = .github\workflows\test.yml
+		.github\workflows\update-dotnet-sdk.yml = .github\workflows\update-dotnet-sdk.yml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StarWarsProgressBarIssueTracker.Infrastructure.GitHub", "StarWarsProgressBarIssueTracker.Infrastructure.GitHub\StarWarsProgressBarIssueTracker.Infrastructure.GitHub.csproj", "{6820DDF7-48EC-4C94-9267-F2B9A4B14A8C}"
