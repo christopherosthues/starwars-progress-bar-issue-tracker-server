@@ -15,9 +15,43 @@ jobs:
     name: Update .NET SDK
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: 'develop' # Checkout the develop branch instead of the default branch
-      - uses: martincostello/update-dotnet-sdk@v3
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        ref: 'develop' # Checkout the develop branch instead of the default branch
+
+    - name: Update .NET SKD
+      uses: martincostello/update-dotnet-sdk@v3
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        global-json-file: './global.json'
+
+    - name: Update NuGet packages
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        dotnet tool install -g dotnet-outdated-tool
+        dotnet restore
+        dotnet outdated -u
+        
+        gitDiffOutput=$(git diff)
+        
+        if [ -n "$gitDiffOutput" ]; then
+          echo "Updated NuGet packages. Creating PR"
+          git config user.email "action@github.com"
+          git config user.name "GitHub Action"
+          
+          git checkout -b feature/update-nuget-packages
+          git commit -am "chore: Update NuGet packages"
+          
+          gh pr create \
+            --title "NuGet package updates" \
+            --body "Updated NuGet packages to latest versions" \
+            --head $BRANCH
+        else
+          echo "All NuGet packages are out-to-date"
+        fi
