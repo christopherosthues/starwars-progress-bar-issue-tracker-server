@@ -46,13 +46,14 @@ jobs:
         if [ -n "$gitDiffOutput" ]; then
           echo "Updated NuGet packages. Creating PR"
           BRANCH="feature/update-nuget-packages"
+
           git config user.email "action@github.com"
           git config user.name "GitHub Action"
           
           git checkout -b $BRANCH
           git commit -am "chore: Update NuGet packages"
-          git push --set-upstream origin 
-          
+          git push --set-upstream origin $BRANCH
+
           gh pr create \
             --title "NuGet package updates" \
             --body "Updated NuGet packages to latest versions" \
