@@ -7,6 +7,7 @@ on:
 
 env:
   HUSKY: 0
+  BRANCH: "feature/update-nuget-packages"
 
 permissions:
   contents: write
@@ -26,6 +27,7 @@ jobs:
     - name: Update .NET SKD
       uses: martincostello/update-dotnet-sdk@v3
       with:
+        branch-name: ${{ BRANCH }}
         repo-token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Setup .NET SDK
@@ -45,7 +47,7 @@ jobs:
         
         if [ -n "$gitDiffOutput" ]; then
           echo "Updated NuGet packages. Creating PR"
-          BRANCH="feature/update-nuget-packages"
+          BRANCH=${{ BRANCH }}
 
           git config user.email "action@github.com"
           git config user.name "GitHub Action"
@@ -57,6 +59,7 @@ jobs:
           gh pr create \
             --title "NuGet package updates" \
             --body "Updated NuGet packages to latest versions" \
+            --base "develop"
             --head $BRANCH
         else
           echo "All NuGet packages are out-to-date"
