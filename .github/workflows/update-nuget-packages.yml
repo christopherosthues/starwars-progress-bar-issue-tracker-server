@@ -33,6 +33,7 @@ jobs:
       - name: Update NuGet packages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
         run: |
           dotnet tool install -g dotnet-outdated-tool
           dotnet restore StarWarsProgressBarIssueTracker.sln
