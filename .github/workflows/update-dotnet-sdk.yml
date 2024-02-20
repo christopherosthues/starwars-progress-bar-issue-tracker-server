@@ -27,7 +27,7 @@ jobs:
     - name: Update .NET SKD
       uses: martincostello/update-dotnet-sdk@v3
       with:
-        branch-name: ${{ BRANCH }}
+        branch-name: ${{ env.BRANCH }}
         repo-token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Setup .NET SDK
