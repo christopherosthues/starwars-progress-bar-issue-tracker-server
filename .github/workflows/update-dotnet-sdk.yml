@@ -7,7 +7,6 @@ on:
 
 env:
   HUSKY: 0
-  BRANCH: "feature/update-nuget-packages"
 
 permissions:
   contents: write
@@ -27,39 +26,5 @@ jobs:
     - name: Update .NET SKD
       uses: martincostello/update-dotnet-sdk@v3
       with:
-        branch-name: ${{ env.BRANCH }}
         repo-token: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Setup .NET SDK
-      uses: actions/setup-dotnet@v4
-      with:
-        global-json-file: './global.json'
-
-    - name: Update NuGet packages
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        dotnet tool install -g dotnet-outdated-tool
-        dotnet restore StarWarsProgressBarIssueTracker.sln
-        dotnet outdated -u
-        
-        gitDiffOutput=$(git diff)
-        
-        if [ -n "$gitDiffOutput" ]; then
-          echo "Updated NuGet packages. Creating PR"
-
-          git config user.email "action@github.com"
-          git config user.name "GitHub Action"
-          
-          git checkout $BRANCH
-          git commit -am "chore: Update NuGet packages"
-          git push --set-upstream origin $BRANCH
-
-          gh pr create \
-            --title "NuGet package updates" \
-            --body "Updated NuGet packages to latest versions" \
-            --base "develop" \
-            --head $BRANCH
-        else
-          echo "All NuGet packages are out-to-date"
-        fi
+        commit-message-prefix: "chore: "
