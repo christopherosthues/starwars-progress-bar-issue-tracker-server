@@ -1,6 +1,6 @@
 namespace StarWarsProgressBarIssueTracker.Domain.Configuration;
 
-public class IssuesConnectionConfig
+public abstract class IssuesConnectionConfig
 {
     public required string GraphQLUrl { get; set; }
     public required string RestURL { get; set; }

@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Options;
-using StarWarsProgressBarIssueTracker.Domain.Configuration;
 using StarWarsProgressBarIssueTracker.Domain.Labels;
 using StarWarsProgressBarIssueTracker.Domain.Releases;
+using StarWarsProgressBarIssueTracker.Infrastructure.Gitlab.Configuration;
 using StarWarsProgressBarIssueTracker.Infrastructure.Gitlab.GraphQL;
 using StrawberryShake;
 using IssueState = StarWarsProgressBarIssueTracker.Infrastructure.Gitlab.GraphQL.IssueState;
@@ -13,7 +13,7 @@ public class GraphQLService
     private readonly string _projectId;
     readonly GitlabClient _client;
 
-    public GraphQLService(IOptions<IssuesConnectionConfig> configuration,
+    public GraphQLService(IOptions<GitlabConfiguration> configuration,
         GitlabClient client)
     {
         _projectId = configuration.Value.ProjectPath ?? throw new ArgumentException("Project path must not be null!");

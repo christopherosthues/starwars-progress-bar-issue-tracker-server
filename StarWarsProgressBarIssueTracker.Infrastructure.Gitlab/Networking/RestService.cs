@@ -1,7 +1,7 @@
 using System.Net.Http.Headers;
 using System.Text.Json;
 using Microsoft.Extensions.Options;
-using StarWarsProgressBarIssueTracker.Domain.Configuration;
+using StarWarsProgressBarIssueTracker.Infrastructure.Gitlab.Configuration;
 using StarWarsProgressBarIssueTracker.Infrastructure.Gitlab.Networking.Models;
 
 namespace StarWarsProgressBarIssueTracker.Infrastructure.Gitlab.Networking;
@@ -10,7 +10,7 @@ public class RestService
 {
     private readonly HttpClient _client;
 
-    public RestService(HttpClient client, IOptions<IssuesConnectionConfig> configuration)
+    public RestService(HttpClient client, IOptions<GitlabConfiguration> configuration)
     {
         var restUri = configuration.Value.RestURL ?? throw new ArgumentException("The REST API Uri must not be null!");
         var token = configuration.Value.Token ?? throw new ArgumentException("The token must not be null!");

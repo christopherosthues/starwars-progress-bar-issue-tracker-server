@@ -14,4 +14,8 @@
       <Generator>MSBuild:GenerateGraphQLCode</Generator>
     </GraphQL>
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\StarWarsProgressBarIssueTracker.Domain\StarWarsProgressBarIssueTracker.Domain.csproj" />
+  </ItemGroup>
 </Project>

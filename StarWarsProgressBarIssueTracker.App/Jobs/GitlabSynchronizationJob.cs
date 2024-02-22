@@ -24,21 +24,9 @@ public class GitlabSynchronizationJob(GraphQLService graphQlService,
 
         await SynchronizeLabelsAsync(all?.Labels, cancellationToken);
 
-        await SynchronizeMilestonesAsync(all?.Milestones, cancellationToken);
+        // await SynchronizeMilestonesAsync(all?.Milestones, cancellationToken);
 
-        var issues = all?.Issues;
-
-        var currentPageInfo = issues?.PageInfo;
-
-        if ((currentPageInfo?.HasNextPage ?? false) && !string.IsNullOrEmpty(currentPageInfo.EndCursor))
-        {
-            var nextIssuesResult = await graphQlService.GetFurtherIssuesAsync(currentPageInfo.EndCursor, cancellationToken);
-
-            while ((nextIssuesResult?.PageInfo?.HasNextPage ?? false) && !string.IsNullOrEmpty(nextIssuesResult.PageInfo.EndCursor))
-            {
-                nextIssuesResult = await graphQlService.GetFurtherIssuesAsync(currentPageInfo.EndCursor, cancellationToken);
-            }
-        }
+        // await SynchronizeIssuesAsync(all?.Issues, cancellationToken);
     }
 
     private async Task SynchronizeLabelsAsync(IGetAll_Project_Labels? gitlabLabelData, CancellationToken cancellationToken)
@@ -81,9 +69,26 @@ public class GitlabSynchronizationJob(GraphQLService graphQlService,
             _ => MilestoneState.Closed
         };
 
-    private async Task SynchronizeIssuesAsync(IEnumerable<IGetAll_Project_Issues_Nodes> gitlabFirstIssues,
-        IEnumerable<IGetFurtherIssues_Project_Issues_Nodes> gitlabFurtherIssues)
+    private async Task SynchronizeIssuesAsync(IGetAll_Project_Issues? gitlabIssueData, CancellationToken cancellationToken)
     {
+        var currentPageInfo = gitlabIssueData?.PageInfo;
+
+        List<IGetFurtherIssues_Project_Issues_Nodes> gitlabFurtherIssues = [];
+
+        if ((currentPageInfo?.HasNextPage ?? false) && !string.IsNullOrEmpty(currentPageInfo.EndCursor))
+        {
+            var nextIssuesResult = await graphQlService.GetFurtherIssuesAsync(currentPageInfo.EndCursor, cancellationToken);
+
+            gitlabFurtherIssues.AddRange(nextIssuesResult?.Nodes?.Where(issue => issue != null)?.Cast<IGetFurtherIssues_Project_Issues_Nodes>() ?? []);
+
+            while ((nextIssuesResult?.PageInfo?.HasNextPage ?? false) && !string.IsNullOrEmpty(nextIssuesResult.PageInfo.EndCursor))
+            {
+                nextIssuesResult = await graphQlService.GetFurtherIssuesAsync(currentPageInfo.EndCursor, cancellationToken);
+                gitlabFurtherIssues.AddRange(nextIssuesResult?.Nodes?.Where(issue => issue != null)?.Cast<IGetFurtherIssues_Project_Issues_Nodes>() ?? []);
+            }
+        }
+
+        IEnumerable<IGetAll_Project_Issues_Nodes> gitlabFirstIssues = (gitlabIssueData?.Nodes ?? []).Where(issue => issue != null).Cast<IGetAll_Project_Issues_Nodes>();
         IList<Issue> issues = [];
         IList<Release> releases = [];
         foreach (var gitlabIssue in gitlabFirstIssues)

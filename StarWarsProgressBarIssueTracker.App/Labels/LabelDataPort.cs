@@ -47,7 +47,8 @@ public class LabelDataPort : IDataPort<Label>
 
     public async Task AddRangeAsync(IEnumerable<Label> domains, CancellationToken cancellationToken = default)
     {
-        await _repository.AddRangeAsync(_mapper.Map<IEnumerable<DbLabel>>(domains), cancellationToken);
+        var dbLabels = _mapper.Map<IEnumerable<DbLabel>>(domains);
+        await _repository.AddRangeAsync(dbLabels, cancellationToken);
     }
 
     public async Task<Label> UpdateAsync(Label domain, CancellationToken cancellationToken = default)
@@ -73,7 +74,6 @@ public class LabelDataPort : IDataPort<Label>
 
     public async Task DeleteRangeAsync(IEnumerable<Label> domains, CancellationToken cancellationToken = default)
     {
-        _repository.DeleteRange(_mapper.Map<IEnumerable<DbLabel>>(domains), cancellationToken);
-        await Task.CompletedTask;
+        await _repository.DeleteRangeAsync(_mapper.Map<IEnumerable<DbLabel>>(domains), cancellationToken);
     }
 }

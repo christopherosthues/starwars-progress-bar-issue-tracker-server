@@ -20,5 +20,5 @@ public interface IRepository<TEntity>
 
     Task<TEntity> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default);
 
-    void DeleteRange(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
+    Task DeleteRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
 }

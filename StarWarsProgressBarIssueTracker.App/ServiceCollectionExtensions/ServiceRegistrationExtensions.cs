@@ -15,6 +15,8 @@ using StarWarsProgressBarIssueTracker.Domain.Milestones;
 using StarWarsProgressBarIssueTracker.Domain.Releases;
 using StarWarsProgressBarIssueTracker.Domain.Vehicles;
 using StarWarsProgressBarIssueTracker.Infrastructure.Database;
+using StarWarsProgressBarIssueTracker.Infrastructure.GitHub.Configuration;
+using StarWarsProgressBarIssueTracker.Infrastructure.Gitlab.Configuration;
 
 namespace StarWarsProgressBarIssueTracker.App.ServiceCollectionExtensions;
 
@@ -23,8 +25,8 @@ public static class ServiceRegistrationExtensions
     public static IServiceCollection AddIssueTrackerConfigurations(this IServiceCollection serviceCollection, IConfiguration configuration)
     {
         serviceCollection.Configure<IssueTrackerDbConfig>(configuration.GetSection("IssueTrackerDbConfig"));
-        serviceCollection.Configure<IssuesConnectionConfig>(configuration.GetSection("Gitlab"));
-        serviceCollection.Configure<IssuesConnectionConfig>(configuration.GetSection("GitHub"));
+        serviceCollection.Configure<GitlabConfiguration>(configuration.GetSection("Gitlab"));
+        serviceCollection.Configure<GitHubConfiguration>(configuration.GetSection("GitHub"));
 
         return serviceCollection;
     }

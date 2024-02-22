@@ -54,6 +54,7 @@ public class IssueTrackerRepositoryBase<TDbEntity> : IRepository<TDbEntity> wher
     public async Task AddRangeAsync(IEnumerable<TDbEntity> entities, CancellationToken cancellationToken = default)
     {
         await DbSet.AddRangeAsync(entities, cancellationToken);
+        await Context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task<TDbEntity> UpdateAsync(TDbEntity entity, CancellationToken cancellationToken = default)
@@ -72,8 +73,9 @@ public class IssueTrackerRepositoryBase<TDbEntity> : IRepository<TDbEntity> wher
         return deletedEntity;
     }
 
-    public void DeleteRange(IEnumerable<TDbEntity> entities, CancellationToken cancellationToken = default)
+    public async Task DeleteRangeAsync(IEnumerable<TDbEntity> entities, CancellationToken cancellationToken = default)
     {
         DbSet.RemoveRange(entities);
+        await Context.SaveChangesAsync(cancellationToken);
     }
 }
