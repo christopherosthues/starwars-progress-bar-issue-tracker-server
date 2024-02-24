@@ -79,4 +79,21 @@ public class ReleaseService(IDataPort<Release> dataPort) : IReleaseService
 
         return await dataPort.DeleteAsync(id, cancellationToken);
     }
+
+    public async Task SynchronizeFromGitlabAsync(IList<Release> releases, CancellationToken cancellationToken = default)
+    {
+        var existingReleases = await dataPort.GetAllAsync(cancellationToken);
+
+        var releasesToAdd = releases.Where(release =>
+            !existingReleases.Any(existingMilestone => release.GitlabId!.Equals(existingMilestone.GitlabId)));
+
+        var releasesToDelete = existingReleases.Where(existingRelease => existingRelease.GitlabId != null &&
+                                                                               !releases.Any(label => label.GitlabId!.Equals(existingRelease.GitlabId)));
+
+        await dataPort.AddRangeAsync(releasesToAdd, cancellationToken);
+
+        await dataPort.DeleteRangeAsync(releasesToDelete, cancellationToken);
+
+        // TODO: Update milestone, resolve conflicts
+    }
 }

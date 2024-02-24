@@ -264,6 +264,8 @@ public class LabelMutationsTests : IntegrationTestBase
                 dbLabel2
             ]
         };
+        dbLabel.Issues.Add(dbIssue2);
+        dbLabel2.Issues.Add(dbIssue2);
         var dbIssue = new DbIssue
         {
             Id = new Guid("87A2F9BF-CAB7-41D3-84F9-155135FA41D7"), Title = "Issue", Labels = [dbLabel]
@@ -271,6 +273,7 @@ public class LabelMutationsTests : IntegrationTestBase
         await SeedDatabaseAsync(context =>
         {
             context.Labels.Add(dbLabel);
+            context.Labels.Add(dbLabel2);
             context.Issues.Add(dbIssue);
             context.Issues.Add(dbIssue2);
         });

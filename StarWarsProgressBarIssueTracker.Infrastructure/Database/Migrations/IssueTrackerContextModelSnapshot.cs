@@ -24,15 +24,15 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
 
             modelBuilder.Entity("DbIssueDbLabel", b =>
                 {
-                    b.Property<Guid>("IssuesId")
+                    b.Property<Guid>("IssueId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("LabelsId")
+                    b.Property<Guid>("LabelId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("IssuesId", "LabelsId");
+                    b.HasKey("IssueId", "LabelId");
 
-                    b.HasIndex("LabelsId");
+                    b.HasIndex("LabelId");
 
                     b.ToTable("DbIssueDbLabel", "issue_tracker");
                 });
@@ -87,9 +87,6 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid?>("DbVehicleId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Description")
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
@@ -102,6 +99,9 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
 
                     b.Property<string>("GitlabIid")
                         .HasColumnType("text");
+
+                    b.Property<Guid?>("IssueId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime?>("LastModifiedAt")
                         .HasColumnType("timestamp with time zone");
@@ -128,7 +128,7 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DbVehicleId");
+                    b.HasIndex("IssueId");
 
                     b.HasIndex("MilestoneId");
 
@@ -148,6 +148,9 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid>("IssueId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime?>("LastModifiedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -158,6 +161,8 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IssueId");
 
                     b.HasIndex("LinkedIssueId");
 
@@ -417,15 +422,15 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
 
             modelBuilder.Entity("DbIssueDbLabel", b =>
                 {
-                    b.HasOne("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbIssue", null)
+                    b.HasOne("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbLabel", null)
                         .WithMany()
-                        .HasForeignKey("IssuesId")
+                        .HasForeignKey("IssueId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbLabel", null)
+                    b.HasOne("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbIssue", null)
                         .WithMany()
-                        .HasForeignKey("LabelsId")
+                        .HasForeignKey("LabelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -439,17 +444,20 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
 
             modelBuilder.Entity("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbIssue", b =>
                 {
-                    b.HasOne("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbVehicle", null)
-                        .WithMany()
-                        .HasForeignKey("DbVehicleId");
+                    b.HasOne("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbMilestone", null)
+                        .WithMany("Issues")
+                        .HasForeignKey("IssueId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbMilestone", "Milestone")
-                        .WithMany("Issues")
-                        .HasForeignKey("MilestoneId");
+                        .WithMany()
+                        .HasForeignKey("MilestoneId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbRelease", "Release")
                         .WithMany("Issues")
-                        .HasForeignKey("ReleaseId");
+                        .HasForeignKey("ReleaseId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbVehicle", "Vehicle")
                         .WithMany()
@@ -465,9 +473,15 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
             modelBuilder.Entity("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbIssueLink", b =>
                 {
                     b.HasOne("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbIssue", "LinkedIssue")
+                        .WithMany()
+                        .HasForeignKey("IssueId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired();
+
+                    b.HasOne("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbIssue", null)
                         .WithMany("LinkedIssues")
                         .HasForeignKey("LinkedIssueId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
                     b.Navigation("LinkedIssue");

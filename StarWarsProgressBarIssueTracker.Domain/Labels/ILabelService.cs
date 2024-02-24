@@ -2,7 +2,7 @@ namespace StarWarsProgressBarIssueTracker.Domain.Labels;
 
 public interface ILabelService
 {
-    Task<IEnumerable<Label>> GetAllLabelsAsync(CancellationToken cancellationToken);
+    Task<IEnumerable<Label>> GetAllLabelsAsync(CancellationToken cancellationToken = default);
 
     Task<Label?> GetLabelAsync(Guid id, CancellationToken cancellationToken = default);
 
@@ -12,5 +12,5 @@ public interface ILabelService
 
     Task<Label> DeleteLabelAsync(Guid id, CancellationToken cancellationToken = default);
 
-    Task SynchronizeAsync(IList<Label> labels, CancellationToken cancellationToken = default);
+    Task SynchronizeFromGitlabAsync(IList<Label> labels, CancellationToken cancellationToken = default);
 }

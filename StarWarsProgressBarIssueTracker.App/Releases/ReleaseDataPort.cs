@@ -45,6 +45,12 @@ public class ReleaseDataPort : IDataPort<Release>
         return _mapper.Map<Release>(addedDbRelease);
     }
 
+    public async Task AddRangeAsync(IEnumerable<Release> domains, CancellationToken cancellationToken = default)
+    {
+        var dbReleases = _mapper.Map<IEnumerable<DbRelease>>(domains);
+        await _repository.AddRangeAsync(dbReleases, cancellationToken);
+    }
+
     public async Task<Release> UpdateAsync(Release domain, CancellationToken cancellationToken = default)
     {
         DbRelease deRelease = (await _repository.GetByIdAsync(domain.Id, cancellationToken))!;
@@ -64,5 +70,13 @@ public class ReleaseDataPort : IDataPort<Release>
         DbRelease release = (await _repository.GetByIdAsync(id, cancellationToken))!;
 
         return _mapper.Map<Release>(await _repository.DeleteAsync(release, cancellationToken));
+    }
+
+
+    public async Task DeleteRangeAsync(IEnumerable<Release> domains, CancellationToken cancellationToken = default)
+    {
+        var releases = await _repository.GetAll().ToListAsync(cancellationToken);
+        var toBeDeleted = releases.Where(dbRelease => domains.Any(release => release.Id.Equals(dbRelease.Id)));
+        await _repository.DeleteRangeAsync(toBeDeleted, cancellationToken);
     }
 }

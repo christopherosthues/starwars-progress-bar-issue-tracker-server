@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 using StarWarsProgressBarIssueTracker.Domain.Issues;
 
 namespace StarWarsProgressBarIssueTracker.Infrastructure.Models;
@@ -17,18 +18,21 @@ public record DbIssue : DbEntityBase
     public IssueState State { get; set; }
 
     [ForeignKey("MilestoneId")]
+    [DeleteBehavior(DeleteBehavior.SetNull)]
     public DbMilestone? Milestone { get; set; }
 
     [ForeignKey("ReleaseId")]
+    [DeleteBehavior(DeleteBehavior.SetNull)]
     public DbRelease? Release { get; set; }
 
     [ForeignKey("VehicleId")]
     public DbVehicle? Vehicle { get; set; }
 
-    [Column("LabelId")]
+    [ForeignKey("LabelId")]
+    [DeleteBehavior(DeleteBehavior.SetNull)]
     public virtual IList<DbLabel> Labels { get; set; } = [];
 
-    [Column("LinkedIssueId")]
+    [ForeignKey("LinkedIssueId")]
     public virtual IList<DbIssueLink> LinkedIssues { get; set; } = [];
 
     public string? GitlabId { get; set; }

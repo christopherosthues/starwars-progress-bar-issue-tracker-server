@@ -245,6 +245,7 @@ public class MilestoneMutationsTests : IntegrationTestBase
         {
             Id = new Guid("87A2F9BF-CAB7-41D3-84F9-155135FA41D7"), Title = "IssueTitle", Milestone = dbMilestone
         };
+        dbMilestone.Issues.Add(dbIssue);
         var dbMilestone2 = new DbMilestone
         {
             Id = new Guid("B961A621-9848-429A-8B44-B1AF1F0182CE"),
@@ -257,9 +258,11 @@ public class MilestoneMutationsTests : IntegrationTestBase
             Title = "IssueTitle",
             Milestone = dbMilestone2
         };
+        dbMilestone2.Issues.Add(dbIssue2);
         await SeedDatabaseAsync(context =>
         {
             context.Milestones.Add(dbMilestone);
+            context.Milestones.Add(dbMilestone2);
             context.Issues.Add(dbIssue);
             context.Issues.Add(dbIssue2);
         });
@@ -267,7 +270,7 @@ public class MilestoneMutationsTests : IntegrationTestBase
         milestone.LastModifiedAt = DateTime.UtcNow;
         CheckDbContent(context =>
         {
-            context.Milestones.Should().ContainSingle(dbEntity => dbEntity.Id.Equals(dbMilestone.Id));
+            context.Milestones.Should().ContainEquivalentOf(dbMilestone, options => options.Excluding(entity => entity.Issues));
         });
         var mutationRequest = CreateDeleteRequest(milestone);
 
@@ -278,8 +281,12 @@ public class MilestoneMutationsTests : IntegrationTestBase
         AssertDeletedMilestone(response, milestone);
         CheckDbContent(context =>
         {
-            var newDbIssue = context.Issues.Include(dbEntity => dbEntity.Milestone).Single(dbEntity => dbEntity.Id.Equals(dbIssue.Id));
-            newDbIssue.Milestone.Should().BeNull();
+            var dbIssues = context.Issues.Include(dbEntity => dbEntity.Milestone).ToList();
+            dbIssues.Should().Contain(i => i.Id.Equals(dbIssue.Id));
+            dbIssues.Should().Contain(i => i.Id.Equals(dbIssue2.Id));
+
+            var changedDbIssue = context.Issues.Include(dbEntity => dbEntity.Milestone).Single(dbEntity => dbEntity.Id.Equals(dbIssue.Id));
+            changedDbIssue.Milestone.Should().BeNull();
 
             var unchangedDbIssue = context.Issues.Include(dbEntity => dbEntity.Milestone).Single(dbEntity => dbEntity.Id.Equals(dbIssue2.Id));
             unchangedDbIssue.Milestone.Should().NotBeNull();

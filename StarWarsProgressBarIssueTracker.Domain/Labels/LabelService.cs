@@ -98,7 +98,7 @@ public partial class LabelService(IDataPort<Label> dataPort) : ILabelService
         return await dataPort.DeleteAsync(id, cancellationToken);
     }
 
-    public async Task SynchronizeAsync(IList<Label> labels, CancellationToken cancellationToken = default)
+    public async Task SynchronizeFromGitlabAsync(IList<Label> labels, CancellationToken cancellationToken = default)
     {
         var existingLabels = await dataPort.GetAllAsync(cancellationToken);
 

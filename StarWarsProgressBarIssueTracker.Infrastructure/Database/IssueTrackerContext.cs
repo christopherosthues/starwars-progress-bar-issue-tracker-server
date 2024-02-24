@@ -33,9 +33,6 @@ public class IssueTrackerContext(DbContextOptions<IssueTrackerContext> options, 
         modelBuilder.Entity<DbTranslation>().ToTable(nameof(Translations), _configuration.Schema);
         modelBuilder.Entity<DbJob>().ToTable(nameof(Jobs), _configuration.Schema);
         modelBuilder.Entity<DbTask>().ToTable(nameof(Tasks), _configuration.Schema);
-
-        modelBuilder.Entity<DbIssue>()
-            .HasOne<DbVehicle>();
     }
 
     public override int SaveChanges()

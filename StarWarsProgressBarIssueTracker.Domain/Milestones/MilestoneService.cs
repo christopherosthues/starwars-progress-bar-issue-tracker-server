@@ -79,4 +79,21 @@ public class MilestoneService(IDataPort<Milestone> dataPort) : IMilestoneService
 
         return await dataPort.DeleteAsync(id, cancellationToken);
     }
+
+    public async Task SynchronizeFromGitlabAsync(IList<Milestone> milestones, CancellationToken cancellationToken = default)
+    {
+        var existingMilestones = await dataPort.GetAllAsync(cancellationToken);
+
+        var milestonesToAdd = milestones.Where(milestone =>
+            !existingMilestones.Any(existingMilestone => milestone.GitlabId!.Equals(existingMilestone.GitlabId)));
+
+        var milestonesToDelete = existingMilestones.Where(existingMilestone => existingMilestone.GitlabId != null &&
+                                                                   !milestones.Any(label => label.GitlabId!.Equals(existingMilestone.GitlabId)));
+
+        await dataPort.AddRangeAsync(milestonesToAdd, cancellationToken);
+
+        await dataPort.DeleteRangeAsync(milestonesToDelete, cancellationToken);
+
+        // TODO: Update milestone, resolve conflicts
+    }
 }

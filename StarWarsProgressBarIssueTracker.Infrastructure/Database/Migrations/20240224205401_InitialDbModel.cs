@@ -171,7 +171,7 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                     GitlabId = table.Column<string>(type: "text", nullable: true),
                     GitlabIid = table.Column<string>(type: "text", nullable: true),
                     GitHubId = table.Column<string>(type: "text", nullable: true),
-                    DbVehicleId = table.Column<Guid>(type: "uuid", nullable: true),
+                    IssueId = table.Column<Guid>(type: "uuid", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
@@ -179,23 +179,26 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                 {
                     table.PrimaryKey("PK_Issues", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Issues_Milestones_IssueId",
+                        column: x => x.IssueId,
+                        principalSchema: "issue_tracker",
+                        principalTable: "Milestones",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
                         name: "FK_Issues_Milestones_MilestoneId",
                         column: x => x.MilestoneId,
                         principalSchema: "issue_tracker",
                         principalTable: "Milestones",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Issues_Releases_ReleaseId",
                         column: x => x.ReleaseId,
                         principalSchema: "issue_tracker",
                         principalTable: "Releases",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Issues_Vehicles_DbVehicleId",
-                        column: x => x.DbVehicleId,
-                        principalSchema: "issue_tracker",
-                        principalTable: "Vehicles",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Issues_Vehicles_VehicleId",
                         column: x => x.VehicleId,
@@ -254,22 +257,22 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                 schema: "issue_tracker",
                 columns: table => new
                 {
-                    IssuesId = table.Column<Guid>(type: "uuid", nullable: false),
-                    LabelsId = table.Column<Guid>(type: "uuid", nullable: false)
+                    IssueId = table.Column<Guid>(type: "uuid", nullable: false),
+                    LabelId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DbIssueDbLabel", x => new { x.IssuesId, x.LabelsId });
+                    table.PrimaryKey("PK_DbIssueDbLabel", x => new { x.IssueId, x.LabelId });
                     table.ForeignKey(
-                        name: "FK_DbIssueDbLabel_Issues_IssuesId",
-                        column: x => x.IssuesId,
+                        name: "FK_DbIssueDbLabel_Issues_LabelId",
+                        column: x => x.LabelId,
                         principalSchema: "issue_tracker",
                         principalTable: "Issues",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_DbIssueDbLabel_Labels_LabelsId",
-                        column: x => x.LabelsId,
+                        name: "FK_DbIssueDbLabel_Labels_IssueId",
+                        column: x => x.IssueId,
                         principalSchema: "issue_tracker",
                         principalTable: "Labels",
                         principalColumn: "Id",
@@ -283,6 +286,7 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Type = table.Column<int>(type: "integer", nullable: false),
+                    IssueId = table.Column<Guid>(type: "uuid", nullable: false),
                     LinkedIssueId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
@@ -291,12 +295,19 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                 {
                     table.PrimaryKey("PK_IssueLinks", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_IssueLinks_Issues_IssueId",
+                        column: x => x.IssueId,
+                        principalSchema: "issue_tracker",
+                        principalTable: "Issues",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
                         name: "FK_IssueLinks_Issues_LinkedIssueId",
                         column: x => x.LinkedIssueId,
                         principalSchema: "issue_tracker",
                         principalTable: "Issues",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateIndex(
@@ -306,10 +317,16 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                 column: "AppearanceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DbIssueDbLabel_LabelsId",
+                name: "IX_DbIssueDbLabel_LabelId",
                 schema: "issue_tracker",
                 table: "DbIssueDbLabel",
-                column: "LabelsId");
+                column: "LabelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_IssueLinks_IssueId",
+                schema: "issue_tracker",
+                table: "IssueLinks",
+                column: "IssueId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_IssueLinks_LinkedIssueId",
@@ -318,10 +335,10 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                 column: "LinkedIssueId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Issues_DbVehicleId",
+                name: "IX_Issues_IssueId",
                 schema: "issue_tracker",
                 table: "Issues",
-                column: "DbVehicleId");
+                column: "IssueId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Issues_MilestoneId",

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 using StarWarsProgressBarIssueTracker.Domain.Labels;
 
 namespace StarWarsProgressBarIssueTracker.Infrastructure.Models;
@@ -18,7 +19,8 @@ public record DbLabel : DbEntityBase
     [StringLength(LabelConstants.ColorHexLength, MinimumLength = LabelConstants.ColorHexLength)]
     public required string TextColor { get; set; }
 
-    [Column("IssueId")]
+    [ForeignKey("IssueId")]
+    [DeleteBehavior(DeleteBehavior.SetNull)]
     public virtual IList<DbIssue> Issues { get; set; } = [];
 
     public string? GitlabId { get; set; }

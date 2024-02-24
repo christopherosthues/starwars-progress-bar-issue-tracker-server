@@ -45,6 +45,12 @@ public class MilestoneDataPort : IDataPort<Milestone>
         return _mapper.Map<Milestone>(addedDbMilestone);
     }
 
+    public async Task AddRangeAsync(IEnumerable<Milestone> domains, CancellationToken cancellationToken = default)
+    {
+        var dbMilestones = _mapper.Map<IEnumerable<DbMilestone>>(domains);
+        await _repository.AddRangeAsync(dbMilestones, cancellationToken);
+    }
+
     public async Task<Milestone> UpdateAsync(Milestone domain, CancellationToken cancellationToken = default)
     {
         DbMilestone deMilestone = (await _repository.GetByIdAsync(domain.Id, cancellationToken))!;
@@ -62,15 +68,17 @@ public class MilestoneDataPort : IDataPort<Milestone>
     {
         DbMilestone milestone = (await _repository.GetByIdAsync(id, cancellationToken))!;
 
-        foreach (var dbIssue in milestone.Issues)
-        {
-            dbIssue.Milestone = null;
-        }
-
         milestone.Issues.Clear();
 
         await _repository.UpdateAsync(milestone, cancellationToken);
 
         return _mapper.Map<Milestone>(await _repository.DeleteAsync(milestone, cancellationToken));
+    }
+
+    public async Task DeleteRangeAsync(IEnumerable<Milestone> domains, CancellationToken cancellationToken = default)
+    {
+        var milestones = await _repository.GetAll().ToListAsync(cancellationToken);
+        var toBeDeleted = milestones.Where(dbMilestone => domains.Any(milestone => milestone.Id.Equals(dbMilestone.Id)));
+        await _repository.DeleteRangeAsync(toBeDeleted, cancellationToken);
     }
 }

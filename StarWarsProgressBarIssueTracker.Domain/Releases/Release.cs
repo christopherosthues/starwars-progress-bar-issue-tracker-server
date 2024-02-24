@@ -14,4 +14,10 @@ public class Release : DomainBase
     public DateTime? Date { get; set; }
 
     public IList<Issue> Issues { get; set; } = [];
+
+    public string? GitlabId { get; set; }
+
+    public string? GitlabIid { get; set; }
+
+    public string? GitHubId { get; set; }
 }
