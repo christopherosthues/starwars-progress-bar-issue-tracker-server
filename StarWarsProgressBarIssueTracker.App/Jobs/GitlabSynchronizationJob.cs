@@ -40,7 +40,7 @@ public class GitlabSynchronizationJob(GraphQLService graphQlService,
                 Description = gitlabLabel.Description,
                 Color = gitlabLabel.Color,
                 TextColor = gitlabLabel.TextColor,
-                LastModifiedAt = DateTime.Parse(gitlabLabel.UpdatedAt)
+                LastModifiedAt = DateTime.Parse(gitlabLabel.UpdatedAt).ToUniversalTime()
             }).ToList();
 
         await labelService.SynchronizeAsync(labels, cancellationToken);
@@ -55,7 +55,7 @@ public class GitlabSynchronizationJob(GraphQLService graphQlService,
                 Title = gitlabMilestone.Title,
                 Description = gitlabMilestone.Description,
                 State = MapMilestoneState(gitlabMilestone.State),
-                LastModifiedAt = DateTime.Parse(gitlabMilestone.UpdatedAt)
+                LastModifiedAt = DateTime.Parse(gitlabMilestone.UpdatedAt).ToUniversalTime()
             }).ToList();
 
         await Task.CompletedTask;
@@ -100,7 +100,8 @@ public class GitlabSynchronizationJob(GraphQLService graphQlService,
                     Title = gitlabIssue.Title,
                     Notes = gitlabIssue.Description,
                     State = MapReleaseState(gitlabIssue.State),
-                    Date = gitlabIssue.DueDate != null ? DateTime.Parse(gitlabIssue.DueDate) : null
+                    Date = gitlabIssue.DueDate != null ? DateTime.Parse(gitlabIssue.DueDate) : null,
+                    LastModifiedAt = DateTime.Parse(gitlabIssue.UpdatedAt).ToUniversalTime()
                 });
             }
             else
@@ -110,7 +111,7 @@ public class GitlabSynchronizationJob(GraphQLService graphQlService,
                     Title = gitlabIssue.Title,
                     Description = gitlabIssue.Description,
                     State = MapIssueState(gitlabIssue.State),
-                    LastModifiedAt = DateTime.Parse(gitlabIssue.UpdatedAt)
+                    LastModifiedAt = DateTime.Parse(gitlabIssue.UpdatedAt).ToUniversalTime()
                 });
             }
         }
@@ -123,7 +124,8 @@ public class GitlabSynchronizationJob(GraphQLService graphQlService,
                     Title = gitlabIssue.Title,
                     Notes = gitlabIssue.Description,
                     State = MapReleaseState(gitlabIssue.State),
-                    Date = gitlabIssue.DueDate != null ? DateTime.Parse(gitlabIssue.DueDate) : null
+                    Date = gitlabIssue.DueDate != null ? DateTime.Parse(gitlabIssue.DueDate) : null,
+                    LastModifiedAt = DateTime.Parse(gitlabIssue.UpdatedAt).ToUniversalTime()
                 });
             }
             else
@@ -133,7 +135,7 @@ public class GitlabSynchronizationJob(GraphQLService graphQlService,
                     Title = gitlabIssue.Title,
                     Description = gitlabIssue.Description,
                     State = MapIssueState(gitlabIssue.State),
-                    LastModifiedAt = DateTime.Parse(gitlabIssue.UpdatedAt)
+                    LastModifiedAt = DateTime.Parse(gitlabIssue.UpdatedAt).ToUniversalTime()
                 });
             }
         }

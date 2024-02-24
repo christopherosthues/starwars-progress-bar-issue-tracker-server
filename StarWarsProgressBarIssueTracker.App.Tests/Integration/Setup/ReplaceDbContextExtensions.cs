@@ -20,7 +20,7 @@ public static class ReplaceDbContextExtensions
         var connection = new SqliteConnection("DataSource=:memory:");
         connection.Open();
 
-        services.AddDbContext<IssueTrackerContext>((container, options) =>
+        services.AddDbContext<IssueTrackerContext>((_, options) =>
         {
             options.UseSqlite(connection);
         });
