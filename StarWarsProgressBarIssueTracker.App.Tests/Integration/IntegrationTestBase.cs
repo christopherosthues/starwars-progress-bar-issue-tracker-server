@@ -53,7 +53,7 @@ public class IntegrationTestBase
         await dbContext.SaveChangesAsync();
     }
 
-    protected async Task SeedDatabase(Action<IssueTrackerContext> seed)
+    protected async Task SeedDatabaseAsync(Action<IssueTrackerContext> seed)
     {
         using var scope = ApiFactory.Services.CreateScope();
         var serviceProvider = scope.ServiceProvider;

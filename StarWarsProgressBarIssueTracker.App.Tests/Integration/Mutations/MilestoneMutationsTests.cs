@@ -47,7 +47,7 @@ public class MilestoneMutationsTests : IntegrationTestBase
             State = MilestoneState.Open,
             LastModifiedAt = DateTime.UtcNow.AddDays(1)
         };
-        await SeedDatabase(context =>
+        await SeedDatabaseAsync(context =>
         {
             context.Milestones.Add(dbMilestone);
         });
@@ -95,7 +95,7 @@ public class MilestoneMutationsTests : IntegrationTestBase
             State = MilestoneState.Open,
             LastModifiedAt = DateTime.UtcNow.AddDays(1)
         };
-        await SeedDatabase(context =>
+        await SeedDatabaseAsync(context =>
         {
             context.Milestones.Add(dbMilestone);
         });
@@ -138,7 +138,7 @@ public class MilestoneMutationsTests : IntegrationTestBase
         };
 
 
-        await SeedDatabase(context =>
+        await SeedDatabaseAsync(context =>
         {
             context.Milestones.Add(dbMilestone);
             context.Milestones.Add(dbMilestone2);
@@ -209,7 +209,7 @@ public class MilestoneMutationsTests : IntegrationTestBase
             State = milestone.State,
             LastModifiedAt = DateTime.UtcNow.AddDays(1)
         };
-        await SeedDatabase(context =>
+        await SeedDatabaseAsync(context =>
         {
             context.Milestones.Add(dbMilestone);
         });
@@ -257,7 +257,7 @@ public class MilestoneMutationsTests : IntegrationTestBase
             Title = "IssueTitle",
             Milestone = dbMilestone2
         };
-        await SeedDatabase(context =>
+        await SeedDatabaseAsync(context =>
         {
             context.Milestones.Add(dbMilestone);
             context.Issues.Add(dbIssue);
@@ -310,7 +310,7 @@ public class MilestoneMutationsTests : IntegrationTestBase
         };
 
 
-        await SeedDatabase(context =>
+        await SeedDatabaseAsync(context =>
         {
             context.Milestones.Add(dbMilestone);
             context.Milestones.Add(dbMilestone2);

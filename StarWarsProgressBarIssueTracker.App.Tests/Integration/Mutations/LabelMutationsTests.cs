@@ -48,7 +48,7 @@ public class LabelMutationsTests : IntegrationTestBase
             TextColor = "334455",
             LastModifiedAt = DateTime.UtcNow.AddDays(1)
         };
-        await SeedDatabase(context =>
+        await SeedDatabaseAsync(context =>
         {
             context.Labels.Add(dbLabel);
         });
@@ -97,7 +97,7 @@ public class LabelMutationsTests : IntegrationTestBase
             TextColor = "334455",
             LastModifiedAt = DateTime.UtcNow.AddDays(1)
         };
-        await SeedDatabase(context =>
+        await SeedDatabaseAsync(context =>
         {
             context.Labels.Add(dbLabel);
         });
@@ -142,7 +142,7 @@ public class LabelMutationsTests : IntegrationTestBase
         };
 
 
-        await SeedDatabase(context =>
+        await SeedDatabaseAsync(context =>
         {
             context.Labels.Add(dbLabel);
             context.Labels.Add(dbLabel2);
@@ -214,7 +214,7 @@ public class LabelMutationsTests : IntegrationTestBase
             TextColor = label.TextColor,
             LastModifiedAt = DateTime.UtcNow.AddDays(1)
         };
-        await SeedDatabase(context =>
+        await SeedDatabaseAsync(context =>
         {
             context.Labels.Add(dbLabel);
         });
@@ -268,7 +268,7 @@ public class LabelMutationsTests : IntegrationTestBase
         {
             Id = new Guid("87A2F9BF-CAB7-41D3-84F9-155135FA41D7"), Title = "Issue", Labels = [dbLabel]
         };
-        await SeedDatabase(context =>
+        await SeedDatabaseAsync(context =>
         {
             context.Labels.Add(dbLabel);
             context.Issues.Add(dbIssue);
@@ -326,7 +326,7 @@ public class LabelMutationsTests : IntegrationTestBase
         };
 
 
-        await SeedDatabase(context =>
+        await SeedDatabaseAsync(context =>
         {
             context.Labels.Add(dbLabel);
             context.Labels.Add(dbLabel2);

@@ -70,7 +70,7 @@ public class MilestoneQueriesTests : IntegrationTestBase
             ]
         };
         dbIssue.Milestone = dbMilestone2;
-        await SeedDatabase(context =>
+        await SeedDatabaseAsync(context =>
         {
             context.Milestones.Add(dbMilestone);
             context.Milestones.Add(dbMilestone2);
@@ -130,7 +130,7 @@ public class MilestoneQueriesTests : IntegrationTestBase
     public async Task GetMilestoneShouldReturnNullIfReleaseWithGivenIdDoesNotExist()
     {
         // Arrange
-        await SeedDatabase(context =>
+        await SeedDatabaseAsync(context =>
         {
             context.Milestones.Add(new DbMilestone
             {
@@ -207,7 +207,7 @@ public class MilestoneQueriesTests : IntegrationTestBase
             LastModifiedAt = DateTime.UtcNow.AddDays(-1),
             Issues = [dbIssue]
         };
-        await SeedDatabase(context =>
+        await SeedDatabaseAsync(context =>
         {
             context.Milestones.Add(new DbMilestone
             {

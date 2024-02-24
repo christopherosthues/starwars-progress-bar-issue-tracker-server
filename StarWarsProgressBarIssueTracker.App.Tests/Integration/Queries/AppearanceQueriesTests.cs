@@ -45,7 +45,7 @@ public class AppearanceQueriesTests : IntegrationTestBase
         {
             Color = "112233", TextColor = "334455", Title = "Appearance 2", Description = "Description 2"
         };
-        await SeedDatabase(context =>
+        await SeedDatabaseAsync(context =>
         {
             context.Appearances.Add(dbAppearance);
             context.Appearances.Add(dbAppearance2);
@@ -93,7 +93,7 @@ public class AppearanceQueriesTests : IntegrationTestBase
     public async Task GetAppearanceShouldReturnNullIfAppearanceWithGivenIdDoesNotExist()
     {
         // Arrange
-        await SeedDatabase(context =>
+        await SeedDatabaseAsync(context =>
         {
             context.Appearances.Add(new DbAppearance
             {
@@ -154,7 +154,7 @@ public class AppearanceQueriesTests : IntegrationTestBase
             Title = "Appearance 2",
             Description = "Description 2"
         };
-        await SeedDatabase(context =>
+        await SeedDatabaseAsync(context =>
         {
             context.Appearances.Add(new DbAppearance
             {

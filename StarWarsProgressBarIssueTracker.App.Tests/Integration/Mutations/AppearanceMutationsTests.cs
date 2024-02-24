@@ -48,7 +48,7 @@ public class AppearanceMutationsTests : IntegrationTestBase
             TextColor = "334455",
             LastModifiedAt = DateTime.UtcNow.AddDays(1)
         };
-        await SeedDatabase(context =>
+        await SeedDatabaseAsync(context =>
         {
             context.Appearances.Add(dbAppearance);
         });
@@ -97,7 +97,7 @@ public class AppearanceMutationsTests : IntegrationTestBase
             TextColor = "334455",
             LastModifiedAt = DateTime.UtcNow.AddDays(1)
         };
-        await SeedDatabase(context =>
+        await SeedDatabaseAsync(context =>
         {
             context.Appearances.Add(dbAppearance);
         });
@@ -142,7 +142,7 @@ public class AppearanceMutationsTests : IntegrationTestBase
         };
 
 
-        await SeedDatabase(context =>
+        await SeedDatabaseAsync(context =>
         {
             context.Appearances.Add(dbAppearance);
             context.Appearances.Add(dbAppearance2);
@@ -214,7 +214,7 @@ public class AppearanceMutationsTests : IntegrationTestBase
             TextColor = appearance.TextColor,
             LastModifiedAt = DateTime.UtcNow.AddDays(1)
         };
-        await SeedDatabase(context =>
+        await SeedDatabaseAsync(context =>
         {
             context.Appearances.Add(dbAppearance);
         });
@@ -264,7 +264,7 @@ public class AppearanceMutationsTests : IntegrationTestBase
                 dbAppearance2
             ]
         };
-        await SeedDatabase(context =>
+        await SeedDatabaseAsync(context =>
         {
             var dbVehicle = new DbVehicle
             {
@@ -325,7 +325,7 @@ public class AppearanceMutationsTests : IntegrationTestBase
         };
 
 
-        await SeedDatabase(context =>
+        await SeedDatabaseAsync(context =>
         {
             context.Appearances.Add(dbAppearance);
             context.Appearances.Add(dbAppearance2);

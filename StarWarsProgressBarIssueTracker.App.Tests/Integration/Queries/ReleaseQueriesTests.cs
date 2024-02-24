@@ -70,7 +70,7 @@ public class ReleaseQueriesTests : IntegrationTestBase
             ]
         };
         dbIssue.Release = dbRelease2;
-        await SeedDatabase(context =>
+        await SeedDatabaseAsync(context =>
         {
             context.Releases.Add(dbRelease);
             context.Releases.Add(dbRelease2);
@@ -132,7 +132,7 @@ public class ReleaseQueriesTests : IntegrationTestBase
     public async Task GetReleaseShouldReturnNullIfReleaseWithGivenIdDoesNotExist()
     {
         // Arrange
-        await SeedDatabase(context =>
+        await SeedDatabaseAsync(context =>
         {
             context.Releases.Add(new DbRelease
             {
@@ -208,7 +208,7 @@ public class ReleaseQueriesTests : IntegrationTestBase
             LastModifiedAt = DateTime.UtcNow.AddDays(-1),
             Issues = [dbIssue]
         };
-        await SeedDatabase(context =>
+        await SeedDatabaseAsync(context =>
         {
             context.Releases.Add(new DbRelease
             {

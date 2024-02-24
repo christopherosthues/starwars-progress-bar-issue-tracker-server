@@ -47,7 +47,7 @@ public class LabelQueriesTests : IntegrationTestBase
         {
             Color = "112233", TextColor = "334455", Title = "Label 2", Description = "Description 2"
         };
-        await SeedDatabase(context =>
+        await SeedDatabaseAsync(context =>
         {
             context.Labels.Add(dbLabel);
             context.Labels.Add(dbLabel2);
@@ -95,7 +95,7 @@ public class LabelQueriesTests : IntegrationTestBase
     public async Task GetLabelShouldReturnNullIfLabelWithGivenIdDoesNotExist()
     {
         // Arrange
-        await SeedDatabase(context =>
+        await SeedDatabaseAsync(context =>
         {
             context.Labels.Add(new DbLabel
             {
@@ -173,7 +173,7 @@ public class LabelQueriesTests : IntegrationTestBase
             Description = "Description 2",
             Issues = [dbIssue]
         };
-        await SeedDatabase(context =>
+        await SeedDatabaseAsync(context =>
         {
             context.Issues.Add(dbIssue);
             context.Labels.Add(new DbLabel

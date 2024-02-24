@@ -47,7 +47,7 @@ public static class GitlabMockData
                                         }
                                         """;
 
-    public static IEnumerable<DbLabel> AddedLabels()
+    public static IList<DbLabel> AddedLabels()
     {
         return
         [
