@@ -26,6 +26,9 @@ jobs:
       with:
         dotnet-version: 8.x
 
+    - name: Trust developer certificate
+      run: dotnet dev-certs https --trust
+
     - name: Restore dependencies
       run: dotnet restore StarWarsProgressBarIssueTracker.App.Tests/StarWarsProgressBarIssueTracker.App.Tests.csproj
 

@@ -23,7 +23,6 @@ public class GitlabSynchronizationJobTests : IntegrationTestBase
         {
             Port = 8081,
             UseSSL = true,
-            ClientCertificateMode = ClientCertificateMode.AllowCertificate,
             CertificateSettings = new WireMockCertificateSettings
             {
                 X509StoreName = "My",
