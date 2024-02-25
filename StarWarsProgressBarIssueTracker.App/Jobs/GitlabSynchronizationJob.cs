@@ -13,7 +13,7 @@ public class GitlabSynchronizationJob(GraphQLService graphQlService,
     // RestService restService
     ILabelService labelService,
     IMilestoneService milestoneService,
-    // IIssueService issueService,
+    IIssueService issueService,
     IReleaseService releaseService
     )
     : IJob
@@ -88,6 +88,8 @@ public class GitlabSynchronizationJob(GraphQLService graphQlService,
             {
                 releases.Add(new Release
                 {
+                    GitlabId = gitlabIssue.Id,
+                    GitlabIid = gitlabIssue.Iid,
                     Title = gitlabIssue.Title,
                     Notes = gitlabIssue.Description,
                     State = MapReleaseState(gitlabIssue.State),
@@ -99,6 +101,8 @@ public class GitlabSynchronizationJob(GraphQLService graphQlService,
             {
                 issues.Add(new Issue
                 {
+                    GitlabId = gitlabIssue.Id,
+                    GitlabIid = gitlabIssue.Iid,
                     Title = gitlabIssue.Title,
                     Description = gitlabIssue.Description,
                     State = MapIssueState(gitlabIssue.State),
@@ -112,6 +116,8 @@ public class GitlabSynchronizationJob(GraphQLService graphQlService,
             {
                 releases.Add(new Release
                 {
+                    GitlabId = gitlabIssue.Id,
+                    GitlabIid = gitlabIssue.Iid,
                     Title = gitlabIssue.Title,
                     Notes = gitlabIssue.Description,
                     State = MapReleaseState(gitlabIssue.State),
@@ -123,6 +129,8 @@ public class GitlabSynchronizationJob(GraphQLService graphQlService,
             {
                 issues.Add(new Issue
                 {
+                    GitlabId = gitlabIssue.Id,
+                    GitlabIid = gitlabIssue.Iid,
                     Title = gitlabIssue.Title,
                     Description = gitlabIssue.Description,
                     State = MapIssueState(gitlabIssue.State),
@@ -132,6 +140,7 @@ public class GitlabSynchronizationJob(GraphQLService graphQlService,
         }
 
         await releaseService.SynchronizeFromGitlabAsync(releases, cancellationToken);
+        await issueService.SynchronizeFromGitlabAsync(issues, cancellationToken);
     }
 
     private async Task<List<IGetFurtherIssues_Project_Issues_Nodes>> LoadAllRemainingIssues(CancellationToken cancellationToken,

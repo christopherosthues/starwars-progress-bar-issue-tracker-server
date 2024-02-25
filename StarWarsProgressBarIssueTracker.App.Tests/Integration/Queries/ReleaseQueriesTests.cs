@@ -3,6 +3,7 @@ using FluentAssertions.Execution;
 using GraphQL;
 using StarWarsProgressBarIssueTracker.App.Queries;
 using StarWarsProgressBarIssueTracker.App.Tests.Helpers.GraphQL.Payloads.Releases;
+using StarWarsProgressBarIssueTracker.Common.Tests;
 using StarWarsProgressBarIssueTracker.Domain.Issues;
 using StarWarsProgressBarIssueTracker.Domain.Milestones;
 using StarWarsProgressBarIssueTracker.Domain.Releases;
@@ -11,6 +12,7 @@ using StarWarsProgressBarIssueTracker.Infrastructure.Models;
 namespace StarWarsProgressBarIssueTracker.App.Tests.Integration.Queries;
 
 [TestFixture(TestOf = typeof(IssueTrackerQueries))]
+[Category(TestCategory.Integration)]
 public class ReleaseQueriesTests : IntegrationTestBase
 {
     [Test]

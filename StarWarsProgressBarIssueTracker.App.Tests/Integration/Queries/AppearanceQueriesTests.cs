@@ -3,11 +3,13 @@ using FluentAssertions.Execution;
 using GraphQL;
 using StarWarsProgressBarIssueTracker.App.Queries;
 using StarWarsProgressBarIssueTracker.App.Tests.Helpers.GraphQL.Payloads.Appearances;
+using StarWarsProgressBarIssueTracker.Common.Tests;
 using StarWarsProgressBarIssueTracker.Infrastructure.Models;
 
 namespace StarWarsProgressBarIssueTracker.App.Tests.Integration.Queries;
 
 [TestFixture(TestOf = typeof(IssueTrackerQueries))]
+[Category(TestCategory.Integration)]
 public class AppearanceQueriesTests : IntegrationTestBase
 {
     [Test]

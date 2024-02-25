@@ -84,4 +84,10 @@ public class IssueService(IDataPort<Issue> dataPort) : IIssueService
 
         return await dataPort.DeleteAsync(id, cancellationToken);
     }
+
+    public async Task SynchronizeFromGitlabAsync(IList<Issue> issues, CancellationToken cancellationToken)
+    {
+        // TODO: implement me
+        await Task.CompletedTask;
+    }
 }

@@ -88,7 +88,7 @@ public class MilestoneService(IDataPort<Milestone> dataPort) : IMilestoneService
             !existingMilestones.Any(existingMilestone => milestone.GitlabId!.Equals(existingMilestone.GitlabId)));
 
         var milestonesToDelete = existingMilestones.Where(existingMilestone => existingMilestone.GitlabId != null &&
-                                                                   !milestones.Any(label => label.GitlabId!.Equals(existingMilestone.GitlabId)));
+                                                                   !milestones.Any(milestone => milestone.GitlabId!.Equals(existingMilestone.GitlabId)));
 
         await dataPort.AddRangeAsync(milestonesToAdd, cancellationToken);
 

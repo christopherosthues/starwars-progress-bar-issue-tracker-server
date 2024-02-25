@@ -9,7 +9,7 @@ WORKDIR /src
 COPY StarWarsProgressBarIssueTracker.App/StarWarsProgressBarIssueTracker.App.csproj ./StarWarsProgressBarIssueTracker.App/
 COPY StarWarsProgressBarIssueTracker.Domain/StarWarsProgressBarIssueTracker.Domain.csproj ./StarWarsProgressBarIssueTracker.Domain/
 COPY StarWarsProgressBarIssueTracker.Infrastructure/StarWarsProgressBarIssueTracker.Infrastructure.csproj ./StarWarsProgressBarIssueTracker.Infrastructure/
-COPY StarWarsProgressBarIssueTracker.Infrastructure.Github/StarWarsProgressBarIssueTracker.Infrastructure.Github.csproj ./StarWarsProgressBarIssueTracker.Infrastructure.Github/
+COPY StarWarsProgressBarIssueTracker.Infrastructure.GitHub/StarWarsProgressBarIssueTracker.Infrastructure.GitHub.csproj ./StarWarsProgressBarIssueTracker.Infrastructure.GitHub/
 COPY StarWarsProgressBarIssueTracker.Infrastructure.Gitlab/StarWarsProgressBarIssueTracker.Infrastructure.Gitlab.csproj ./StarWarsProgressBarIssueTracker.Infrastructure.Gitlab/
 RUN dotnet restore "./StarWarsProgressBarIssueTracker.App/StarWarsProgressBarIssueTracker.App.csproj"
 COPY . .

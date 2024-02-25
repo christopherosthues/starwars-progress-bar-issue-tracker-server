@@ -85,10 +85,10 @@ public class ReleaseService(IDataPort<Release> dataPort) : IReleaseService
         var existingReleases = await dataPort.GetAllAsync(cancellationToken);
 
         var releasesToAdd = releases.Where(release =>
-            !existingReleases.Any(existingMilestone => release.GitlabId!.Equals(existingMilestone.GitlabId)));
+            !existingReleases.Any(existingRelease => release.GitlabId!.Equals(existingRelease.GitlabId)));
 
         var releasesToDelete = existingReleases.Where(existingRelease => existingRelease.GitlabId != null &&
-                                                                               !releases.Any(label => label.GitlabId!.Equals(existingRelease.GitlabId)));
+                                                                               !releases.Any(release => release.GitlabId!.Equals(existingRelease.GitlabId)));
 
         await dataPort.AddRangeAsync(releasesToAdd, cancellationToken);
 

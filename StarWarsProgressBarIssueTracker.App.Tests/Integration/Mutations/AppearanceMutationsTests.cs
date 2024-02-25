@@ -5,12 +5,14 @@ using GraphQL;
 using Microsoft.EntityFrameworkCore;
 using StarWarsProgressBarIssueTracker.App.Mutations;
 using StarWarsProgressBarIssueTracker.App.Tests.Helpers.GraphQL.Payloads.Appearances;
+using StarWarsProgressBarIssueTracker.Common.Tests;
 using StarWarsProgressBarIssueTracker.Domain.Vehicles;
 using StarWarsProgressBarIssueTracker.Infrastructure.Models;
 
 namespace StarWarsProgressBarIssueTracker.App.Tests.Integration.Mutations;
 
 [TestFixture(TestOf = typeof(IssueTrackerMutations))]
+[Category(TestCategory.Integration)]
 public class AppearanceMutationsTests : IntegrationTestBase
 {
     private const string AllowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ß_#%";

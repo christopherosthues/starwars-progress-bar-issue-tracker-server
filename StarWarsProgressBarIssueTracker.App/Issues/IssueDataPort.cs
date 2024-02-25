@@ -45,6 +45,12 @@ public class IssueDataPort : IDataPort<Issue>
         return _mapper.Map<Issue>(addedDbIssue);
     }
 
+    public async Task AddRangeAsync(IEnumerable<Issue> domains, CancellationToken cancellationToken = default)
+    {
+        var dbIssues = _mapper.Map<IEnumerable<DbIssue>>(domains);
+        await _repository.AddRangeAsync(dbIssues, cancellationToken);
+    }
+
     public async Task<Issue> UpdateAsync(Issue domain, CancellationToken cancellationToken = default)
     {
         DbIssue deIssue = (await _repository.GetByIdAsync(domain.Id, cancellationToken))!;
@@ -72,5 +78,12 @@ public class IssueDataPort : IDataPort<Issue>
         // Vehicle, Translations, Photos, Links should also be deleted
 
         return _mapper.Map<Issue>(await _repository.DeleteAsync(issue, cancellationToken));
+    }
+
+    public async Task DeleteRangeAsync(IEnumerable<Issue> domains, CancellationToken cancellationToken = default)
+    {
+        var issues = await _repository.GetAll().ToListAsync(cancellationToken);
+        var toBeDeleted = issues.Where(dbIssue => domains.Any(issue => issue.Id.Equals(dbIssue.Id)));
+        await _repository.DeleteRangeAsync(toBeDeleted, cancellationToken);
     }
 }

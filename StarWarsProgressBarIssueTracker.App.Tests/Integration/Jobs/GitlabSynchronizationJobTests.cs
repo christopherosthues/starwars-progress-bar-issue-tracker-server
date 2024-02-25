@@ -2,16 +2,17 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using StarWarsProgressBarIssueTracker.App.Jobs;
+using StarWarsProgressBarIssueTracker.Common.Tests;
 using StarWarsProgressBarIssueTracker.Infrastructure.Models;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
 using WireMock.Settings;
-using WireMock.Types;
 
 namespace StarWarsProgressBarIssueTracker.App.Tests.Integration.Jobs;
 
 [TestFixture(TestOf = typeof(GitlabSynchronizationJob))]
+[Category(TestCategory.LocalIntegration)]
 public class GitlabSynchronizationJobTests : IntegrationTestBase
 {
     private WireMockServer _server = default!;
@@ -78,6 +79,7 @@ public class GitlabSynchronizationJobTests : IntegrationTestBase
             context.Issues.Should().ContainEquivalentOf(dbIssue,
                 options => options.Excluding(issue => issue.Id).Excluding(issue => issue.CreatedAt)
                     .Excluding(issue => issue.Labels));
+            context.Issues.Include(entity => entity.Labels).First().Labels.Should().NotBeEmpty();
         });
 
         // Act
@@ -143,6 +145,7 @@ public class GitlabSynchronizationJobTests : IntegrationTestBase
             context.Issues.Should().ContainEquivalentOf(dbIssue,
                 options => options.Excluding(issue => issue.Id).Excluding(issue => issue.CreatedAt)
                     .Excluding(issue => issue.Milestone));
+            context.Issues.Include(entity => entity.Milestone).First().Milestone.Should().NotBeNull();
         });
 
         // Act
@@ -166,6 +169,73 @@ public class GitlabSynchronizationJobTests : IntegrationTestBase
                 .Excluding(issue => issue.LastModifiedAt).Excluding(issue => issue.CreatedAt)
                 .Excluding(issue => issue.Milestone));
             issues.First().Milestone.Should().BeNull();
+        });
+    }
+
+    [Test]
+    public async Task ExecuteAsyncShouldUpdateReleases()
+    {
+        // Arrange
+        var expectedDbReleases = GitlabMockData.AddedReleases();
+        var dbIssue = new DbIssue { Title = "NotDeleted", };
+        var deletedRelease = new DbRelease
+        {
+            Title = "Deleted", GitlabId = "gid://gitlab/Issue/4", GitlabIid = "4",
+            Issues = [dbIssue]
+        };
+        dbIssue.Release = deletedRelease;
+        var githubRelease = new DbRelease { Title = "GitHub", GitHubId = "gid://github/Issue/5", };
+        expectedDbReleases.Add(githubRelease);
+        await SeedDatabaseAsync(context =>
+        {
+            context.Releases.Add(expectedDbReleases.First());
+            context.Releases.Add(deletedRelease);
+            context.Releases.Add(githubRelease);
+            context.Issues.Add(dbIssue);
+        });
+        using var scope = ApiFactory.Services.CreateScope();
+        var job = scope.ServiceProvider.GetRequiredService<GitlabSynchronizationJob>();
+        _server.Given(Request.Create().WithPath("/api/graphql").UsingPost())
+            .RespondWith(Response.Create().WithStatusCode(200)
+                .WithHeader("Content-Type", "application/json")
+                .WithBody(GitlabMockData.ReleaseResponse));
+
+        CheckDbContent(context =>
+        {
+            context.Releases.Should().ContainEquivalentOf(deletedRelease,
+                options => options.Excluding(dbRelease => dbRelease.Id).Excluding(dbRelease => dbRelease.CreatedAt)
+                    .Excluding(dbRelease => dbRelease.Issues));
+            context.Releases.Should().ContainEquivalentOf(githubRelease,
+                options => options.Excluding(dbRelease => dbRelease.Id).Excluding(dbRelease => dbRelease.CreatedAt));
+            context.Releases.Should().ContainEquivalentOf(expectedDbReleases.First(),
+                options => options.Excluding(dbRelease => dbRelease.Id).Excluding(dbRelease => dbRelease.CreatedAt));
+            context.Issues.Should().ContainEquivalentOf(dbIssue,
+                options => options.Excluding(issue => issue.Id).Excluding(issue => issue.CreatedAt)
+                    .Excluding(issue => issue.Release));
+            context.Issues.Include(entity => entity.Release).First().Release.Should().NotBeNull();
+        });
+
+        // Act
+        await job.ExecuteAsync(CancellationToken.None);
+
+        // Assert
+        CheckDbContent(context =>
+        {
+            context.Releases.Should().NotBeEmpty();
+            var resultReleases = context.Releases.ToList();
+
+            resultReleases.Should().HaveCount(expectedDbReleases.Count);
+            resultReleases.Should().NotContainEquivalentOf(deletedRelease,
+                options => options.Excluding(dbRelease => dbRelease.Id).Excluding(dbRelease => dbRelease.CreatedAt)
+                    .Excluding(dbRelease => dbRelease.Issues));
+            resultReleases.Should().BeEquivalentTo(expectedDbReleases,
+                options => options.Excluding(dbRelease => dbRelease.Id).Excluding(dbRelease => dbRelease.CreatedAt));
+
+            var issues = context.Issues.Include(issue => issue.Release).ToList();
+            issues.Should().ContainEquivalentOf(dbIssue, options => options.Excluding(issue => issue.Id)
+                .Excluding(issue => issue.LastModifiedAt).Excluding(issue => issue.CreatedAt)
+                .Excluding(issue => issue.Release));
+            issues.First().Release.Should().BeNull();
         });
     }
 }

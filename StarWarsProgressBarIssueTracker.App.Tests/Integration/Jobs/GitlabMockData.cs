@@ -100,11 +100,11 @@ public static class GitlabMockData
                                                       "id": "gid://gitlab/Project/1",
                                                       "issues": {
                                                           "__typename": "IssueConnection",
-                                                          "count": 538,
+                                                          "count": 3,
                                                           "nodes": [
                                                               {
                                                                   "__typename": "Issue",
-                                                                  "description": "{\n  \"Description\": \"\",\n  \"Priority\": 0,\n  \"EngineColor\": null,\n  \"Translations\": []\n}",
+                                                                  "description": "Hello there",
                                                                   "dueDate": null,
                                                                   "id": "gid://gitlab/Issue/1",
                                                                   "iid": "11",
@@ -116,13 +116,14 @@ public static class GitlabMockData
                                                                   "milestone": null,
                                                                   "projectId": 1,
                                                                   "state": "closed",
-                                                                  "title": "125-Z treadspeeder bike",
+                                                                  "title": "Release 1.0.0",
+                                                                  "dueDate": "2024-02-25T19:50:01Z",
                                                                   "updatedAt": "2023-03-05T13:54:06Z",
                                                                   "webUrl": "https://gitlab.com/osthues.christopher/starwars-progress-bar/-/issues/11"
                                                               },
                                                               {
                                                                   "__typename": "Issue",
-                                                                  "description": "{\n  \"Description\": \"Rebels\\r\\n- [ ] Imperial\\r\\n- [ ] Ezra Bridger\",\n  \"Priority\": 0,\n  \"EngineColor\": null,\n  \"Translations\": [\n    {\n      \"Country\": \"en\",\n      \"Text\": \"614-AvA Speeder Bike\"\n    },\n    {\n      \"Country\": \"es\",\n      \"Text\": \"Moto deslizadora 614-AvA Imperial\"\n    }\n  ]\n}",
+                                                                  "description": "",
                                                                   "dueDate": null,
                                                                   "id": "gid://gitlab/Issue/2",
                                                                   "iid": "22",
@@ -134,13 +135,14 @@ public static class GitlabMockData
                                                                   "milestone": null,
                                                                   "projectId": 1,
                                                                   "state": "opened",
-                                                                  "title": "614-AvA Speeder Bike",
+                                                                  "title": "Release 1.1.0",
+                                                                  "dueDate": null,
                                                                   "updatedAt": "2023-04-22T19:07:14Z",
                                                                   "webUrl": "https://gitlab.com/osthues.christopher/starwars-progress-bar/-/issues/22"
                                                               },
                                                               {
                                                                   "__typename": "Issue",
-                                                                  "description": "{\n  \"Description\": \"\",\n  \"Priority\": 1,\n  \"EngineColor\": null,\n  \"Translations\": [\n    {\n      \"Country\": \"en\",\n      \"Text\": \"74-Z speeder bike\"\n    },\n    {\n      \"Country\": \"de\",\n      \"Text\": \"74-Z-D\\\\u00fcsenschlitten\"\n    },\n    {\n      \"Country\": \"es\",\n      \"Text\": \"Moto deslizadora 74-Z\"\n    }\n  ]\n}",
+                                                                  "description": "Desc3",
                                                                   "dueDate": null,
                                                                   "id": "gid://gitlab/Issue/3",
                                                                   "iid": "33",
@@ -152,13 +154,20 @@ public static class GitlabMockData
                                                                   "milestone": null,
                                                                   "projectId": 1,
                                                                   "state": "opened",
-                                                                  "title": "74-Z speeder bike",
+                                                                  "title": "Release 1.2.0",
+                                                                  "dueDate": null,
                                                                   "updatedAt": "2023-04-22T19:06:51Z",
                                                                   "webUrl": "https://gitlab.com/osthues.christopher/starwars-progress-bar/-/issues/33"
                                                               }
-                                                         ]
-                                                     }
-                                                 }
+                                                          ],
+                                                          "pageInfo": {
+                                                              "__typename": "PageInfo",
+                                                              "endCursor": "eyJ0aXRsZSI6ImNrLTYgc3dvb3AiLCJpZCI6IjExOTQ3MjY1NyJ9",
+                                                              "hasNextPage": false,
+                                                              "hasPreviousPage": false
+                                                          }
+                                                      }
+                                                  }
                                               }
                                           }
                                           """;
@@ -237,31 +246,31 @@ public static class GitlabMockData
         [
             new DbRelease
             {
-                Title = "Features",
+                Title = "Release 1.0.0",
                 Notes = "Hello there",
-                Date = DateTime.Today,
-                GitlabId = "gid://gitlab/Milestone/1",
-                GitlabIid = "1",
+                Date = new DateTime(2024, 2, 25, 19, 0, 1),
+                GitlabId = "gid://gitlab/Issue/1",
+                GitlabIid = "11",
                 State = ReleaseState.Released,
-                LastModifiedAt = new DateTime(2022, 12, 30, 11, 49, 41)
+                LastModifiedAt = new DateTime(2023, 3, 5, 13, 54, 6)
             },
             new DbRelease
             {
-                Title = "Yuuzhan-Vong",
+                Title = "Release 1.1.0",
                 Notes = string.Empty,
-                GitlabId = "gid://gitlab/Milestone/2",
-                GitlabIid = "2",
+                GitlabId = "gid://gitlab/Issue/2",
+                GitlabIid = "22",
                 State = ReleaseState.Planned,
-                LastModifiedAt = new DateTime(2022, 11, 2, 22, 12, 15)
+                LastModifiedAt = new DateTime(2023, 4, 22, 19, 7, 14)
             },
             new DbRelease
             {
-                Title = "Mandalorians",
+                Title = "Release 1.2.0",
                 Notes = "Desc3",
-                GitlabId = "gid://gitlab/Milestone/3",
-                GitlabIid = "3",
+                GitlabId = "gid://gitlab/Issue/3",
+                GitlabIid = "33",
                 State = ReleaseState.Planned,
-                LastModifiedAt = new DateTime(2022, 11, 2, 14, 44, 21)
+                LastModifiedAt = new DateTime(2023, 4, 22, 19, 6, 51)
             },
         ];
     }
