@@ -7,6 +7,7 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
 using WireMock.Settings;
+using WireMock.Types;
 
 namespace StarWarsProgressBarIssueTracker.App.Tests.Integration.Jobs;
 
@@ -18,11 +19,12 @@ public class GitlabSynchronizationJobTests : IntegrationTestBase
     [SetUp]
     public void SetUp()
     {
-        _server = WireMockServer.Start(new WireMockServerSettings()
+        _server = WireMockServer.Start(new WireMockServerSettings
         {
             Port = 8081,
             UseSSL = true,
-            CertificateSettings = new WireMockCertificateSettings()
+            ClientCertificateMode = ClientCertificateMode.AllowCertificate,
+            CertificateSettings = new WireMockCertificateSettings
             {
                 X509StoreName = "My",
                 X509StoreLocation = "CurrentUser",

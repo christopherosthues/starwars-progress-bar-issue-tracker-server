@@ -143,12 +143,12 @@ public class GitlabSynchronizationJob(GraphQLService graphQlService,
         {
             var nextIssuesResult = await graphQlService.GetFurtherIssuesAsync(currentPageInfo.EndCursor, cancellationToken);
 
-            gitlabFurtherIssues.AddRange(nextIssuesResult?.Nodes?.Where(issue => issue != null)?.Cast<IGetFurtherIssues_Project_Issues_Nodes>() ?? []);
+            gitlabFurtherIssues.AddRange(nextIssuesResult?.Nodes?.Where(issue => issue != null).Cast<IGetFurtherIssues_Project_Issues_Nodes>() ?? []);
 
-            while ((nextIssuesResult?.PageInfo?.HasNextPage ?? false) && !string.IsNullOrEmpty(nextIssuesResult.PageInfo.EndCursor))
+            while ((nextIssuesResult?.PageInfo.HasNextPage ?? false) && !string.IsNullOrEmpty(nextIssuesResult.PageInfo.EndCursor))
             {
                 nextIssuesResult = await graphQlService.GetFurtherIssuesAsync(currentPageInfo.EndCursor, cancellationToken);
-                gitlabFurtherIssues.AddRange(nextIssuesResult?.Nodes?.Where(issue => issue != null)?.Cast<IGetFurtherIssues_Project_Issues_Nodes>() ?? []);
+                gitlabFurtherIssues.AddRange(nextIssuesResult?.Nodes?.Where(issue => issue != null).Cast<IGetFurtherIssues_Project_Issues_Nodes>() ?? []);
             }
         }
 

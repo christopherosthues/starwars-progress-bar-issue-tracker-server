@@ -63,7 +63,7 @@ public static class GitlabMockData
                                                                     "description": "",
                                                                     "id": "gid://gitlab/Milestone/1",
                                                                     "iid": "1",
-                                                                    "state": "active",
+                                                                    "state": "closed",
                                                                     "title": "Features",
                                                                     "updatedAt": "2022-12-30T11:49:41Z"
                                                                 },
