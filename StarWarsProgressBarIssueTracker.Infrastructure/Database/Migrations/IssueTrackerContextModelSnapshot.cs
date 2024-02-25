@@ -317,6 +317,15 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                     b.Property<DateTime?>("Date")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("GitHubId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("GitlabId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("GitlabIid")
+                        .HasColumnType("text");
+
                     b.Property<DateTime?>("LastModifiedAt")
                         .HasColumnType("timestamp with time zone");
 

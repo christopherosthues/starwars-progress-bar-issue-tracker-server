@@ -82,6 +82,9 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                     Notes = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
                     State = table.Column<int>(type: "integer", nullable: false),
                     Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    GitlabId = table.Column<string>(type: "text", nullable: true),
+                    GitlabIid = table.Column<string>(type: "text", nullable: true),
+                    GitHubId = table.Column<string>(type: "text", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     LastModifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },

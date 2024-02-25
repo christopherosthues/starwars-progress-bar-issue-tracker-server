@@ -12,7 +12,7 @@ using StarWarsProgressBarIssueTracker.Infrastructure.Database;
 namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(IssueTrackerContext))]
-    [Migration("20240224205401_InitialDbModel")]
+    [Migration("20240225153725_InitialDbModel")]
     partial class InitialDbModel
     {
         /// <inheritdoc />
@@ -319,6 +319,15 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
 
                     b.Property<DateTime?>("Date")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("GitHubId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("GitlabId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("GitlabIid")
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("LastModifiedAt")
                         .HasColumnType("timestamp with time zone");
