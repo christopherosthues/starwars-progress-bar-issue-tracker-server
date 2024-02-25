@@ -76,3 +76,61 @@ jobs:
         name: Domain test results
         path: TestResults-Domain
       if: ${{ always() }}
+
+  infrastructureTests:
+    name: Infrastructure tests
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.x
+
+    - name: Restore dependencies
+      run: dotnet restore StarWarsProgressBarIssueTracker.Infrastructure.Tests/StarWarsProgressBarIssueTracker.Infrastructure.Tests.csproj
+
+    - name: Build
+      run: dotnet build StarWarsProgressBarIssueTracker.Infrastructure.Tests/StarWarsProgressBarIssueTracker.Infrastructure.Tests.csproj --no-restore
+
+    - name: Test
+      run: dotnet test StarWarsProgressBarIssueTracker.Infrastructure.Tests/StarWarsProgressBarIssueTracker.Infrastructure.Tests.csproj --no-build --verbosity q --logger "trx;LogFileName=Infrastructure.trx" --results-directory "TestResults-Infrastructure" --filter "TestCategory=Unit|TestCategory=Integration"
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      with:
+        name: Infrastructure test results
+        path: TestResults-Infrastructure
+      if: ${{ always() }}
+
+  infrastructureGitlabTests:
+    name: Infrastructure Gitlab tests
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.x
+
+    - name: Restore dependencies
+      run: dotnet restore StarWarsProgressBarIssueTracker.Infrastructure.Gitlab.Tests/StarWarsProgressBarIssueTracker.Infrastructure.Gitlab.Tests.csproj
+
+    - name: Build
+      run: dotnet build StarWarsProgressBarIssueTracker.Infrastructure.Gitlab.Tests/StarWarsProgressBarIssueTracker.Infrastructure.Gitlab.Tests.csproj --no-restore
+
+    - name: Test
+      run: dotnet test StarWarsProgressBarIssueTracker.Infrastructure.Gitlab.Tests/StarWarsProgressBarIssueTracker.Infrastructure.Gitlab.Tests.csproj --no-build --verbosity q --logger "trx;LogFileName=Infrastructure.Gitlab.trx" --results-directory "TestResults-Gitlab" --filter "TestCategory=Unit|TestCategory=Integration"
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      with:
+        name: Infrastructure Gitlab test results
+        path: TestResults-Gitlab
+      if: ${{ always() }}
