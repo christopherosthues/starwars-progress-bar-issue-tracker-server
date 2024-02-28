@@ -12,7 +12,7 @@ using WireMock.Settings;
 namespace StarWarsProgressBarIssueTracker.App.Tests.Integration.Jobs;
 
 [TestFixture(TestOf = typeof(GitlabSynchronizationJob))]
-[Category(TestCategory.LocalIntegration)]
+[Category(TestCategory.Integration)]
 public class GitlabSynchronizationJobTests : IntegrationTestBase
 {
     private WireMockServer _server = default!;
@@ -24,11 +24,6 @@ public class GitlabSynchronizationJobTests : IntegrationTestBase
         {
             Port = 8081,
             UseSSL = true,
-            CertificateSettings = new WireMockCertificateSettings
-            {
-                X509StoreName = "My",
-                X509StoreLocation = "CurrentUser",
-            }
         });
     }
 
