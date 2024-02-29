@@ -32,13 +32,19 @@ public class IssueTrackerWebApplicationFactory : WebApplicationFactory<Program>
                 {
                     var gitlabGraphQlUrl = new Uri("http://localhost:8081/api/graphql");
                     client.BaseAddress = new UriBuilder(Uri.UriSchemeHttps, gitlabGraphQlUrl.Host, gitlabGraphQlUrl.Port, gitlabGraphQlUrl.PathAndQuery).Uri;
-                    ServicePointManager.ServerCertificateValidationCallback += (_, _, _, _) => true;
-                }
+                },
+                httpClientBuilder => httpClientBuilder.ConfigurePrimaryHttpMessageHandler(() =>
+                {
+                    return new HttpClientHandler
+                    {
+                        ClientCertificateOptions = ClientCertificateOption.Manual,
+                        ServerCertificateCustomValidationCallback = ((_, _, _, _) => true)
+                    };
+                })
             ).ConfigureWebSocketClient(client =>
             {
                 var gitlabGraphQlUrl = new Uri("http://localhost:8081/api/graphql");
                 client.Uri = new UriBuilder(Uri.UriSchemeWs, gitlabGraphQlUrl.Host, gitlabGraphQlUrl.Port, gitlabGraphQlUrl.PathAndQuery).Uri;
-                ServicePointManager.ServerCertificateValidationCallback += (_, _, _, _) => true;
             });
         });
     }
