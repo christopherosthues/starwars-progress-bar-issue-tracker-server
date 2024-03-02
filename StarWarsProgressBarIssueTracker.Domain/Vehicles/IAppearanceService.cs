@@ -11,4 +11,6 @@ public interface IAppearanceService
     Task<Appearance> UpdateAppearanceAsync(Appearance appearance, CancellationToken cancellationToken = default);
 
     Task<Appearance> DeleteAppearanceAsync(Guid id, CancellationToken cancellationToken = default);
+
+    Task SynchronizeFromGitlabAsync(IList<Appearance> appearances, CancellationToken cancellationToken = default);
 }

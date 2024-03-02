@@ -97,6 +97,23 @@ public partial class AppearanceService(IDataPort<Appearance> dataPort) : IAppear
         return await dataPort.DeleteAsync(id, cancellationToken);
     }
 
-    [GeneratedRegex("^[a-fA-F0-9]{6}$")]
+    public async Task SynchronizeFromGitlabAsync(IList<Appearance> appearances, CancellationToken cancellationToken = default)
+    {
+        var existingAppearances = await dataPort.GetAllAsync(cancellationToken);
+
+        var appearancesToAdd = appearances.Where(appearance =>
+            !existingAppearances.Any(existingAppearance => appearance.GitlabId!.Equals(existingAppearance.GitlabId)));
+
+        var appearancesToDelete = existingAppearances.Where(existingAppearance => existingAppearance.GitlabId != null &&
+            !appearances.Any(appearance => appearance.GitlabId!.Equals(existingAppearance.GitlabId)));
+
+        await dataPort.AddRangeAsync(appearancesToAdd, cancellationToken);
+
+        await dataPort.DeleteRangeAsync(appearancesToDelete, cancellationToken);
+
+        // TODO: Update appearances, resolve conflicts
+    }
+
+    [GeneratedRegex("^#[a-fA-F0-9]{6}$")]
     private static partial Regex ColorHexCodeRegex();
 }

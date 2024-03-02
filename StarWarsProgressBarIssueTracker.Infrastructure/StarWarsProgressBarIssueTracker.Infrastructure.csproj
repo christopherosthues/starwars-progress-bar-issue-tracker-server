@@ -20,10 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Database\Migrations\20240225153725_InitialDbModel.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
-    <Compile Update="Database\Migrations\IssueTrackerContextModelSnapshot.cs">
+    <Compile Update="Database\Migrations\20240302154415_InitialDbModel.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
   </ItemGroup>

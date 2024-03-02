@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 using StarWarsProgressBarIssueTracker.Domain.Issues;
 
@@ -8,7 +7,6 @@ public record DbIssueLink : DbEntityBase
 {
     public LinkType Type { get; set; }
 
-    [ForeignKey("IssueId")]
     [DeleteBehavior(DeleteBehavior.SetNull)]
     public required DbIssue LinkedIssue { get; set; }
 }

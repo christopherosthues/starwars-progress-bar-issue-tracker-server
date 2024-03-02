@@ -87,7 +87,18 @@ public class IssueService(IDataPort<Issue> dataPort) : IIssueService
 
     public async Task SynchronizeFromGitlabAsync(IList<Issue> issues, CancellationToken cancellationToken)
     {
-        // TODO: implement me
-        await Task.CompletedTask;
+        var existingIssues = await dataPort.GetAllAsync(cancellationToken);
+
+        var issuesToAdd = issues.Where(issue =>
+            !existingIssues.Any(existingIssue => issue.GitlabId!.Equals(existingIssue.GitlabId)));
+
+        var issuesToDelete = existingIssues.Where(existingIssue => existingIssue.GitlabId != null &&
+                                                                   !issues.Any(issue => issue.GitlabId!.Equals(existingIssue.GitlabId)));
+
+        await dataPort.AddRangeAsync(issuesToAdd, cancellationToken);
+
+        await dataPort.DeleteRangeAsync(issuesToDelete, cancellationToken);
+
+        // TODO: Update issues, resolve conflicts
     }
 }

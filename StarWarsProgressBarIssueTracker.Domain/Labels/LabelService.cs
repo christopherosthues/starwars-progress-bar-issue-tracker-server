@@ -115,6 +115,6 @@ public partial class LabelService(IDataPort<Label> dataPort) : ILabelService
         // TODO: Update label, resolve conflicts
     }
 
-    [GeneratedRegex("^[a-fA-F0-9]{6}$")]
+    [GeneratedRegex("^#[a-fA-F0-9]{6}$")]
     private static partial Regex ColorHexCodeRegex();
 }

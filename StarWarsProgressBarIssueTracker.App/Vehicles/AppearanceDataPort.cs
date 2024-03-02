@@ -45,6 +45,13 @@ public class AppearanceDataPort : IDataPort<Appearance>
         return _mapper.Map<Appearance>(addedDbAppearance);
     }
 
+    public async Task AddRangeAsync(IEnumerable<Appearance> domains, CancellationToken cancellationToken = default)
+    {
+        var dbAppearances = _mapper.Map<IEnumerable<DbAppearance>>(domains);
+        await _repository.AddRangeAsync(dbAppearances, cancellationToken);
+    }
+
+
     public async Task<Appearance> UpdateAsync(Appearance domain, CancellationToken cancellationToken = default)
     {
         DbAppearance dbAppearance = (await _repository.GetByIdAsync(domain.Id, cancellationToken))!;
@@ -64,5 +71,12 @@ public class AppearanceDataPort : IDataPort<Appearance>
         DbAppearance appearance = (await _repository.GetByIdAsync(id, cancellationToken))!;
 
         return _mapper.Map<Appearance>(await _repository.DeleteAsync(appearance, cancellationToken));
+    }
+
+    public async Task DeleteRangeAsync(IEnumerable<Appearance> domains, CancellationToken cancellationToken = default)
+    {
+        var appearances = await _repository.GetAll().ToListAsync(cancellationToken);
+        var toBeDeleted = appearances.Where(dbAppearance => domains.Any(label => label.Id.Equals(dbAppearance.Id)));
+        await _repository.DeleteRangeAsync(toBeDeleted, cancellationToken);
     }
 }

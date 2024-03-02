@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 using StarWarsProgressBarIssueTracker.Domain.Milestones;
 
@@ -15,7 +14,6 @@ public record DbMilestone : DbEntityBase
 
     public MilestoneState State { get; set; }
 
-    [ForeignKey("IssueId")]
     [DeleteBehavior(DeleteBehavior.SetNull)]
     public virtual IList<DbIssue> Issues { get; set; } = [];
 

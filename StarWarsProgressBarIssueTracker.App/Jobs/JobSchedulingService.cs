@@ -1,16 +1,28 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Quartz;
+using StarWarsProgressBarIssueTracker.Infrastructure.Database;
 using StarWarsProgressBarIssueTracker.Infrastructure.Models;
 using StarWarsProgressBarIssueTracker.Infrastructure.Repositories;
 using TaskStatus = StarWarsProgressBarIssueTracker.Infrastructure.Models.TaskStatus;
 
 namespace StarWarsProgressBarIssueTracker.App.Jobs;
 
-public class JobSchedulingService(IRepository<DbJob> jobRepository, ITaskRepository taskRepository)
+public class JobSchedulingService
 {
+    private readonly IRepository<DbJob> _jobRepository;
+    private readonly ITaskRepository _taskRepository;
+
+    public JobSchedulingService(IRepository<DbJob> jobRepository, ITaskRepository taskRepository, IssueTrackerContext dbContext)
+    {
+        _jobRepository = jobRepository;
+        _jobRepository.Context = dbContext;
+        _taskRepository = taskRepository;
+        _taskRepository.Context = dbContext;
+    }
+
     public async Task ScheduleTasksAsync(CancellationToken cancellationToken)
     {
-        var jobs = await jobRepository.GetAll().ToListAsync(cancellationToken);
+        var jobs = await _jobRepository.GetAll().ToListAsync(cancellationToken);
 
         IList<Exception> exceptions = [];
 
@@ -25,10 +37,10 @@ public class JobSchedulingService(IRepository<DbJob> jobRepository, ITaskReposit
                         Job = job,
                         Status = TaskStatus.Planned
                     };
-                    await taskRepository.AddAsync(task, cancellationToken);
+                    await _taskRepository.AddAsync(task, cancellationToken);
 
                     job.NextExecution = DateTime.UtcNow;
-                    await jobRepository.UpdateAsync(job, cancellationToken);
+                    await _jobRepository.UpdateAsync(job, cancellationToken);
                 }
                 catch (Exception ex)
                 {

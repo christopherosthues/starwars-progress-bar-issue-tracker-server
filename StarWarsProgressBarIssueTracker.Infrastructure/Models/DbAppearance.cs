@@ -16,4 +16,8 @@ public record DbAppearance : DbEntityBase
 
     [StringLength(AppearanceConstants.ColorHexLength, MinimumLength = AppearanceConstants.ColorHexLength)]
     public required string TextColor { get; set; }
+
+    public string? GitlabId { get; set; }
+
+    public string? GitHubId { get; set; }
 }
