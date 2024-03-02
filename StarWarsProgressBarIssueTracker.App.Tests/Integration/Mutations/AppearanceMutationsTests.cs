@@ -46,8 +46,8 @@ public class AppearanceMutationsTests : IntegrationTestBase
             Id = new Guid("87653DC5-B029-4BA6-959A-1FBFC48E2C81"),
             Title = "Title",
             Description = "Desc",
-            Color = "001122",
-            TextColor = "334455",
+            Color = "#001122",
+            TextColor = "#334455",
             LastModifiedAt = DateTime.UtcNow.AddDays(1)
         };
         await SeedDatabaseAsync(context =>
@@ -95,8 +95,8 @@ public class AppearanceMutationsTests : IntegrationTestBase
             Id = new Guid("87653DC5-B029-4BA6-959A-1FBFC48E2C81"),
             Title = "Title",
             Description = "Desc",
-            Color = "001122",
-            TextColor = "334455",
+            Color = "#001122",
+            TextColor = "#334455",
             LastModifiedAt = DateTime.UtcNow.AddDays(1)
         };
         await SeedDatabaseAsync(context =>
@@ -129,8 +129,8 @@ public class AppearanceMutationsTests : IntegrationTestBase
             Id = new Guid("87653DC5-B029-4BA6-959A-1FBFC48E2C81"),
             Title = "Title",
             Description = "Desc",
-            Color = "001122",
-            TextColor = "334455",
+            Color = "#001122",
+            TextColor = "#334455",
             LastModifiedAt = DateTime.UtcNow.AddDays(1)
         };
         var dbAppearance2 = new DbAppearance
@@ -138,8 +138,8 @@ public class AppearanceMutationsTests : IntegrationTestBase
             Id = new Guid("0609F93C-CBCC-4650-BA4C-B8D5FF93A877"),
             Title = "Title 2",
             Description = "Desc 2",
-            Color = "221100",
-            TextColor = "554433",
+            Color = "#221100",
+            TextColor = "#554433",
             LastModifiedAt = DateTime.UtcNow.AddDays(2)
         };
 
@@ -252,8 +252,8 @@ public class AppearanceMutationsTests : IntegrationTestBase
         var dbAppearance2 = new DbAppearance
         {
             Id = new Guid("B961A621-9848-429A-8B44-B1AF1F0182CE"),
-            Color = "778899",
-            TextColor = "665544",
+            Color = "#778899",
+            TextColor = "#665544",
             Title = "Title 2"
         };
         var dbVehicle2 = new DbVehicle
@@ -320,8 +320,8 @@ public class AppearanceMutationsTests : IntegrationTestBase
             Id = new Guid("0609F93C-CBCC-4650-BA4C-B8D5FF93A877"),
             Title = "Title 2",
             Description = "Desc 2",
-            Color = "221100",
-            TextColor = "554433",
+            Color = "#221100",
+            TextColor = "#554433",
             CreatedAt = DateTime.UtcNow.AddDays(-3),
             LastModifiedAt = DateTime.UtcNow.AddDays(-2)
         };
@@ -667,8 +667,8 @@ public class AppearanceMutationsTests : IntegrationTestBase
             .RuleFor(appearance => appearance.Id, f => f.Random.Guid())
             .RuleFor(appearance => appearance.Title, f => f.Random.String2(1, 50, AllowedChars))
             .RuleFor(appearance => appearance.Description, f => f.Random.String2(0, 255, AllowedChars).OrNull(f, 0.3f))
-            .RuleFor(appearance => appearance.Color, f => f.Random.String2(6, 6, HexCodeColorChars))
-            .RuleFor(appearance => appearance.TextColor, f => f.Random.String2(6, 6, HexCodeColorChars));
+            .RuleFor(appearance => appearance.Color, f => "#" + f.Random.String2(6, 6, HexCodeColorChars))
+            .RuleFor(appearance => appearance.TextColor, f => "#" + f.Random.String2(6, 6, HexCodeColorChars));
         return faker.Generate();
     }
 
@@ -677,27 +677,31 @@ public class AppearanceMutationsTests : IntegrationTestBase
         var faker = new Faker<Appearance>()
             .RuleFor(appearance => appearance.Title, f => f.Random.String2(1, 50, AllowedChars))
             .RuleFor(appearance => appearance.Description, f => f.Random.String2(0, 255, AllowedChars).OrNull(f, 0.3f))
-            .RuleFor(appearance => appearance.Color, f => f.Random.String2(6, 6, HexCodeColorChars))
-            .RuleFor(appearance => appearance.TextColor, f => f.Random.String2(6, 6, HexCodeColorChars));
+            .RuleFor(appearance => appearance.Color, f => "#" + f.Random.String2(6, 6, HexCodeColorChars))
+            .RuleFor(appearance => appearance.TextColor, f => "#" + f.Random.String2(6, 6, HexCodeColorChars));
         return faker.Generate(20);
     }
 
     public static IEnumerable<(Appearance, IEnumerable<string>)> InvalidAddAppearanceCases()
     {
-        yield return (new Appearance { Title = null!, Description = null, Color = "001122", TextColor = "334455" }, new List<string> { $"The value for {nameof(Appearance.Title)} is not set.", $"The value '' for {nameof(Appearance.Title)} is too short. The length of {nameof(Appearance.Title)} has to be between 1 and 50." });
-        yield return (new Appearance { Title = "", Description = null, Color = "001122", TextColor = "334455" }, new List<string> { $"The value for {nameof(Appearance.Title)} is not set.", $"The value '' for {nameof(Appearance.Title)} is too short. The length of {nameof(Appearance.Title)} has to be between 1 and 50." });
-        yield return (new Appearance { Title = "  \t ", Description = null, Color = "001122", TextColor = "334455" }, new List<string> { $"The value for {nameof(Appearance.Title)} is not set." });
-        yield return (new Appearance { Title = new string('a', 51), Description = null, Color = "001122", TextColor = "334455" }, new List<string> { $"The value 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' for {nameof(Appearance.Title)} is long short. The length of {nameof(Appearance.Title)} has to be between 1 and 50." });
-        yield return (new Appearance { Title = "Valid", Description = new string('a', 256), Color = "001122", TextColor = "334455" }, new List<string> { $"The value 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' for {nameof(Appearance.Description)} is long short. The length of {nameof(Appearance.Description)} has to be less than 256." });
-        yield return (new Appearance { Title = "Valid", Description = null, Color = null!, TextColor = "334455" }, new List<string> { $"The value for {nameof(Appearance.Color)} is not set.", $"The value '' for field {nameof(Appearance.Color)} has a wrong format. Only colors in RGB hex format with 6 digits are allowed." });
-        yield return (new Appearance { Title = "Valid", Description = null, Color = "01122", TextColor = "334455" }, new List<string> { $"The value '01122' for field {nameof(Appearance.Color)} has a wrong format. Only colors in RGB hex format with 6 digits are allowed." });
-        yield return (new Appearance { Title = "Valid", Description = null, Color = "", TextColor = "334455" }, new List<string> { $"The value for {nameof(Appearance.Color)} is not set.", $"The value '' for field {nameof(Appearance.Color)} has a wrong format. Only colors in RGB hex format with 6 digits are allowed." });
-        yield return (new Appearance { Title = "Valid", Description = null, Color = " ", TextColor = "334455" }, new List<string> { $"The value for {nameof(Appearance.Color)} is not set.", $"The value ' ' for field {nameof(Appearance.Color)} has a wrong format. Only colors in RGB hex format with 6 digits are allowed." });
-        yield return (new Appearance { Title = "Valid", Description = null, Color = "g", TextColor = "334455" }, new List<string> { $"The value 'g' for field {nameof(Appearance.Color)} has a wrong format. Only colors in RGB hex format with 6 digits are allowed." });
-        yield return (new Appearance { Title = "Valid", Description = null, TextColor = null!, Color = "334455" }, new List<string> { $"The value for {nameof(Appearance.TextColor)} is not set.", $"The value '' for field {nameof(Appearance.TextColor)} has a wrong format. Only colors in RGB hex format with 6 digits are allowed." });
-        yield return (new Appearance { Title = "Valid", Description = null, TextColor = "01122", Color = "334455" }, new List<string> { $"The value '01122' for field {nameof(Appearance.TextColor)} has a wrong format. Only colors in RGB hex format with 6 digits are allowed." });
-        yield return (new Appearance { Title = "Valid", Description = null, TextColor = "", Color = "334455" }, new List<string> { $"The value for {nameof(Appearance.TextColor)} is not set.", $"The value '' for field {nameof(Appearance.TextColor)} has a wrong format. Only colors in RGB hex format with 6 digits are allowed." });
-        yield return (new Appearance { Title = "Valid", Description = null, TextColor = " ", Color = "334455" }, new List<string> { $"The value for {nameof(Appearance.TextColor)} is not set.", $"The value ' ' for field {nameof(Appearance.TextColor)} has a wrong format. Only colors in RGB hex format with 6 digits are allowed." });
-        yield return (new Appearance { Title = "Valid", Description = null, TextColor = "g", Color = "334455" }, new List<string> { $"The value 'g' for field {nameof(Appearance.TextColor)} has a wrong format. Only colors in RGB hex format with 6 digits are allowed." });
+        yield return (new Appearance { Title = null!, Description = null, Color = "#001122", TextColor = "#334455" }, new List<string> { $"The value for {nameof(Appearance.Title)} is not set.", $"The value '' for {nameof(Appearance.Title)} is too short. The length of {nameof(Appearance.Title)} has to be between 1 and 50." });
+        yield return (new Appearance { Title = "", Description = null, Color = "#001122", TextColor = "#334455" }, new List<string> { $"The value for {nameof(Appearance.Title)} is not set.", $"The value '' for {nameof(Appearance.Title)} is too short. The length of {nameof(Appearance.Title)} has to be between 1 and 50." });
+        yield return (new Appearance { Title = "  \t ", Description = null, Color = "#001122", TextColor = "#334455" }, new List<string> { $"The value for {nameof(Appearance.Title)} is not set." });
+        yield return (new Appearance { Title = new string('a', 51), Description = null, Color = "#001122", TextColor = "#334455" }, new List<string> { $"The value 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' for {nameof(Appearance.Title)} is long short. The length of {nameof(Appearance.Title)} has to be between 1 and 50." });
+        yield return (new Appearance { Title = "Valid", Description = new string('a', 256), Color = "#001122", TextColor = "#334455" }, new List<string> { $"The value 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' for {nameof(Appearance.Description)} is long short. The length of {nameof(Appearance.Description)} has to be less than 256." });
+        yield return (new Appearance { Title = "Valid", Description = null, Color = null!, TextColor = "#334455" }, new List<string> { $"The value for {nameof(Appearance.Color)} is not set.", $"The value '' for field {nameof(Appearance.Color)} has a wrong format. Only colors in RGB hex format with 6 digits are allowed." });
+        yield return (new Appearance { Title = "Valid", Description = null, Color = "01122", TextColor = "#334455" }, new List<string> { $"The value '01122' for field {nameof(Appearance.Color)} has a wrong format. Only colors in RGB hex format with 6 digits are allowed." });
+        yield return (new Appearance { Title = "Valid", Description = null, Color = "#01122", TextColor = "#334455" }, new List<string> { $"The value '#01122' for field {nameof(Appearance.Color)} has a wrong format. Only colors in RGB hex format with 6 digits are allowed." });
+        yield return (new Appearance { Title = "Valid", Description = null, Color = "001122", TextColor = "#334455" }, new List<string> { $"The value '001122' for field {nameof(Appearance.Color)} has a wrong format. Only colors in RGB hex format with 6 digits are allowed." });
+        yield return (new Appearance { Title = "Valid", Description = null, Color = "", TextColor = "#334455" }, new List<string> { $"The value for {nameof(Appearance.Color)} is not set.", $"The value '' for field {nameof(Appearance.Color)} has a wrong format. Only colors in RGB hex format with 6 digits are allowed." });
+        yield return (new Appearance { Title = "Valid", Description = null, Color = " ", TextColor = "#334455" }, new List<string> { $"The value for {nameof(Appearance.Color)} is not set.", $"The value ' ' for field {nameof(Appearance.Color)} has a wrong format. Only colors in RGB hex format with 6 digits are allowed." });
+        yield return (new Appearance { Title = "Valid", Description = null, Color = "g", TextColor = "#334455" }, new List<string> { $"The value 'g' for field {nameof(Appearance.Color)} has a wrong format. Only colors in RGB hex format with 6 digits are allowed." });
+        yield return (new Appearance { Title = "Valid", Description = null, TextColor = null!, Color = "#334455" }, new List<string> { $"The value for {nameof(Appearance.TextColor)} is not set.", $"The value '' for field {nameof(Appearance.TextColor)} has a wrong format. Only colors in RGB hex format with 6 digits are allowed." });
+        yield return (new Appearance { Title = "Valid", Description = null, TextColor = "01122", Color = "#334455" }, new List<string> { $"The value '01122' for field {nameof(Appearance.TextColor)} has a wrong format. Only colors in RGB hex format with 6 digits are allowed." });
+        yield return (new Appearance { Title = "Valid", Description = null, TextColor = "#01122", Color = "#334455" }, new List<string> { $"The value '#01122' for field {nameof(Appearance.TextColor)} has a wrong format. Only colors in RGB hex format with 6 digits are allowed." });
+        yield return (new Appearance { Title = "Valid", Description = null, TextColor = "001122", Color = "#334455" }, new List<string> { $"The value '001122' for field {nameof(Appearance.TextColor)} has a wrong format. Only colors in RGB hex format with 6 digits are allowed." });
+        yield return (new Appearance { Title = "Valid", Description = null, TextColor = "", Color = "#334455" }, new List<string> { $"The value for {nameof(Appearance.TextColor)} is not set.", $"The value '' for field {nameof(Appearance.TextColor)} has a wrong format. Only colors in RGB hex format with 6 digits are allowed." });
+        yield return (new Appearance { Title = "Valid", Description = null, TextColor = " ", Color = "#334455" }, new List<string> { $"The value for {nameof(Appearance.TextColor)} is not set.", $"The value ' ' for field {nameof(Appearance.TextColor)} has a wrong format. Only colors in RGB hex format with 6 digits are allowed." });
+        yield return (new Appearance { Title = "Valid", Description = null, TextColor = "g", Color = "#334455" }, new List<string> { $"The value 'g' for field {nameof(Appearance.TextColor)} has a wrong format. Only colors in RGB hex format with 6 digits are allowed." });
     }
 }
