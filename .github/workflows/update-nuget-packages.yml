@@ -57,5 +57,5 @@ jobs:
               --base "develop" \
               --head $BRANCH
           else
-            echo "All NuGet packages are out-to-date"
+            echo "All NuGet packages are up-to-date"
           fi
