@@ -42,7 +42,7 @@ jobs:
           gitDiffOutput=$(git diff)
           
           if [ -n "$gitDiffOutput" ]; then
-            echo "Updated NuGet packages. Creating PR" >> $GITHUB_OUTPUT
+            echo "Updated NuGet packages. Creating PR"
           
             git config user.email "action@github.com"
             git config user.name "GitHub Action"
@@ -57,5 +57,5 @@ jobs:
               --base "develop" \
               --head $BRANCH
           else
-            echo "All NuGet packages are out-to-date" >> $GITHUB_OUTPUT
+            echo "All NuGet packages are out-to-date"
           fi
