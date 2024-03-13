@@ -24,6 +24,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "git hooks", "git hooks", "{
 	ProjectSection(SolutionItems) = preProject
 		.husky\task-runner.json = .husky\task-runner.json
 		.husky\_\husky.sh = .husky\_\husky.sh
+		.husky\post-checkout = .husky\post-checkout
+		.husky\post-commit = .husky\post-commit
+		.husky\post-merge = .husky\post-merge
+		.husky\pre-push = .husky\pre-push
+		.husky\csx\commit-lint.csx = .husky\csx\commit-lint.csx
+		.husky\commit-msg = .husky\commit-msg
+		.husky\pre-commit = .husky\pre-commit
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{5D23A55C-DFFE-40D8-9168-6AE8CC9DDFFD}"

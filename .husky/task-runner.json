@@ -1,13 +1,52 @@
 {
-   "tasks": [
-      {
-         "name": "welcome-message-example",
-         "command": "bash",
-         "args": [ "-c", "echo Husky.Net is awesome!" ],
-         "windows": {
-            "command": "cmd",
-            "args": ["/c", "echo Husky.Net is awesome!" ]
-         }
+  "tasks": [
+    {
+      "name": "welcome-message-example",
+      "command": "bash",
+      "args": [
+        "-c",
+        "echo Husky.Net is awesome!"
+      ],
+      "windows": {
+        "command": "cmd",
+        "args": [
+          "/c",
+          "echo Husky.Net is awesome!"
+        ]
       }
-   ]
+    },
+    {
+      "name": "commit-message-linter",
+      "command": "dotnet",
+      "args": [
+        "husky",
+        "exec",
+        ".husky/csx/commit-lint.csx",
+        "--args",
+        "${args}"
+      ]
+    },
+    {
+      "name": "dotnet-format",
+      "group": "pre-commit",
+      "command": "dotnet",
+      "args": [
+        "dotnet-format",
+        "--include",
+        "${staged}"
+      ],
+      "include": [
+        "**/*.cs"
+      ]
+    },
+    {
+      "name": "Execute unit and integration tests",
+      "group": "pre-commit",
+      "command": "dotnet",
+      "args": [
+        "test",
+        "StarWarsProgressBarIssueTracker.sln"
+      ]
+    }
+  ]
 }
