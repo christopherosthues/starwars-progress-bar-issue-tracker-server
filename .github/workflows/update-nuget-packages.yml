@@ -48,7 +48,7 @@ jobs:
             git config user.name "GitHub Action"
           
             git checkout -b $BRANCH
-            git commit -amn "chore: Update NuGet packages"
+            git commit -am "chore: Update NuGet packages" -n
             git push --set-upstream origin $BRANCH
           
             gh pr create \
