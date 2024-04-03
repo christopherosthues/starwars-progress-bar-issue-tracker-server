@@ -12,7 +12,7 @@ using StarWarsProgressBarIssueTracker.Infrastructure.Database;
 namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(IssueTrackerContext))]
-    [Migration("20240302154415_InitialDbModel")]
+    [Migration("20240403143411_InitialDbModel")]
     partial class InitialDbModel
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.2")
+                .HasAnnotation("ProductVersion", "8.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -84,6 +84,12 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
 
                     b.HasIndex("AppearanceId");
 
+                    b.HasIndex("GitHubId")
+                        .IsUnique();
+
+                    b.HasIndex("GitlabId")
+                        .IsUnique();
+
                     b.ToTable("Appearances", "issue_tracker");
                 });
 
@@ -133,6 +139,15 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GitHubId")
+                        .IsUnique();
+
+                    b.HasIndex("GitlabId")
+                        .IsUnique();
+
+                    b.HasIndex("GitlabIid")
+                        .IsUnique();
 
                     b.HasIndex("MilestoneId");
 
@@ -195,6 +210,9 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("JobType")
+                        .IsUnique();
+
                     b.ToTable("Jobs", "issue_tracker");
                 });
 
@@ -237,6 +255,12 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("GitHubId")
+                        .IsUnique();
+
+                    b.HasIndex("GitlabId")
+                        .IsUnique();
+
                     b.ToTable("Labels", "issue_tracker");
                 });
 
@@ -274,6 +298,15 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                         .HasColumnType("character varying(50)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GitHubId")
+                        .IsUnique();
+
+                    b.HasIndex("GitlabId")
+                        .IsUnique();
+
+                    b.HasIndex("GitlabIid")
+                        .IsUnique();
 
                     b.ToTable("Milestones", "issue_tracker");
                 });
@@ -342,6 +375,15 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("GitHubId")
+                        .IsUnique();
+
+                    b.HasIndex("GitlabId")
+                        .IsUnique();
+
+                    b.HasIndex("GitlabIid")
+                        .IsUnique();
+
                     b.ToTable("Releases", "issue_tracker");
                 });
 
@@ -373,7 +415,7 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
 
                     b.HasIndex("JobId");
 
-                    b.ToTable("Tasks", "issue_tracker");
+                    b.ToTable("Tasks");
                 });
 
             modelBuilder.Entity("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbTranslation", b =>

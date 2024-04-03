@@ -30,7 +30,7 @@ public class RepositoryRegistrationTests
                 sd.Lifetime == ServiceLifetime.Scoped)), Times.Once);
         serviceCollectionMock.Verify(
             mock => mock.Add(It.Is<ServiceDescriptor>(sd =>
-                sd.ServiceType == typeof(IRepository<DbIssue>) && sd.ImplementationType == typeof(IssueRepository) &&
+                sd.ServiceType == typeof(IIssueRepository) && sd.ImplementationType == typeof(IssueRepository) &&
                 sd.Lifetime == ServiceLifetime.Scoped)), Times.Once);
         serviceCollectionMock.Verify(
             mock => mock.Add(It.Is<ServiceDescriptor>(sd =>

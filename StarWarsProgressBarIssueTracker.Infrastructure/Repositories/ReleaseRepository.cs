@@ -11,6 +11,6 @@ public class ReleaseRepository : IssueTrackerRepositoryBase<DbRelease>
             .ThenInclude(dbIssue => dbIssue.Milestone)
             .Include(dbRelease => dbRelease.Issues)
             .ThenInclude(dbIssue => dbIssue.Vehicle)
-            .ThenInclude(dbVehicle => dbVehicle != null ? dbVehicle.Appearances : null);
+            .ThenInclude(dbVehicle => dbVehicle!.Appearances);
     }
 }

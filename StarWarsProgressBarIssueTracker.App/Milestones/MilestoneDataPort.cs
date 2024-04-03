@@ -53,13 +53,13 @@ public class MilestoneDataPort : IDataPort<Milestone>
 
     public async Task<Milestone> UpdateAsync(Milestone domain, CancellationToken cancellationToken = default)
     {
-        DbMilestone deMilestone = (await _repository.GetByIdAsync(domain.Id, cancellationToken))!;
+        DbMilestone dbMilestone = (await _repository.GetByIdAsync(domain.Id, cancellationToken))!;
 
-        deMilestone.Title = domain.Title;
-        deMilestone.Description = domain.Description;
-        deMilestone.State = domain.State;
+        dbMilestone.Title = domain.Title;
+        dbMilestone.Description = domain.Description;
+        dbMilestone.State = domain.State;
 
-        DbMilestone updatedMilestone = await _repository.UpdateAsync(deMilestone, cancellationToken);
+        DbMilestone updatedMilestone = await _repository.UpdateAsync(dbMilestone, cancellationToken);
 
         return _mapper.Map<Milestone>(updatedMilestone);
     }

@@ -10,13 +10,23 @@ namespace StarWarsProgressBarIssueTracker.App.Issues;
 
 public class IssueDataPort : IDataPort<Issue>
 {
-    private readonly IRepository<DbIssue> _repository;
+    private readonly IIssueRepository _repository;
+    private readonly IRepository<DbMilestone> _milestoneRepository;
+    private readonly IRepository<DbRelease> _releaseRepository;
     private readonly IMapper _mapper;
 
-    public IssueDataPort(IssueTrackerContext context, IRepository<DbIssue> repository, IMapper mapper)
+    public IssueDataPort(IssueTrackerContext context,
+        IIssueRepository repository,
+        IRepository<DbMilestone> milestoneRepository,
+        IRepository<DbRelease> releaseRepository,
+        IMapper mapper)
     {
         _repository = repository;
+        _milestoneRepository = milestoneRepository;
+        _releaseRepository = releaseRepository;
         _repository.Context = context;
+        _milestoneRepository.Context = context;
+        _releaseRepository.Context = context;
         _mapper = mapper;
     }
 
@@ -53,15 +63,55 @@ public class IssueDataPort : IDataPort<Issue>
 
     public async Task<Issue> UpdateAsync(Issue domain, CancellationToken cancellationToken = default)
     {
-        DbIssue deIssue = (await _repository.GetByIdAsync(domain.Id, cancellationToken))!;
+        DbIssue dbIssue = (await _repository.GetByIdAsync(domain.Id, cancellationToken))!;
 
-        deIssue.Title = domain.Title;
-        deIssue.Description = domain.Description;
-        deIssue.State = domain.State;
-        deIssue.Priority = domain.Priority;
-        // TODO: load milestone, release, vehicle and linked issues. Update them all
+        dbIssue.Title = domain.Title;
+        dbIssue.Description = domain.Description;
+        dbIssue.State = domain.State;
+        dbIssue.Priority = domain.Priority;
 
-        DbIssue updatedIssue = await _repository.UpdateAsync(deIssue, cancellationToken);
+        if (domain.Milestone?.Id != dbIssue.Milestone?.Id)
+        {
+            if (domain.Milestone == null)
+            {
+                dbIssue.Milestone = null;
+            }
+            else
+            {
+                DbMilestone? dbMilestone = await _milestoneRepository.GetByIdAsync(domain.Milestone.Id, cancellationToken);
+                dbIssue.Milestone = dbMilestone;
+            }
+        }
+
+        if (domain.Release?.Id != dbIssue.Release?.Id)
+        {
+            if (domain.Release == null)
+            {
+                dbIssue.Release = null;
+            }
+            else
+            {
+                DbRelease? dbRelease = await _releaseRepository.GetByIdAsync(domain.Release.Id, cancellationToken);
+                dbIssue.Release = dbRelease;
+            }
+        }
+
+        if (domain.Vehicle == null)
+        {
+            if (dbIssue.Vehicle != null)
+            {
+                _repository.DeleteVehicle(dbIssue.Vehicle);
+            }
+            dbIssue.Vehicle = null;
+        }
+        else
+        {
+            // TODO: update vehicle and dependencies
+        }
+
+        // TODO: update linked issues.
+
+        DbIssue updatedIssue = await _repository.UpdateAsync(dbIssue, cancellationToken);
 
         return _mapper.Map<Issue>(updatedIssue);
     }

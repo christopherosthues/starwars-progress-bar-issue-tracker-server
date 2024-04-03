@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 using StarWarsProgressBarIssueTracker.Domain.Milestones;
+using StarWarsProgressBarIssueTracker.Infrastructure.Database.Configurations;
 
 namespace StarWarsProgressBarIssueTracker.Infrastructure.Models;
 
+[EntityTypeConfiguration(typeof(DbMilestoneConfiguration))]
 public record DbMilestone : DbEntityBase
 {
     [StringLength(MilestoneConstants.MaxTitleLength, MinimumLength = MilestoneConstants.MinTitleLength)]

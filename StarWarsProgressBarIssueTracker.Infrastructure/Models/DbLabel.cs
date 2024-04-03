@@ -2,9 +2,11 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 using StarWarsProgressBarIssueTracker.Domain.Labels;
+using StarWarsProgressBarIssueTracker.Infrastructure.Database.Configurations;
 
 namespace StarWarsProgressBarIssueTracker.Infrastructure.Models;
 
+[EntityTypeConfiguration(typeof(DbLabelConfiguration))]
 public record DbLabel : DbEntityBase
 {
     [StringLength(LabelConstants.MaxTitleLength, MinimumLength = LabelConstants.MinTitleLength)]

@@ -13,7 +13,7 @@ using IssueState = StarWarsProgressBarIssueTracker.Infrastructure.Gitlab.GraphQL
 namespace StarWarsProgressBarIssueTracker.App.Jobs;
 
 public class GitlabSynchronizationJob(GraphQLService graphQlService,
-    // RestService restService
+    // RestService restService,
     IAppearanceService appearanceService,
     ILabelService labelService,
     IMilestoneService milestoneService,
@@ -23,262 +23,278 @@ public class GitlabSynchronizationJob(GraphQLService graphQlService,
     : IJob
 {
     public async Task ExecuteAsync(CancellationToken cancellationToken)
+{
+    var all = await graphQlService.GetAllAsync(cancellationToken);
+
+    await SynchronizeAppearancesAsync(all?.Labels, cancellationToken);
+
+    await SynchronizeMilestonesAsync(all?.Milestones, cancellationToken);
+
+    await SynchronizeIssuesAsync(all?.Issues, cancellationToken);
+}
+
+private async Task SynchronizeAppearancesAsync(IGetAll_Project_Labels? gitlabLabelData, CancellationToken cancellationToken)
+{
+    IEnumerable<IGetAll_Project_Labels_Nodes> gitlabLabels = (gitlabLabelData?.Nodes ?? [])
+        .Where(gitlabLabel => gitlabLabel != null).Cast<IGetAll_Project_Labels_Nodes>();
+    IList<Label> labels = [];
+    IList<Appearance> appearances = [];
+    foreach (var gitlabLabel in gitlabLabels)
     {
-        var all = await graphQlService.GetAllAsync(cancellationToken);
-
-        await SynchronizeAppearancesAsync(all?.Labels, cancellationToken);
-
-        await SynchronizeMilestonesAsync(all?.Milestones, cancellationToken);
-
-        await SynchronizeIssuesAsync(all?.Issues, cancellationToken);
-    }
-
-    private async Task SynchronizeAppearancesAsync(IGetAll_Project_Labels? gitlabLabelData, CancellationToken cancellationToken)
-    {
-        IEnumerable<IGetAll_Project_Labels_Nodes> gitlabLabels = (gitlabLabelData?.Nodes ?? [])
-            .Where(gitlabLabel => gitlabLabel != null).Cast<IGetAll_Project_Labels_Nodes>();
-        IList<Label> labels = [];
-        IList<Appearance> appearances = [];
-        foreach (var gitlabLabel in gitlabLabels)
+        if (gitlabLabel.Title.StartsWith("Appearance: "))
         {
-            if (gitlabLabel.Title.StartsWith("Appearance: "))
+            appearances.Add(new Appearance()
             {
-                appearances.Add(new Appearance()
-                {
-                    GitlabId = gitlabLabel.Id,
-                    Title = gitlabLabel.Title["Appearance: ".Length..],
-                    Description = gitlabLabel.Description,
-                    Color = gitlabLabel.Color,
-                    TextColor = gitlabLabel.TextColor,
-                    LastModifiedAt = DateTime.Parse(gitlabLabel.UpdatedAt).ToUniversalTime()
-                });
-            }
-            else
-            {
-                labels.Add(new Label
-                {
-                    GitlabId = gitlabLabel.Id,
-                    Title = gitlabLabel.Title,
-                    Description = gitlabLabel.Description,
-                    Color = gitlabLabel.Color,
-                    TextColor = gitlabLabel.TextColor,
-                    LastModifiedAt = DateTime.Parse(gitlabLabel.UpdatedAt).ToUniversalTime()
-                });
-            }
+                GitlabId = gitlabLabel.Id,
+                Title = gitlabLabel.Title["Appearance: ".Length..],
+                Description = gitlabLabel.Description,
+                Color = gitlabLabel.Color,
+                TextColor = gitlabLabel.TextColor,
+                LastModifiedAt = DateTime.Parse(gitlabLabel.UpdatedAt).ToUniversalTime()
+            });
         }
-
-        await appearanceService.SynchronizeFromGitlabAsync(appearances, cancellationToken);
-        await labelService.SynchronizeFromGitlabAsync(labels, cancellationToken);
-    }
-
-    private async Task SynchronizeMilestonesAsync(IGetAll_Project_Milestones? gitlabMilestoneData, CancellationToken cancellationToken)
-    {
-        IEnumerable<IGetAll_Project_Milestones_Nodes> gitlabMilestones = (gitlabMilestoneData?.Nodes ?? [])
-            .Where(gitlabMilestone => gitlabMilestone != null).Cast<IGetAll_Project_Milestones_Nodes>();
-        IList<Milestone> milestones = gitlabMilestones.Select(gitlabMilestone =>
-            new Milestone
-            {
-                GitlabId = gitlabMilestone.Id,
-                GitlabIid = gitlabMilestone.Iid,
-                Title = gitlabMilestone.Title,
-                Description = gitlabMilestone.Description,
-                State = MapMilestoneState(gitlabMilestone.State),
-                LastModifiedAt = DateTime.Parse(gitlabMilestone.UpdatedAt).ToUniversalTime()
-            }).ToList();
-
-        await milestoneService.SynchronizeFromGitlabAsync(milestones, cancellationToken);
-    }
-
-    private static MilestoneState MapMilestoneState(MilestoneStateEnum milestoneState) =>
-        milestoneState switch
+        else
         {
-            MilestoneStateEnum.Active => MilestoneState.Open,
-            MilestoneStateEnum.Closed => MilestoneState.Closed,
-            _ => MilestoneState.Closed
-        };
-
-    private async Task SynchronizeIssuesAsync(IGetAll_Project_Issues? gitlabIssueData, CancellationToken cancellationToken)
-    {
-        var currentPageInfo = gitlabIssueData?.PageInfo;
-
-        var gitlabFurtherIssues = await LoadAllRemainingIssues(currentPageInfo, cancellationToken);
-
-        IEnumerable<IGetAll_Project_Issues_Nodes> gitlabFirstIssues = (gitlabIssueData?.Nodes ?? []).Where(issue => issue != null).Cast<IGetAll_Project_Issues_Nodes>();
-        IList<Issue> issues = [];
-        IList<Release> releases = [];
-        ProcessFirst100Issues(gitlabFirstIssues, releases, issues);
-        ProcessRemainingIssues(gitlabFurtherIssues, releases, issues);
-
-        await releaseService.SynchronizeFromGitlabAsync(releases, cancellationToken);
-        await issueService.SynchronizeFromGitlabAsync(issues, cancellationToken);
+            labels.Add(new Label
+            {
+                GitlabId = gitlabLabel.Id,
+                Title = gitlabLabel.Title,
+                Description = gitlabLabel.Description,
+                Color = gitlabLabel.Color,
+                TextColor = gitlabLabel.TextColor,
+                LastModifiedAt = DateTime.Parse(gitlabLabel.UpdatedAt).ToUniversalTime()
+            });
+        }
     }
 
-    private static void ProcessFirst100Issues(IEnumerable<IGetAll_Project_Issues_Nodes> gitlabFirstIssues, ICollection<Release> releases, ICollection<Issue> issues)
-    {
-        foreach (var gitlabIssue in gitlabFirstIssues)
+    await appearanceService.SynchronizeFromGitlabAsync(appearances, cancellationToken);
+    await labelService.SynchronizeFromGitlabAsync(labels, cancellationToken);
+}
+
+private async Task SynchronizeMilestonesAsync(IGetAll_Project_Milestones? gitlabMilestoneData, CancellationToken cancellationToken)
+{
+    IEnumerable<IGetAll_Project_Milestones_Nodes> gitlabMilestones = (gitlabMilestoneData?.Nodes ?? [])
+        .Where(gitlabMilestone => gitlabMilestone != null).Cast<IGetAll_Project_Milestones_Nodes>();
+    IList<Milestone> milestones = gitlabMilestones.Select(gitlabMilestone =>
+        new Milestone
         {
-            if (gitlabIssue.Title.Contains("Release"))
+            GitlabId = gitlabMilestone.Id,
+            GitlabIid = gitlabMilestone.Iid,
+            Title = gitlabMilestone.Title,
+            Description = gitlabMilestone.Description,
+            State = MapMilestoneState(gitlabMilestone.State),
+            LastModifiedAt = DateTime.Parse(gitlabMilestone.UpdatedAt).ToUniversalTime()
+        }).ToList();
+
+    await milestoneService.SynchronizeFromGitlabAsync(milestones, cancellationToken);
+}
+
+private static MilestoneState MapMilestoneState(MilestoneStateEnum milestoneState) =>
+    milestoneState switch
+    {
+        MilestoneStateEnum.Active => MilestoneState.Open,
+        MilestoneStateEnum.Closed => MilestoneState.Closed,
+        _ => MilestoneState.Closed
+    };
+
+private async Task SynchronizeIssuesAsync(IGetAll_Project_Issues? gitlabIssueData, CancellationToken cancellationToken)
+{
+    var currentPageInfo = gitlabIssueData?.PageInfo;
+
+    var gitlabFurtherIssues = await LoadAllRemainingIssues(currentPageInfo, cancellationToken);
+
+    IEnumerable<IGetAll_Project_Issues_Nodes> gitlabFirstIssues = (gitlabIssueData?.Nodes ?? []).Where(issue => issue != null).Cast<IGetAll_Project_Issues_Nodes>();
+    IList<Issue> issues = [];
+    IList<Release> releases = [];
+    ProcessFirst100Issues(gitlabFirstIssues, releases, issues);
+    ProcessRemainingIssues(gitlabFurtherIssues, releases, issues);
+
+    await releaseService.SynchronizeFromGitlabAsync(releases, cancellationToken);
+    await issueService.SynchronizeFromGitlabAsync(issues, cancellationToken);
+
+    // TODO: Load links, update links, milestones and labels / appearances for issue
+}
+
+private static void ProcessFirst100Issues(IEnumerable<IGetAll_Project_Issues_Nodes> gitlabFirstIssues, ICollection<Release> releases, ICollection<Issue> issues)
+{
+    foreach (var gitlabIssue in gitlabFirstIssues)
+    {
+        if (gitlabIssue.Title.Contains("Release"))
+        {
+            releases.Add(new Release
             {
-                releases.Add(new Release
-                {
-                    GitlabId = gitlabIssue.Id,
-                    GitlabIid = gitlabIssue.Iid,
-                    Title = gitlabIssue.Title,
-                    Notes = gitlabIssue.Description,
-                    State = MapReleaseState(gitlabIssue.State),
-                    Date = gitlabIssue.DueDate != null ? DateTime.Parse(gitlabIssue.DueDate).ToUniversalTime() : null,
-                    LastModifiedAt = DateTime.Parse(gitlabIssue.UpdatedAt).ToUniversalTime()
-                });
-            }
-            else
+                GitlabId = gitlabIssue.Id,
+                GitlabIid = gitlabIssue.Iid,
+                Title = gitlabIssue.Title,
+                Notes = gitlabIssue.Description,
+                State = MapReleaseState(gitlabIssue.State),
+                Date = gitlabIssue.DueDate != null ? DateTime.Parse(gitlabIssue.DueDate).ToUniversalTime() : null,
+                LastModifiedAt = DateTime.Parse(gitlabIssue.UpdatedAt).ToUniversalTime()
+            });
+        }
+        else
+        {
+            var gitlabIssueDescription = ParseDescription(gitlabIssue.Description);
+            issues.Add(new Issue
             {
-                var gitlabIssueDescription = ParseDescription(gitlabIssue.Description);
-                issues.Add(new Issue
+                GitlabId = gitlabIssue.Id,
+                GitlabIid = gitlabIssue.Iid,
+                Title = gitlabIssue.Title,
+                Description = gitlabIssueDescription.Description,
+                Priority =
+                    Enum.GetValues<Priority>().Length < gitlabIssueDescription.Priority &&
+                    gitlabIssueDescription.Priority >= 0
+                        ? Enum.GetValues<Priority>()[gitlabIssueDescription.Priority]
+                        : Priority.Medium,
+                Milestone = new Milestone
                 {
-                    GitlabId = gitlabIssue.Id,
-                    GitlabIid = gitlabIssue.Iid,
-                    Title = gitlabIssue.Title,
-                    Description = gitlabIssueDescription.Description,
-                    Priority =
-                        Enum.GetValues<Priority>().Length < gitlabIssueDescription.Priority &&
-                        gitlabIssueDescription.Priority >= 0
-                            ? Enum.GetValues<Priority>()[gitlabIssueDescription.Priority]
-                            : Priority.Medium,
-                    Vehicle = !string.IsNullOrWhiteSpace(gitlabIssueDescription.EngineColor) || gitlabIssueDescription.Translations.Any() ? new Vehicle
+                    Title = string.Empty,
+                    GitlabId = gitlabIssue.Milestone?.Id,
+                    GitlabIid = gitlabIssue.Milestone?.Iid
+                },
+                Labels = gitlabIssue.Labels?.Nodes?.Where(labelNode => labelNode != null)
+                    .Select(labelNode => new Label
                     {
-                        EngineColor = !string.IsNullOrWhiteSpace(gitlabIssueDescription.EngineColor)
-                            ? gitlabIssueDescription.EngineColor.Equals("-") ? EngineColor.Unknown :
-                                Enum.Parse<EngineColor>(string.Concat(gitlabIssueDescription.EngineColor[0].ToString().ToUpper(), gitlabIssueDescription.EngineColor.AsSpan(1)))
-                            : EngineColor.Unknown,
-                        Translations = gitlabIssueDescription.Translations.Where(translation => !string.IsNullOrWhiteSpace(translation.Text) && !string.IsNullOrWhiteSpace(translation.Country)).ToList(),
-                    } : null,
-                    State = MapIssueState(gitlabIssue.State),
-                    LastModifiedAt = DateTime.Parse(gitlabIssue.UpdatedAt).ToUniversalTime()
-                });
-            }
+                        Title = string.Empty,
+                        Color = string.Empty,
+                        TextColor = string.Empty,
+                        GitlabId = labelNode!.Id
+                    }).ToList() ?? [],
+                Vehicle = !string.IsNullOrWhiteSpace(gitlabIssueDescription.EngineColor) || gitlabIssueDescription.Translations.Any() ? new Vehicle
+                {
+                    EngineColor = !string.IsNullOrWhiteSpace(gitlabIssueDescription.EngineColor)
+                        ? gitlabIssueDescription.EngineColor.Equals("-") ? EngineColor.Unknown :
+                            Enum.Parse<EngineColor>(string.Concat(gitlabIssueDescription.EngineColor[0].ToString().ToUpper(), gitlabIssueDescription.EngineColor.AsSpan(1)))
+                        : EngineColor.Unknown,
+                    Translations = gitlabIssueDescription.Translations.Where(translation => !string.IsNullOrWhiteSpace(translation.Text) && !string.IsNullOrWhiteSpace(translation.Country)).ToList(),
+                } : null,
+                State = MapIssueState(gitlabIssue.State),
+                LastModifiedAt = DateTime.Parse(gitlabIssue.UpdatedAt).ToUniversalTime()
+            });
         }
     }
+}
 
-    private static void ProcessRemainingIssues(List<IGetFurtherIssues_Project_Issues_Nodes> gitlabFurtherIssues, IList<Release> releases, IList<Issue> issues)
+private static void ProcessRemainingIssues(List<IGetFurtherIssues_Project_Issues_Nodes> gitlabFurtherIssues, IList<Release> releases, IList<Issue> issues)
+{
+    foreach (var gitlabIssue in gitlabFurtherIssues)
     {
-        foreach (var gitlabIssue in gitlabFurtherIssues)
+        if (gitlabIssue.Title.Contains("Release"))
         {
-            if (gitlabIssue.Title.Contains("Release"))
+            releases.Add(new Release
             {
-                releases.Add(new Release
-                {
-                    GitlabId = gitlabIssue.Id,
-                    GitlabIid = gitlabIssue.Iid,
-                    Title = gitlabIssue.Title,
-                    Notes = gitlabIssue.Description,
-                    State = MapReleaseState(gitlabIssue.State),
-                    Date = gitlabIssue.DueDate != null ? DateTime.Parse(gitlabIssue.DueDate).ToUniversalTime() : null,
-                    LastModifiedAt = DateTime.Parse(gitlabIssue.UpdatedAt).ToUniversalTime()
-                });
-            }
-            else
+                GitlabId = gitlabIssue.Id,
+                GitlabIid = gitlabIssue.Iid,
+                Title = gitlabIssue.Title,
+                Notes = gitlabIssue.Description,
+                State = MapReleaseState(gitlabIssue.State),
+                Date = gitlabIssue.DueDate != null ? DateTime.Parse(gitlabIssue.DueDate).ToUniversalTime() : null,
+                LastModifiedAt = DateTime.Parse(gitlabIssue.UpdatedAt).ToUniversalTime()
+            });
+        }
+        else
+        {
+            var gitlabIssueDescription = ParseDescription(gitlabIssue.Description);
+            issues.Add(new Issue
             {
-                var gitlabIssueDescription = ParseDescription(gitlabIssue.Description);
-                issues.Add(new Issue
+                GitlabId = gitlabIssue.Id,
+                GitlabIid = gitlabIssue.Iid,
+                Title = gitlabIssue.Title,
+                Description = gitlabIssueDescription.Description,
+                Priority =
+                    Enum.GetValues<Priority>().Length < gitlabIssueDescription.Priority &&
+                    gitlabIssueDescription.Priority >= 0
+                        ? Enum.GetValues<Priority>()[gitlabIssueDescription.Priority]
+                        : Priority.Medium,
+                Vehicle = !string.IsNullOrWhiteSpace(gitlabIssueDescription.EngineColor) || gitlabIssueDescription.Translations.Any() ? new Vehicle
                 {
-                    GitlabId = gitlabIssue.Id,
-                    GitlabIid = gitlabIssue.Iid,
-                    Title = gitlabIssue.Title,
-                    Description = gitlabIssueDescription.Description,
-                    Priority =
-                        Enum.GetValues<Priority>().Length < gitlabIssueDescription.Priority &&
-                        gitlabIssueDescription.Priority >= 0
-                            ? Enum.GetValues<Priority>()[gitlabIssueDescription.Priority]
-                            : Priority.Medium,
-                    Vehicle = !string.IsNullOrWhiteSpace(gitlabIssueDescription.EngineColor) || gitlabIssueDescription.Translations.Any() ? new Vehicle
-                    {
-                        EngineColor = !string.IsNullOrWhiteSpace(gitlabIssueDescription.EngineColor)
-                            ? gitlabIssueDescription.EngineColor.Equals("-") ? EngineColor.Unknown :
-                                Enum.Parse<EngineColor>(string.Concat(gitlabIssueDescription.EngineColor[0].ToString().ToUpper(), gitlabIssueDescription.EngineColor.AsSpan(1)))
-                            : EngineColor.Unknown,
-                        Translations = gitlabIssueDescription.Translations.Where(translation => !string.IsNullOrWhiteSpace(translation.Text) && !string.IsNullOrWhiteSpace(translation.Country)).ToList(),
-                    } : null,
-                    State = MapIssueState(gitlabIssue.State),
-                    LastModifiedAt = DateTime.Parse(gitlabIssue.UpdatedAt).ToUniversalTime()
-                });
-            }
+                    EngineColor = !string.IsNullOrWhiteSpace(gitlabIssueDescription.EngineColor)
+                        ? gitlabIssueDescription.EngineColor.Equals("-") ? EngineColor.Unknown :
+                            Enum.Parse<EngineColor>(string.Concat(gitlabIssueDescription.EngineColor[0].ToString().ToUpper(), gitlabIssueDescription.EngineColor.AsSpan(1)))
+                        : EngineColor.Unknown,
+                    Translations = gitlabIssueDescription.Translations.Where(translation => !string.IsNullOrWhiteSpace(translation.Text) && !string.IsNullOrWhiteSpace(translation.Country)).ToList(),
+                } : null,
+                State = MapIssueState(gitlabIssue.State),
+                LastModifiedAt = DateTime.Parse(gitlabIssue.UpdatedAt).ToUniversalTime()
+            });
         }
     }
+}
 
-    private async Task<List<IGetFurtherIssues_Project_Issues_Nodes>> LoadAllRemainingIssues(IGetAll_Project_Issues_PageInfo? currentPageInfo, CancellationToken cancellationToken)
+private async Task<List<IGetFurtherIssues_Project_Issues_Nodes>> LoadAllRemainingIssues(IGetAll_Project_Issues_PageInfo? currentPageInfo, CancellationToken cancellationToken)
+{
+    List<IGetFurtherIssues_Project_Issues_Nodes> gitlabFurtherIssues = [];
+
+    if (HasNextPage(currentPageInfo))
     {
-        List<IGetFurtherIssues_Project_Issues_Nodes> gitlabFurtherIssues = [];
+        var nextIssuesResult = await graphQlService.GetFurtherIssuesAsync(currentPageInfo!.EndCursor!, cancellationToken);
 
-        if (HasNextPage(currentPageInfo))
+        gitlabFurtherIssues.AddRange(nextIssuesResult?.Nodes?.Where(issue => issue != null).Cast<IGetFurtherIssues_Project_Issues_Nodes>() ?? []);
+
+        while (HasNextPage(nextIssuesResult))
         {
-            var nextIssuesResult = await graphQlService.GetFurtherIssuesAsync(currentPageInfo!.EndCursor!, cancellationToken);
-
+            nextIssuesResult = await graphQlService.GetFurtherIssuesAsync(nextIssuesResult!.PageInfo.EndCursor!, cancellationToken);
             gitlabFurtherIssues.AddRange(nextIssuesResult?.Nodes?.Where(issue => issue != null).Cast<IGetFurtherIssues_Project_Issues_Nodes>() ?? []);
+        }
+    }
 
-            while (HasNextPage(nextIssuesResult))
+    return gitlabFurtherIssues;
+}
+
+private static bool HasNextPage(IGetAll_Project_Issues_PageInfo? currentPageInfo)
+{
+    return (currentPageInfo?.HasNextPage ?? false) && !string.IsNullOrEmpty(currentPageInfo.EndCursor);
+}
+
+private static bool HasNextPage(IGetFurtherIssues_Project_Issues? nextIssuesResult)
+{
+    return (nextIssuesResult?.PageInfo.HasNextPage ?? false) &&
+           !string.IsNullOrEmpty(nextIssuesResult.PageInfo.EndCursor);
+}
+
+private static ReleaseState MapReleaseState(IssueState issueState) =>
+    issueState switch
+    {
+        IssueState.Opened => ReleaseState.Planned,
+        IssueState.Closed => ReleaseState.Released,
+        _ => ReleaseState.Released
+    };
+
+private static Domain.Issues.IssueState MapIssueState(IssueState issueState) =>
+    issueState switch
+    {
+        IssueState.Opened => Domain.Issues.IssueState.Open,
+        IssueState.Closed => Domain.Issues.IssueState.Closed,
+        _ => Domain.Issues.IssueState.Closed
+    };
+
+private static IssueDescription ParseDescription(string? description)
+{
+    var issueDescription = new IssueDescription();
+    if (description != null)
+    {
+        var fieldsBeginning = description.IndexOf('{');
+        if (fieldsBeginning != -1)
+        {
+            var fieldsText = description[fieldsBeginning..];
+            var parsedDescription = JsonSerializer.Deserialize<IssueDescription>(fieldsText);
+
+            if (parsedDescription != null)
             {
-                nextIssuesResult = await graphQlService.GetFurtherIssuesAsync(nextIssuesResult!.PageInfo.EndCursor!, cancellationToken);
-                gitlabFurtherIssues.AddRange(nextIssuesResult?.Nodes?.Where(issue => issue != null).Cast<IGetFurtherIssues_Project_Issues_Nodes>() ?? []);
+                issueDescription = parsedDescription;
+            }
+
+            if (!string.IsNullOrWhiteSpace(description[..fieldsBeginning]))
+            {
+                issueDescription.Description = description[..fieldsBeginning] + "\n" + issueDescription.Description;
             }
         }
-
-        return gitlabFurtherIssues;
-    }
-
-    private static bool HasNextPage(IGetAll_Project_Issues_PageInfo? currentPageInfo)
-    {
-        return (currentPageInfo?.HasNextPage ?? false) && !string.IsNullOrEmpty(currentPageInfo.EndCursor);
-    }
-
-    private static bool HasNextPage(IGetFurtherIssues_Project_Issues? nextIssuesResult)
-    {
-        return (nextIssuesResult?.PageInfo.HasNextPage ?? false) &&
-               !string.IsNullOrEmpty(nextIssuesResult.PageInfo.EndCursor);
-    }
-
-    private static ReleaseState MapReleaseState(IssueState issueState) =>
-        issueState switch
+        else
         {
-            IssueState.Opened => ReleaseState.Planned,
-            IssueState.Closed => ReleaseState.Released,
-            _ => ReleaseState.Released
-        };
-
-    private static Domain.Issues.IssueState MapIssueState(IssueState issueState) =>
-        issueState switch
-        {
-            IssueState.Opened => Domain.Issues.IssueState.Open,
-            IssueState.Closed => Domain.Issues.IssueState.Closed,
-            _ => Domain.Issues.IssueState.Closed
-        };
-
-    private static IssueDescription ParseDescription(string? description)
-    {
-        var issueDescription = new IssueDescription();
-        if (description != null)
-        {
-            var fieldsBeginning = description.IndexOf("{", StringComparison.InvariantCulture);
-            if (fieldsBeginning != -1)
-            {
-                var fieldsText = description[fieldsBeginning..];
-                var parsedDescription = JsonSerializer.Deserialize<IssueDescription>(fieldsText);
-
-                if (parsedDescription != null)
-                {
-                    issueDescription = parsedDescription;
-                }
-
-                if (!string.IsNullOrWhiteSpace(description[..fieldsBeginning]))
-                {
-                    issueDescription.Description = description[..fieldsBeginning] + "\n" + issueDescription.Description;
-                }
-            }
-            else
-            {
-                issueDescription.Description = description;
-            }
+            issueDescription.Description = description;
         }
-
-        return issueDescription;
     }
+
+    return issueDescription;
+}
 }

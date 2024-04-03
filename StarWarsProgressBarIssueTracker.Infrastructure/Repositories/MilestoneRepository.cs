@@ -9,7 +9,7 @@ public class MilestoneRepository : IssueTrackerRepositoryBase<DbMilestone>
     {
         return DbSet.Include(dbMilestone => dbMilestone.Issues)
             .ThenInclude(dbIssue => dbIssue.Vehicle)
-            .ThenInclude(dbVehicle => dbVehicle != null ? dbVehicle.Appearances : null)
+            .ThenInclude(dbVehicle => dbVehicle!.Appearances)
             .Include(dbMilestone => dbMilestone.Issues)
             .ThenInclude(dbIssue => dbIssue.Release);
     }

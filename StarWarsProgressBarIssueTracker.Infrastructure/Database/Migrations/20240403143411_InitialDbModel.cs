@@ -110,7 +110,6 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Tasks",
-                schema: "issue_tracker",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -306,6 +305,20 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                 column: "AppearanceId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Appearances_GitHubId",
+                schema: "issue_tracker",
+                table: "Appearances",
+                column: "GitHubId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Appearances_GitlabId",
+                schema: "issue_tracker",
+                table: "Appearances",
+                column: "GitlabId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DbIssueDbLabel_LabelId",
                 schema: "issue_tracker",
                 table: "DbIssueDbLabel",
@@ -316,6 +329,27 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                 schema: "issue_tracker",
                 table: "IssueLinks",
                 column: "LinkedIssueId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Issues_GitHubId",
+                schema: "issue_tracker",
+                table: "Issues",
+                column: "GitHubId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Issues_GitlabId",
+                schema: "issue_tracker",
+                table: "Issues",
+                column: "GitlabId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Issues_GitlabIid",
+                schema: "issue_tracker",
+                table: "Issues",
+                column: "GitlabIid",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Issues_MilestoneId",
@@ -336,14 +370,76 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                 column: "VehicleId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Jobs_JobType",
+                schema: "issue_tracker",
+                table: "Jobs",
+                column: "JobType",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Labels_GitHubId",
+                schema: "issue_tracker",
+                table: "Labels",
+                column: "GitHubId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Labels_GitlabId",
+                schema: "issue_tracker",
+                table: "Labels",
+                column: "GitlabId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Milestones_GitHubId",
+                schema: "issue_tracker",
+                table: "Milestones",
+                column: "GitHubId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Milestones_GitlabId",
+                schema: "issue_tracker",
+                table: "Milestones",
+                column: "GitlabId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Milestones_GitlabIid",
+                schema: "issue_tracker",
+                table: "Milestones",
+                column: "GitlabIid",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Photos_PhotoId",
                 schema: "issue_tracker",
                 table: "Photos",
                 column: "PhotoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tasks_JobId",
+                name: "IX_Releases_GitHubId",
                 schema: "issue_tracker",
+                table: "Releases",
+                column: "GitHubId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Releases_GitlabId",
+                schema: "issue_tracker",
+                table: "Releases",
+                column: "GitlabId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Releases_GitlabIid",
+                schema: "issue_tracker",
+                table: "Releases",
+                column: "GitlabIid",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tasks_JobId",
                 table: "Tasks",
                 column: "JobId");
 
@@ -374,8 +470,7 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                 schema: "issue_tracker");
 
             migrationBuilder.DropTable(
-                name: "Tasks",
-                schema: "issue_tracker");
+                name: "Tasks");
 
             migrationBuilder.DropTable(
                 name: "Translations",

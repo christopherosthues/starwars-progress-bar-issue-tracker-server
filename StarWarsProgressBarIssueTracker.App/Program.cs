@@ -24,15 +24,15 @@ var gitlabToken = gitlabConfig.GetValue<string>("Token");
 var gitlabGraphQLURL = new Uri(gitlabConfig.GetValue<string>("GraphQLUrl") ?? string.Empty);
 builder.Services.AddGitlabClient().ConfigureHttpClient(client =>
 {
-     client.BaseAddress = GetGraphQLUri(gitlabGraphQLURL);
-     client.DefaultRequestHeaders.Authorization =
-         new AuthenticationHeaderValue("Bearer", gitlabToken);
+    client.BaseAddress = GetGraphQLUri(gitlabGraphQLURL);
+    client.DefaultRequestHeaders.Authorization =
+        new AuthenticationHeaderValue("Bearer", gitlabToken);
 }
      // httpClientBuilder => httpClientBuilder.AddPolly()
      ).ConfigureWebSocketClient(client =>
 {
-     client.Uri = GetGraphQLStreamingUri(gitlabGraphQLURL);
-     // client.Socket.Options.SetRequestHeader("Authorization", $"Bearer {gitlabToken}");
+    client.Uri = GetGraphQLStreamingUri(gitlabGraphQLURL);
+    // client.Socket.Options.SetRequestHeader("Authorization", $"Bearer {gitlabToken}");
 });
 builder.Services.AddGitHubClient();
 
@@ -64,21 +64,21 @@ builder.Services.AddQuartz(q =>
 
     q.AddTrigger(opts => opts.ForJob(jobKey)
                              .WithIdentity($"{nameof(JobScheduler)}-trigger")
-                             .WithCronSchedule("0 0 0 * * ?"));
+                             .WithCronSchedule("*/30 * * * * ?"));
 
     var jobKey2 = new JobKey(nameof(GitlabSynchronizationJobScheduler));
     q.AddJob<GitlabSynchronizationJobScheduler>(opts => opts.WithIdentity(jobKey2));
 
     q.AddTrigger(opts => opts.ForJob(jobKey2)
                              .WithIdentity($"{nameof(GitlabSynchronizationJobScheduler)}-trigger")
-                             .WithCronSchedule("0 0 0 * * ?"));
+                             .WithCronSchedule("0 */1 * * * ?"));
 
     var jobKey3 = new JobKey(nameof(GitHubSynchronizationJobScheduler));
     q.AddJob<GitHubSynchronizationJobScheduler>(opts => opts.WithIdentity(jobKey3));
 
     q.AddTrigger(opts => opts.ForJob(jobKey3)
                              .WithIdentity($"{nameof(GitHubSynchronizationJobScheduler)}-trigger")
-                             .WithCronSchedule("0 0 0 * * ?"));
+                             .WithCronSchedule("0 */1 * * * ?"));
 });
 
 builder.Services.AddQuartzServer(options =>

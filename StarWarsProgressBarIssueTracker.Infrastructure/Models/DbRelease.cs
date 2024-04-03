@@ -1,9 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 using StarWarsProgressBarIssueTracker.Domain.Releases;
+using StarWarsProgressBarIssueTracker.Infrastructure.Database.Configurations;
 
 namespace StarWarsProgressBarIssueTracker.Infrastructure.Models;
 
+[EntityTypeConfiguration(typeof(DbReleaseConfiguration))]
 public record DbRelease : DbEntityBase
 {
     [StringLength(ReleaseConstants.MaxTitleLength, MinimumLength = ReleaseConstants.MinTitleLength)]

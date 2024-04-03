@@ -2,9 +2,11 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 using StarWarsProgressBarIssueTracker.Domain.Issues;
+using StarWarsProgressBarIssueTracker.Infrastructure.Database.Configurations;
 
 namespace StarWarsProgressBarIssueTracker.Infrastructure.Models;
 
+[EntityTypeConfiguration(typeof(DbIssueConfiguration))]
 public record DbIssue : DbEntityBase
 {
     [StringLength(IssueConstants.MaxTitleLength, MinimumLength = IssueConstants.MinTitleLength)]

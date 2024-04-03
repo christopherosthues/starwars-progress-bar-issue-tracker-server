@@ -52,33 +52,33 @@
 //         };
 //     }
 //
-//     private static IssueDescription ParseDescription(string? description)
+// private static IssueDescription ParseDescription(string? description)
+// {
+//     var issueDescription = new IssueDescription();
+//     if (description != null)
 //     {
-//         var issueDescription = new IssueDescription();
-//         if (description != null)
+//         var fieldsBeginning = description.IndexOf("{", StringComparison.InvariantCulture);
+//         if (fieldsBeginning != -1)
 //         {
-//             var fieldsBeginning = description.IndexOf("{", StringComparison.InvariantCulture);
-//             if (fieldsBeginning != -1)
+//             var fieldsText = description[fieldsBeginning..];
+//             var parsedDescription = JsonSerializer.Deserialize<IssueDescription>(fieldsText);
+//
+//             if (parsedDescription != null)
 //             {
-//                 var fieldsText = description[fieldsBeginning..];
-//                 var parsedDescription = JsonSerializer.Deserialize<IssueDescription>(fieldsText);
-//
-//                 if (parsedDescription != null)
-//                 {
-//                     issueDescription = parsedDescription;
-//                 }
-//
-//                 if (!string.IsNullOrWhiteSpace(description[..fieldsBeginning]))
-//                 {
-//                     issueDescription.Description = description[..fieldsBeginning] + "\n" + issueDescription.Description;
-//                 }
+//                 issueDescription = parsedDescription;
 //             }
-//             else
+//
+//             if (!string.IsNullOrWhiteSpace(description[..fieldsBeginning]))
 //             {
-//                 issueDescription.Description = description;
+//                 issueDescription.Description = description[..fieldsBeginning] + "\n" + issueDescription.Description;
 //             }
 //         }
-//
-//         return issueDescription;
+//         else
+//         {
+//             issueDescription.Description = description;
+//         }
 //     }
+//
+//     return issueDescription;
+// }
 // }

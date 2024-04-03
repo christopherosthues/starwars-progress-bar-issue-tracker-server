@@ -1,6 +1,6 @@
 namespace StarWarsProgressBarIssueTracker.Infrastructure.Database;
 
-public class IssueTrackerDbConfig
+public static class IssueTrackerDbConfig
 {
-    public string Schema { get; set; } = "public";
+    public const string Schema = "issue_tracker";
 }

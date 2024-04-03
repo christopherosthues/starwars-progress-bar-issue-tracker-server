@@ -3,7 +3,7 @@ using StarWarsProgressBarIssueTracker.Infrastructure.Models;
 
 namespace StarWarsProgressBarIssueTracker.Infrastructure.Repositories;
 
-public class IssueRepository : IssueTrackerRepositoryBase<DbIssue>
+public class IssueRepository : IssueTrackerRepositoryBase<DbIssue>, IIssueRepository
 {
     protected override IQueryable<DbIssue> GetIncludingFields()
     {
@@ -11,10 +11,15 @@ public class IssueRepository : IssueTrackerRepositoryBase<DbIssue>
             .Include(dbIssue => dbIssue.Release)
             .Include(dbIssue => dbIssue.Labels)
             .Include(dbIssue => dbIssue.Vehicle)
-            .ThenInclude(dbVehicle => dbVehicle != null ? dbVehicle.Appearances : null)
+            .ThenInclude(dbVehicle => dbVehicle!.Appearances)
             .Include(dbIssue => dbIssue.Vehicle)
-            .ThenInclude(dbVehicle => dbVehicle != null ? dbVehicle.Photos : null)
+            .ThenInclude(dbVehicle => dbVehicle!.Photos)
             .Include(dbIssue => dbIssue.Vehicle)
-            .ThenInclude(dbVehicle => dbVehicle != null ? dbVehicle.Translations : null);
+            .ThenInclude(dbVehicle => dbVehicle!.Translations);
+    }
+
+    public void DeleteVehicle(DbVehicle dbVehicle)
+    {
+        Context.Vehicles.Remove(dbVehicle);
     }
 }

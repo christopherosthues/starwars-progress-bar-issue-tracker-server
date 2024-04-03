@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using StarWarsProgressBarIssueTracker.Infrastructure.Database;
+using StarWarsProgressBarIssueTracker.Infrastructure.Models;
 
 namespace StarWarsProgressBarIssueTracker.App.Extensions;
 
@@ -59,6 +60,13 @@ public static class DbContextExtensions
                 return;
             }
 
+            await context.Jobs.AddAsync(new DbJob
+            {
+                CronInterval = "0 0/1 * * * ?",
+                IsPaused = false,
+                JobType = JobType.GitlabSync,
+            });
+            await context.SaveChangesAsync();
             // TODO: seed e.g. jobs
         }
         catch (DbUpdateException ex)

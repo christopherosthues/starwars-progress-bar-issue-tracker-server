@@ -10,7 +10,7 @@ public static class RepositoryRegistration
     {
         serviceCollection.AddScoped<IRepository<DbAppearance>, IssueTrackerRepositoryBase<DbAppearance>>();
         serviceCollection.AddScoped<IRepository<DbLabel>, LabelRepository>();
-        serviceCollection.AddScoped<IRepository<DbIssue>, IssueRepository>();
+        serviceCollection.AddScoped<IIssueRepository, IssueRepository>();
         serviceCollection.AddScoped<IRepository<DbMilestone>, MilestoneRepository>();
         serviceCollection.AddScoped<IRepository<DbRelease>, ReleaseRepository>();
         serviceCollection.AddScoped<ITaskRepository, TaskRepository>();

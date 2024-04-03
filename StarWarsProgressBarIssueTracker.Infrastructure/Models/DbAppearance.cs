@@ -1,8 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 using StarWarsProgressBarIssueTracker.Domain.Vehicles;
+using StarWarsProgressBarIssueTracker.Infrastructure.Database.Configurations;
 
 namespace StarWarsProgressBarIssueTracker.Infrastructure.Models;
 
+[EntityTypeConfiguration(typeof(DbAppearanceConfiguration))]
 public record DbAppearance : DbEntityBase
 {
     [StringLength(AppearanceConstants.MaxTitleLength, MinimumLength = AppearanceConstants.MinTitleLength)]
