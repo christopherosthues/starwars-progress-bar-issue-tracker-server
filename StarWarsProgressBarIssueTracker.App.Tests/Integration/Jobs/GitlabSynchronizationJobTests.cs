@@ -42,7 +42,10 @@ public class GitlabSynchronizationJobTests : IntegrationTestBase
         var dbIssue = new DbIssue() { Title = "NotDeleted", };
         var deletedLabel = new DbLabel
         {
-            Title = "Deleted", Color = "#fffff1", TextColor = "#fffff1", GitlabId = "gid://gitlab/ProjectLabel/4",
+            Title = "Deleted",
+            Color = "#fffff1",
+            TextColor = "#fffff1",
+            GitlabId = "gid://gitlab/ProjectLabel/4",
             Issues = [dbIssue]
         };
         dbIssue.Labels.Add(deletedLabel);
@@ -108,7 +111,9 @@ public class GitlabSynchronizationJobTests : IntegrationTestBase
         var dbIssue = new DbIssue { Title = "NotDeleted", };
         var deletedMilestone = new DbMilestone
         {
-            Title = "Deleted", GitlabId = "gid://gitlab/Milestone/4", GitlabIid = "4",
+            Title = "Deleted",
+            GitlabId = "gid://gitlab/Milestone/4",
+            GitlabIid = "4",
             Issues = [dbIssue]
         };
         dbIssue.Milestone = deletedMilestone;
@@ -175,7 +180,9 @@ public class GitlabSynchronizationJobTests : IntegrationTestBase
         var dbIssue = new DbIssue { Title = "NotDeleted", };
         var deletedRelease = new DbRelease
         {
-            Title = "Deleted", GitlabId = "gid://gitlab/Issue/4", GitlabIid = "4",
+            Title = "Deleted",
+            GitlabId = "gid://gitlab/Issue/4",
+            GitlabIid = "4",
             Issues = [dbIssue]
         };
         dbIssue.Release = deletedRelease;

@@ -45,7 +45,7 @@ public class RestService
     //     response.ThrowIfError();
     // }
 
-    public async Task<IList<LinkIssue>?> GetIssueLinks(int projectId, string issueIid)
+    public async Task<IList<LinkIssue>?> GetIssueLinksAsync(int projectId, string issueIid)
     {
         var response = await _client.GetAsync($"\"projects/{projectId}/issues/{issueIid}/links\"", CancellationToken.None);
         response.EnsureSuccessStatusCode();

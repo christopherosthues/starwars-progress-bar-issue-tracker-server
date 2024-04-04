@@ -17,7 +17,7 @@ public class IssueTrackerRepositoryBase<TDbEntity> : IRepository<TDbEntity> wher
         {
             // if (_context != null)
             // {
-                // throw new InvalidOperationException("THe DB context is already initialized.");
+            // throw new InvalidOperationException("THe DB context is already initialized.");
             // }
 
             _context = value;

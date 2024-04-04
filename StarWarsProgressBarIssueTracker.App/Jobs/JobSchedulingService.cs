@@ -30,7 +30,8 @@ public class JobSchedulingService
         {
             if (!job.IsPaused && ShouldSchedule(job))
             {
-                try {
+                try
+                {
                     var task = new DbTask
                     {
                         ExecuteAt = DateTime.UtcNow,

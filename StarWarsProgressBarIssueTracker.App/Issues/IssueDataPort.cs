@@ -70,6 +70,21 @@ public class IssueDataPort : IDataPort<Issue>
         dbIssue.State = domain.State;
         dbIssue.Priority = domain.Priority;
 
+        await UpdateIssueMilestoneAsync(domain, cancellationToken, dbIssue);
+
+        await UpdateIssueReleaseAsync(domain, cancellationToken, dbIssue);
+
+        UpdateIssueVehicle(domain, dbIssue);
+
+        // TODO: update linked issues.
+
+        DbIssue updatedIssue = await _repository.UpdateAsync(dbIssue, cancellationToken);
+
+        return _mapper.Map<Issue>(updatedIssue);
+    }
+
+    private async Task UpdateIssueMilestoneAsync(Issue domain, CancellationToken cancellationToken, DbIssue dbIssue)
+    {
         if (domain.Milestone?.Id != dbIssue.Milestone?.Id)
         {
             if (domain.Milestone == null)
@@ -82,7 +97,10 @@ public class IssueDataPort : IDataPort<Issue>
                 dbIssue.Milestone = dbMilestone;
             }
         }
+    }
 
+    private async Task UpdateIssueReleaseAsync(Issue domain, CancellationToken cancellationToken, DbIssue dbIssue)
+    {
         if (domain.Release?.Id != dbIssue.Release?.Id)
         {
             if (domain.Release == null)
@@ -95,7 +113,10 @@ public class IssueDataPort : IDataPort<Issue>
                 dbIssue.Release = dbRelease;
             }
         }
+    }
 
+    private void UpdateIssueVehicle(Issue domain, DbIssue dbIssue)
+    {
         if (domain.Vehicle == null)
         {
             if (dbIssue.Vehicle != null)
@@ -108,12 +129,6 @@ public class IssueDataPort : IDataPort<Issue>
         {
             // TODO: update vehicle and dependencies
         }
-
-        // TODO: update linked issues.
-
-        DbIssue updatedIssue = await _repository.UpdateAsync(dbIssue, cancellationToken);
-
-        return _mapper.Map<Issue>(updatedIssue);
     }
 
     public async Task<Issue> DeleteAsync(Guid id, CancellationToken cancellationToken = default)

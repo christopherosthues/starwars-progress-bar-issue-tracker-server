@@ -1,5 +1,4 @@
-﻿
-using System.Text.Json;
+﻿using System.Text.Json;
 using StarWarsProgressBarIssueTracker.Domain.Issues;
 using StarWarsProgressBarIssueTracker.Domain.Labels;
 using StarWarsProgressBarIssueTracker.Domain.Milestones;
@@ -12,28 +11,35 @@ using IssueState = StarWarsProgressBarIssueTracker.Infrastructure.Gitlab.GraphQL
 
 namespace StarWarsProgressBarIssueTracker.App.Jobs;
 
-public class GitlabSynchronizationJob(GraphQLService graphQlService,
-    // RestService restService,
+public class GitlabSynchronizationJob(
+    GraphQLService graphQlService,
+    RestService restService,
     IAppearanceService appearanceService,
     ILabelService labelService,
     IMilestoneService milestoneService,
     IIssueService issueService,
     IReleaseService releaseService
-    )
+)
     : IJob
 {
     public async Task ExecuteAsync(CancellationToken cancellationToken)
 {
     var all = await graphQlService.GetAllAsync(cancellationToken);
 
-    await SynchronizeAppearancesAsync(all?.Labels, cancellationToken);
+    if (all == null)
+    {
+        return;
+    }
 
-    await SynchronizeMilestonesAsync(all?.Milestones, cancellationToken);
+    await SynchronizeAppearancesAsync(all.Labels, cancellationToken);
 
-    await SynchronizeIssuesAsync(all?.Issues, cancellationToken);
+    await SynchronizeMilestonesAsync(all.Milestones, cancellationToken);
+
+    await SynchronizeIssuesAsync(all.Id.Split('/')[^1], all.Issues, cancellationToken);
 }
 
-private async Task SynchronizeAppearancesAsync(IGetAll_Project_Labels? gitlabLabelData, CancellationToken cancellationToken)
+private async Task SynchronizeAppearancesAsync(IGetAll_Project_Labels? gitlabLabelData,
+    CancellationToken cancellationToken)
 {
     IEnumerable<IGetAll_Project_Labels_Nodes> gitlabLabels = (gitlabLabelData?.Nodes ?? [])
         .Where(gitlabLabel => gitlabLabel != null).Cast<IGetAll_Project_Labels_Nodes>();
@@ -71,7 +77,8 @@ private async Task SynchronizeAppearancesAsync(IGetAll_Project_Labels? gitlabLab
     await labelService.SynchronizeFromGitlabAsync(labels, cancellationToken);
 }
 
-private async Task SynchronizeMilestonesAsync(IGetAll_Project_Milestones? gitlabMilestoneData, CancellationToken cancellationToken)
+private async Task SynchronizeMilestonesAsync(IGetAll_Project_Milestones? gitlabMilestoneData,
+    CancellationToken cancellationToken)
 {
     IEnumerable<IGetAll_Project_Milestones_Nodes> gitlabMilestones = (gitlabMilestoneData?.Nodes ?? [])
         .Where(gitlabMilestone => gitlabMilestone != null).Cast<IGetAll_Project_Milestones_Nodes>();
@@ -97,29 +104,30 @@ private static MilestoneState MapMilestoneState(MilestoneStateEnum milestoneStat
         _ => MilestoneState.Closed
     };
 
-private async Task SynchronizeIssuesAsync(IGetAll_Project_Issues? gitlabIssueData, CancellationToken cancellationToken)
+private async Task SynchronizeIssuesAsync(string projectId, IGetAll_Project_Issues? gitlabIssueData,
+    CancellationToken cancellationToken)
 {
     var currentPageInfo = gitlabIssueData?.PageInfo;
 
     var gitlabFurtherIssues = await LoadAllRemainingIssues(currentPageInfo, cancellationToken);
 
-    IEnumerable<IGetAll_Project_Issues_Nodes> gitlabFirstIssues = (gitlabIssueData?.Nodes ?? []).Where(issue => issue != null).Cast<IGetAll_Project_Issues_Nodes>();
+    IEnumerable<IGetAll_Project_Issues_Nodes> gitlabFirstIssues = (gitlabIssueData?.Nodes ?? [])
+        .Where(issue => issue != null).Cast<IGetAll_Project_Issues_Nodes>();
     IList<Issue> issues = [];
     IList<Release> releases = [];
-    ProcessFirst100Issues(gitlabFirstIssues, releases, issues);
-    ProcessRemainingIssues(gitlabFurtherIssues, releases, issues);
+    await ProcessFirst100IssuesAsync(int.Parse(projectId), gitlabFirstIssues, releases, issues);
+    await ProcessRemainingIssuesAsync(int.Parse(projectId), gitlabFurtherIssues, releases, issues);
 
     await releaseService.SynchronizeFromGitlabAsync(releases, cancellationToken);
     await issueService.SynchronizeFromGitlabAsync(issues, cancellationToken);
-
-    // TODO: Load links, update links, milestones and labels / appearances for issue
 }
 
-private static void ProcessFirst100Issues(IEnumerable<IGetAll_Project_Issues_Nodes> gitlabFirstIssues, ICollection<Release> releases, ICollection<Issue> issues)
+private async Task ProcessFirst100IssuesAsync(int projectId, IEnumerable<IGetAll_Project_Issues_Nodes> gitlabFirstIssues,
+    ICollection<Release> releases, ICollection<Issue> issues)
 {
     foreach (var gitlabIssue in gitlabFirstIssues)
     {
-        if (gitlabIssue.Title.Contains("Release"))
+        if (gitlabIssue.Title.Contains("release", StringComparison.InvariantCultureIgnoreCase))
         {
             releases.Add(new Release
             {
@@ -128,12 +136,15 @@ private static void ProcessFirst100Issues(IEnumerable<IGetAll_Project_Issues_Nod
                 Title = gitlabIssue.Title,
                 Notes = gitlabIssue.Description,
                 State = MapReleaseState(gitlabIssue.State),
-                Date = gitlabIssue.DueDate != null ? DateTime.Parse(gitlabIssue.DueDate).ToUniversalTime() : null,
+                Date = gitlabIssue.DueDate != null
+                    ? DateTime.Parse(gitlabIssue.DueDate).ToUniversalTime()
+                    : null,
                 LastModifiedAt = DateTime.Parse(gitlabIssue.UpdatedAt).ToUniversalTime()
             });
         }
         else
         {
+            var links = await restService.GetIssueLinksAsync(projectId, gitlabIssue.Iid);
             var gitlabIssueDescription = ParseDescription(gitlabIssue.Description);
             issues.Add(new Issue
             {
@@ -146,6 +157,25 @@ private static void ProcessFirst100Issues(IEnumerable<IGetAll_Project_Issues_Nod
                     gitlabIssueDescription.Priority >= 0
                         ? Enum.GetValues<Priority>()[gitlabIssueDescription.Priority]
                         : Priority.Medium,
+                LinkedIssues = links?.Where(link => !link.Title.Contains("release", StringComparison.InvariantCultureIgnoreCase))
+                    .Select(link => new IssueLink
+                    {
+                        Type = LinkType.RelatesTo,
+                        LinkedIssue = new Issue
+                        {
+                            GitlabId = link.Id.ToString(),
+                            GitlabIid = link.Iid.ToString(),
+                            Title = string.Empty
+                        }
+                    }).ToList() ?? [],
+                Release = links?.Where(link => link.Title.Contains("release", StringComparison.InvariantCultureIgnoreCase))
+                    .Select(link => new Release
+                    {
+                        GitlabId = link.Id.ToString(),
+                        GitlabIid = link.Iid.ToString(),
+                        Title = string.Empty
+                    })
+                    .FirstOrDefault(),
                 Milestone = new Milestone
                 {
                     Title = string.Empty,
@@ -160,14 +190,24 @@ private static void ProcessFirst100Issues(IEnumerable<IGetAll_Project_Issues_Nod
                         TextColor = string.Empty,
                         GitlabId = labelNode!.Id
                     }).ToList() ?? [],
-                Vehicle = !string.IsNullOrWhiteSpace(gitlabIssueDescription.EngineColor) || gitlabIssueDescription.Translations.Any() ? new Vehicle
-                {
-                    EngineColor = !string.IsNullOrWhiteSpace(gitlabIssueDescription.EngineColor)
-                        ? gitlabIssueDescription.EngineColor.Equals("-") ? EngineColor.Unknown :
-                            Enum.Parse<EngineColor>(string.Concat(gitlabIssueDescription.EngineColor[0].ToString().ToUpper(), gitlabIssueDescription.EngineColor.AsSpan(1)))
-                        : EngineColor.Unknown,
-                    Translations = gitlabIssueDescription.Translations.Where(translation => !string.IsNullOrWhiteSpace(translation.Text) && !string.IsNullOrWhiteSpace(translation.Country)).ToList(),
-                } : null,
+                Vehicle =
+                    !string.IsNullOrWhiteSpace(gitlabIssueDescription.EngineColor) ||
+                    gitlabIssueDescription.Translations.Any()
+                        ? new Vehicle
+                        {
+                            EngineColor = !string.IsNullOrWhiteSpace(gitlabIssueDescription.EngineColor)
+                                ? gitlabIssueDescription.EngineColor.Equals("-")
+                                    ? EngineColor.Unknown
+                                    : Enum.Parse<EngineColor>(string.Concat(
+                                        gitlabIssueDescription.EngineColor[0].ToString().ToUpper(),
+                                        gitlabIssueDescription.EngineColor.AsSpan(1)))
+                                : EngineColor.Unknown,
+                            Translations =
+                                gitlabIssueDescription.Translations.Where(translation =>
+                                    !string.IsNullOrWhiteSpace(translation.Text) &&
+                                    !string.IsNullOrWhiteSpace(translation.Country)).ToList(),
+                        }
+                        : null,
                 State = MapIssueState(gitlabIssue.State),
                 LastModifiedAt = DateTime.Parse(gitlabIssue.UpdatedAt).ToUniversalTime()
             });
@@ -175,11 +215,12 @@ private static void ProcessFirst100Issues(IEnumerable<IGetAll_Project_Issues_Nod
     }
 }
 
-private static void ProcessRemainingIssues(List<IGetFurtherIssues_Project_Issues_Nodes> gitlabFurtherIssues, IList<Release> releases, IList<Issue> issues)
+private async Task ProcessRemainingIssuesAsync(int projectId, List<IGetFurtherIssues_Project_Issues_Nodes> gitlabFurtherIssues,
+    IList<Release> releases, IList<Issue> issues)
 {
     foreach (var gitlabIssue in gitlabFurtherIssues)
     {
-        if (gitlabIssue.Title.Contains("Release"))
+        if (gitlabIssue.Title.Contains("release", StringComparison.InvariantCultureIgnoreCase))
         {
             releases.Add(new Release
             {
@@ -188,12 +229,15 @@ private static void ProcessRemainingIssues(List<IGetFurtherIssues_Project_Issues
                 Title = gitlabIssue.Title,
                 Notes = gitlabIssue.Description,
                 State = MapReleaseState(gitlabIssue.State),
-                Date = gitlabIssue.DueDate != null ? DateTime.Parse(gitlabIssue.DueDate).ToUniversalTime() : null,
+                Date = gitlabIssue.DueDate != null
+                    ? DateTime.Parse(gitlabIssue.DueDate).ToUniversalTime()
+                    : null,
                 LastModifiedAt = DateTime.Parse(gitlabIssue.UpdatedAt).ToUniversalTime()
             });
         }
         else
         {
+            var links = await restService.GetIssueLinksAsync(projectId, gitlabIssue.Iid);
             var gitlabIssueDescription = ParseDescription(gitlabIssue.Description);
             issues.Add(new Issue
             {
@@ -206,14 +250,57 @@ private static void ProcessRemainingIssues(List<IGetFurtherIssues_Project_Issues
                     gitlabIssueDescription.Priority >= 0
                         ? Enum.GetValues<Priority>()[gitlabIssueDescription.Priority]
                         : Priority.Medium,
-                Vehicle = !string.IsNullOrWhiteSpace(gitlabIssueDescription.EngineColor) || gitlabIssueDescription.Translations.Any() ? new Vehicle
+                LinkedIssues = links?.Where(link => !link.Title.Contains("release", StringComparison.InvariantCultureIgnoreCase))
+                    .Select(link => new IssueLink
+                    {
+                        Type = LinkType.RelatesTo,
+                        LinkedIssue = new Issue
+                        {
+                            GitlabId = link.Id.ToString(),
+                            GitlabIid = link.Iid.ToString(),
+                            Title = string.Empty
+                        }
+                    }).ToList() ?? [],
+                Release = links?.Where(link => link.Title.Contains("release", StringComparison.InvariantCultureIgnoreCase))
+                    .Select(link => new Release
+                    {
+                        GitlabId = link.Id.ToString(),
+                        GitlabIid = link.Iid.ToString(),
+                        Title = string.Empty
+                    })
+                    .FirstOrDefault(),
+                Milestone = new Milestone
                 {
-                    EngineColor = !string.IsNullOrWhiteSpace(gitlabIssueDescription.EngineColor)
-                        ? gitlabIssueDescription.EngineColor.Equals("-") ? EngineColor.Unknown :
-                            Enum.Parse<EngineColor>(string.Concat(gitlabIssueDescription.EngineColor[0].ToString().ToUpper(), gitlabIssueDescription.EngineColor.AsSpan(1)))
-                        : EngineColor.Unknown,
-                    Translations = gitlabIssueDescription.Translations.Where(translation => !string.IsNullOrWhiteSpace(translation.Text) && !string.IsNullOrWhiteSpace(translation.Country)).ToList(),
-                } : null,
+                    Title = string.Empty,
+                    GitlabId = gitlabIssue.Milestone?.Id,
+                    GitlabIid = gitlabIssue.Milestone?.Iid
+                },
+                Labels = gitlabIssue.Labels?.Nodes?.Where(labelNode => labelNode != null)
+                    .Select(labelNode => new Label
+                    {
+                        Title = string.Empty,
+                        Color = string.Empty,
+                        TextColor = string.Empty,
+                        GitlabId = labelNode!.Id
+                    }).ToList() ?? [],
+                Vehicle =
+                    !string.IsNullOrWhiteSpace(gitlabIssueDescription.EngineColor) ||
+                    gitlabIssueDescription.Translations.Any()
+                        ? new Vehicle
+                        {
+                            EngineColor = !string.IsNullOrWhiteSpace(gitlabIssueDescription.EngineColor)
+                                ? gitlabIssueDescription.EngineColor.Equals("-")
+                                    ? EngineColor.Unknown
+                                    : Enum.Parse<EngineColor>(string.Concat(
+                                        gitlabIssueDescription.EngineColor[0].ToString().ToUpper(),
+                                        gitlabIssueDescription.EngineColor.AsSpan(1)))
+                                : EngineColor.Unknown,
+                            Translations =
+                                gitlabIssueDescription.Translations.Where(translation =>
+                                    !string.IsNullOrWhiteSpace(translation.Text) &&
+                                    !string.IsNullOrWhiteSpace(translation.Country)).ToList(),
+                        }
+                        : null,
                 State = MapIssueState(gitlabIssue.State),
                 LastModifiedAt = DateTime.Parse(gitlabIssue.UpdatedAt).ToUniversalTime()
             });
@@ -221,20 +308,26 @@ private static void ProcessRemainingIssues(List<IGetFurtherIssues_Project_Issues
     }
 }
 
-private async Task<List<IGetFurtherIssues_Project_Issues_Nodes>> LoadAllRemainingIssues(IGetAll_Project_Issues_PageInfo? currentPageInfo, CancellationToken cancellationToken)
+private async Task<List<IGetFurtherIssues_Project_Issues_Nodes>> LoadAllRemainingIssues(
+    IGetAll_Project_Issues_PageInfo? currentPageInfo, CancellationToken cancellationToken)
 {
     List<IGetFurtherIssues_Project_Issues_Nodes> gitlabFurtherIssues = [];
 
     if (HasNextPage(currentPageInfo))
     {
-        var nextIssuesResult = await graphQlService.GetFurtherIssuesAsync(currentPageInfo!.EndCursor!, cancellationToken);
+        var nextIssuesResult =
+            await graphQlService.GetFurtherIssuesAsync(currentPageInfo!.EndCursor!, cancellationToken);
 
-        gitlabFurtherIssues.AddRange(nextIssuesResult?.Nodes?.Where(issue => issue != null).Cast<IGetFurtherIssues_Project_Issues_Nodes>() ?? []);
+        gitlabFurtherIssues.AddRange(nextIssuesResult?.Nodes?.Where(issue => issue != null)
+            .Cast<IGetFurtherIssues_Project_Issues_Nodes>() ?? []);
 
         while (HasNextPage(nextIssuesResult))
         {
-            nextIssuesResult = await graphQlService.GetFurtherIssuesAsync(nextIssuesResult!.PageInfo.EndCursor!, cancellationToken);
-            gitlabFurtherIssues.AddRange(nextIssuesResult?.Nodes?.Where(issue => issue != null).Cast<IGetFurtherIssues_Project_Issues_Nodes>() ?? []);
+            nextIssuesResult =
+                await graphQlService.GetFurtherIssuesAsync(nextIssuesResult!.PageInfo.EndCursor!,
+                    cancellationToken);
+            gitlabFurtherIssues.AddRange(nextIssuesResult?.Nodes?.Where(issue => issue != null)
+                .Cast<IGetFurtherIssues_Project_Issues_Nodes>() ?? []);
         }
     }
 
