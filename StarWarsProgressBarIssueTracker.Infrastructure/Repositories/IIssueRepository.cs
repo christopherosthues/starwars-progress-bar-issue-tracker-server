@@ -5,4 +5,8 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Repositories;
 public interface IIssueRepository : IRepository<DbIssue>
 {
     void DeleteVehicle(DbVehicle dbVehicle);
+
+    void DeleteTranslations(IEnumerable<DbTranslation> dbTranslations);
+
+    void DeletePhotos(IEnumerable<DbPhoto> dbPhotos);
 }

@@ -22,7 +22,7 @@ public class RepositoryRegistrationTests
         // Assert
         serviceCollectionMock.Verify(
             mock => mock.Add(It.Is<ServiceDescriptor>(sd =>
-                sd.ServiceType == typeof(IRepository<DbAppearance>) && sd.ImplementationType == typeof(IssueTrackerRepositoryBase<DbAppearance>) &&
+                sd.ServiceType == typeof(IAppearanceRepository) && sd.ImplementationType == typeof(AppearanceRepository) &&
                 sd.Lifetime == ServiceLifetime.Scoped)), Times.Once);
         serviceCollectionMock.Verify(
             mock => mock.Add(It.Is<ServiceDescriptor>(sd =>

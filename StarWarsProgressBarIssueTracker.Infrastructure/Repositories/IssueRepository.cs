@@ -22,4 +22,14 @@ public class IssueRepository : IssueTrackerRepositoryBase<DbIssue>, IIssueReposi
     {
         Context.Vehicles.Remove(dbVehicle);
     }
+
+    public void DeleteTranslations(IEnumerable<DbTranslation> dbTranslations)
+    {
+        Context.Translations.RemoveRange(dbTranslations);
+    }
+
+    public void DeletePhotos(IEnumerable<DbPhoto> dbPhotos)
+    {
+        Context.Photos.RemoveRange(dbPhotos);
+    }
 }
