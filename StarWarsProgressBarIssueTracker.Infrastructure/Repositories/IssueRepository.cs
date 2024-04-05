@@ -32,4 +32,9 @@ public class IssueRepository : IssueTrackerRepositoryBase<DbIssue>, IIssueReposi
     {
         Context.Photos.RemoveRange(dbPhotos);
     }
+
+    public void DeleteLinks(IEnumerable<DbIssueLink> dbLinks)
+    {
+        Context.IssueLinks.RemoveRange(dbLinks);
+    }
 }

@@ -80,7 +80,7 @@ public class IssueDataPort : IDataPort<Issue>
 
         await UpdateIssueVehicleAsync(domain, dbIssue);
 
-        await UpdateIssueLinksAsync(domain, dbIssue);
+        await UpdateIssueLinksAsync(domain, dbIssue, cancellationToken);
 
         DbIssue updatedIssue = await _repository.UpdateAsync(dbIssue, cancellationToken);
 
@@ -209,7 +209,7 @@ public class IssueDataPort : IDataPort<Issue>
             dbPhotosToUpdate.Concat(_mapper.Map<IEnumerable<DbPhoto>>(addedPhotos)).ToList();
     }
 
-    private async Task UpdateIssueLinksAsync(Issue domain, DbIssue dbIssue)
+    private async Task UpdateIssueLinksAsync(Issue domain, DbIssue dbIssue, CancellationToken cancellationToken)
     {
         var issueLinks = domain.LinkedIssues;
         var dbIssueLinks = dbIssue.LinkedIssues;
@@ -218,10 +218,25 @@ public class IssueDataPort : IDataPort<Issue>
             !dbIssueLinks.Any(dbLink => link.Id.Equals(dbLink.Id)));
 
         var removedLinks = dbIssueLinks.Where(dbLink =>
-            !issueLinks.Any(link => link.Id.Equals(dbLink.Id)));
+            !issueLinks.Any(link => link.Id.Equals(dbLink.Id)))
+            .ToList();
 
-        //TODO: add and remove links
-        await Task.CompletedTask;
+        foreach (var removedLink in removedLinks)
+        {
+            dbIssue.LinkedIssues.Remove(removedLink);
+        }
+
+        _repository.DeleteLinks(removedLinks);
+
+        foreach (var addedLink in addedLinks)
+        {
+            var addedDbLink = new DbIssueLink
+            {
+                Type = addedLink.Type,
+                LinkedIssue = (await _repository.GetByIdAsync(addedLink.LinkedIssue.Id, cancellationToken))!
+            };
+            dbIssue.LinkedIssues.Add(addedDbLink);
+        }
     }
 
     public async Task<Issue> DeleteAsync(Guid id, CancellationToken cancellationToken = default)

@@ -9,4 +9,6 @@ public interface IIssueRepository : IRepository<DbIssue>
     void DeleteTranslations(IEnumerable<DbTranslation> dbTranslations);
 
     void DeletePhotos(IEnumerable<DbPhoto> dbPhotos);
+
+    void DeleteLinks(IEnumerable<DbIssueLink> dbLinks);
 }

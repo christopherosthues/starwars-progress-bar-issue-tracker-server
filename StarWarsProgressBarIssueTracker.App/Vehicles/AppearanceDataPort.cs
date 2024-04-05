@@ -10,10 +10,10 @@ namespace StarWarsProgressBarIssueTracker.App.Vehicles;
 
 public class AppearanceDataPort : IDataPort<Appearance>
 {
-    private readonly IRepository<DbAppearance> _repository;
+    private readonly IAppearanceRepository _repository;
     private readonly IMapper _mapper;
 
-    public AppearanceDataPort(IssueTrackerContext context, IRepository<DbAppearance> repository, IMapper mapper)
+    public AppearanceDataPort(IssueTrackerContext context, IAppearanceRepository repository, IMapper mapper)
     {
         _repository = repository;
         _repository.Context = context;
