@@ -47,9 +47,9 @@ private async Task SynchronizeAppearancesAsync(IGetAll_Project_Labels? gitlabLab
     IList<Appearance> appearances = [];
     foreach (var gitlabLabel in gitlabLabels)
     {
-        if (gitlabLabel.Title.StartsWith("Appearance: "))
+        if (gitlabLabel.Title.StartsWith("appearance: ", StringComparison.InvariantCultureIgnoreCase))
         {
-            appearances.Add(new Appearance()
+            appearances.Add(new Appearance
             {
                 GitlabId = gitlabLabel.Id,
                 Title = gitlabLabel.Title["Appearance: ".Length..],
@@ -122,7 +122,8 @@ private async Task SynchronizeIssuesAsync(string projectId, IGetAll_Project_Issu
     await issueService.SynchronizeFromGitlabAsync(issues, cancellationToken);
 }
 
-private async Task ProcessFirst100IssuesAsync(int projectId, IEnumerable<IGetAll_Project_Issues_Nodes> gitlabFirstIssues,
+private async Task ProcessFirst100IssuesAsync(int projectId,
+    IEnumerable<IGetAll_Project_Issues_Nodes> gitlabFirstIssues,
     ICollection<Release> releases, ICollection<Issue> issues)
 {
     foreach (var gitlabIssue in gitlabFirstIssues)
@@ -157,18 +158,21 @@ private async Task ProcessFirst100IssuesAsync(int projectId, IEnumerable<IGetAll
                     gitlabIssueDescription.Priority >= 0
                         ? Enum.GetValues<Priority>()[gitlabIssueDescription.Priority]
                         : Priority.Medium,
-                LinkedIssues = links?.Where(link => !link.Title.Contains("release", StringComparison.InvariantCultureIgnoreCase))
+                LinkedIssues = links?.Where(link =>
+                        !link.Title.Contains("release", StringComparison.InvariantCultureIgnoreCase))
                     .Select(link => new IssueLink
                     {
                         Type = LinkType.RelatesTo,
-                        LinkedIssue = new Issue
-                        {
-                            GitlabId = link.Id.ToString(),
-                            GitlabIid = link.Iid.ToString(),
-                            Title = string.Empty
-                        }
+                        LinkedIssue =
+                            new Issue
+                            {
+                                GitlabId = link.Id.ToString(),
+                                GitlabIid = link.Iid.ToString(),
+                                Title = string.Empty
+                            }
                     }).ToList() ?? [],
-                Release = links?.Where(link => link.Title.Contains("release", StringComparison.InvariantCultureIgnoreCase))
+                Release = links?.Where(link =>
+                        link.Title.Contains("release", StringComparison.InvariantCultureIgnoreCase))
                     .Select(link => new Release
                     {
                         GitlabId = link.Id.ToString(),
@@ -182,7 +186,9 @@ private async Task ProcessFirst100IssuesAsync(int projectId, IEnumerable<IGetAll
                     GitlabId = gitlabIssue.Milestone?.Id,
                     GitlabIid = gitlabIssue.Milestone?.Iid
                 },
-                Labels = gitlabIssue.Labels?.Nodes?.Where(labelNode => labelNode != null)
+                Labels = gitlabIssue.Labels?.Nodes?.Where(labelNode =>
+                        labelNode != null &&
+                        !labelNode.Title.StartsWith("appearance:", StringComparison.OrdinalIgnoreCase))
                     .Select(labelNode => new Label
                     {
                         Title = string.Empty,
@@ -190,24 +196,7 @@ private async Task ProcessFirst100IssuesAsync(int projectId, IEnumerable<IGetAll
                         TextColor = string.Empty,
                         GitlabId = labelNode!.Id
                     }).ToList() ?? [],
-                Vehicle =
-                    !string.IsNullOrWhiteSpace(gitlabIssueDescription.EngineColor) ||
-                    gitlabIssueDescription.Translations.Any()
-                        ? new Vehicle
-                        {
-                            EngineColor = !string.IsNullOrWhiteSpace(gitlabIssueDescription.EngineColor)
-                                ? gitlabIssueDescription.EngineColor.Equals("-")
-                                    ? EngineColor.Unknown
-                                    : Enum.Parse<EngineColor>(string.Concat(
-                                        gitlabIssueDescription.EngineColor[0].ToString().ToUpper(),
-                                        gitlabIssueDescription.EngineColor.AsSpan(1)))
-                                : EngineColor.Unknown,
-                            Translations =
-                                gitlabIssueDescription.Translations.Where(translation =>
-                                    !string.IsNullOrWhiteSpace(translation.Text) &&
-                                    !string.IsNullOrWhiteSpace(translation.Country)).ToList(),
-                        }
-                        : null,
+                Vehicle = CreateVehicle(gitlabIssueDescription, gitlabIssue),
                 State = MapIssueState(gitlabIssue.State),
                 LastModifiedAt = DateTime.Parse(gitlabIssue.UpdatedAt).ToUniversalTime()
             });
@@ -215,7 +204,39 @@ private async Task ProcessFirst100IssuesAsync(int projectId, IEnumerable<IGetAll
     }
 }
 
-private async Task ProcessRemainingIssuesAsync(int projectId, List<IGetFurtherIssues_Project_Issues_Nodes> gitlabFurtherIssues,
+private static Vehicle? CreateVehicle(IssueDescription gitlabIssueDescription, IGetAll_Project_Issues_Nodes gitlabIssue)
+{
+    return !string.IsNullOrWhiteSpace(gitlabIssueDescription.EngineColor) ||
+           gitlabIssueDescription.Translations.Any()
+        ? new Vehicle
+        {
+            EngineColor = !string.IsNullOrWhiteSpace(gitlabIssueDescription.EngineColor)
+                ? gitlabIssueDescription.EngineColor.Equals("-")
+                    ? EngineColor.Unknown
+                    : Enum.Parse<EngineColor>(string.Concat(
+                        gitlabIssueDescription.EngineColor[0].ToString().ToUpper(),
+                        gitlabIssueDescription.EngineColor.AsSpan(1)))
+                : EngineColor.Unknown,
+            Translations =
+                gitlabIssueDescription.Translations.Where(translation =>
+                    !string.IsNullOrWhiteSpace(translation.Text) &&
+                    !string.IsNullOrWhiteSpace(translation.Country)).ToList(),
+            Appearances = gitlabIssue.Labels?.Nodes?.Where(labelNode =>
+                    labelNode != null &&
+                    labelNode.Title.StartsWith("appearance:", StringComparison.OrdinalIgnoreCase))
+                .Select(labelNode => new Appearance
+                {
+                    Title = string.Empty,
+                    Color = string.Empty,
+                    TextColor = string.Empty,
+                    GitlabId = labelNode!.Id
+                }).ToList() ?? [],
+        }
+        : null;
+}
+
+private async Task ProcessRemainingIssuesAsync(int projectId,
+    List<IGetFurtherIssues_Project_Issues_Nodes> gitlabFurtherIssues,
     IList<Release> releases, IList<Issue> issues)
 {
     foreach (var gitlabIssue in gitlabFurtherIssues)
@@ -250,18 +271,21 @@ private async Task ProcessRemainingIssuesAsync(int projectId, List<IGetFurtherIs
                     gitlabIssueDescription.Priority >= 0
                         ? Enum.GetValues<Priority>()[gitlabIssueDescription.Priority]
                         : Priority.Medium,
-                LinkedIssues = links?.Where(link => !link.Title.Contains("release", StringComparison.InvariantCultureIgnoreCase))
+                LinkedIssues = links?.Where(link =>
+                        !link.Title.Contains("release", StringComparison.InvariantCultureIgnoreCase))
                     .Select(link => new IssueLink
                     {
                         Type = LinkType.RelatesTo,
-                        LinkedIssue = new Issue
-                        {
-                            GitlabId = link.Id.ToString(),
-                            GitlabIid = link.Iid.ToString(),
-                            Title = string.Empty
-                        }
+                        LinkedIssue =
+                            new Issue
+                            {
+                                GitlabId = link.Id.ToString(),
+                                GitlabIid = link.Iid.ToString(),
+                                Title = string.Empty
+                            }
                     }).ToList() ?? [],
-                Release = links?.Where(link => link.Title.Contains("release", StringComparison.InvariantCultureIgnoreCase))
+                Release = links?.Where(link =>
+                        link.Title.Contains("release", StringComparison.InvariantCultureIgnoreCase))
                     .Select(link => new Release
                     {
                         GitlabId = link.Id.ToString(),
@@ -275,7 +299,9 @@ private async Task ProcessRemainingIssuesAsync(int projectId, List<IGetFurtherIs
                     GitlabId = gitlabIssue.Milestone?.Id,
                     GitlabIid = gitlabIssue.Milestone?.Iid
                 },
-                Labels = gitlabIssue.Labels?.Nodes?.Where(labelNode => labelNode != null)
+                Labels = gitlabIssue.Labels?.Nodes?.Where(labelNode =>
+                        labelNode != null &&
+                        !labelNode.Title.StartsWith("appearance:", StringComparison.OrdinalIgnoreCase))
                     .Select(labelNode => new Label
                     {
                         Title = string.Empty,
@@ -283,29 +309,43 @@ private async Task ProcessRemainingIssuesAsync(int projectId, List<IGetFurtherIs
                         TextColor = string.Empty,
                         GitlabId = labelNode!.Id
                     }).ToList() ?? [],
-                Vehicle =
-                    !string.IsNullOrWhiteSpace(gitlabIssueDescription.EngineColor) ||
-                    gitlabIssueDescription.Translations.Any()
-                        ? new Vehicle
-                        {
-                            EngineColor = !string.IsNullOrWhiteSpace(gitlabIssueDescription.EngineColor)
-                                ? gitlabIssueDescription.EngineColor.Equals("-")
-                                    ? EngineColor.Unknown
-                                    : Enum.Parse<EngineColor>(string.Concat(
-                                        gitlabIssueDescription.EngineColor[0].ToString().ToUpper(),
-                                        gitlabIssueDescription.EngineColor.AsSpan(1)))
-                                : EngineColor.Unknown,
-                            Translations =
-                                gitlabIssueDescription.Translations.Where(translation =>
-                                    !string.IsNullOrWhiteSpace(translation.Text) &&
-                                    !string.IsNullOrWhiteSpace(translation.Country)).ToList(),
-                        }
-                        : null,
+                Vehicle = CreateVehicle(gitlabIssueDescription, gitlabIssue),
                 State = MapIssueState(gitlabIssue.State),
                 LastModifiedAt = DateTime.Parse(gitlabIssue.UpdatedAt).ToUniversalTime()
             });
         }
     }
+}
+
+private static Vehicle? CreateVehicle(IssueDescription gitlabIssueDescription, IGetFurtherIssues_Project_Issues_Nodes gitlabIssue)
+{
+    return !string.IsNullOrWhiteSpace(gitlabIssueDescription.EngineColor) ||
+           gitlabIssueDescription.Translations.Any()
+        ? new Vehicle
+        {
+            EngineColor = !string.IsNullOrWhiteSpace(gitlabIssueDescription.EngineColor)
+                ? gitlabIssueDescription.EngineColor.Equals("-")
+                    ? EngineColor.Unknown
+                    : Enum.Parse<EngineColor>(string.Concat(
+                        gitlabIssueDescription.EngineColor[0].ToString().ToUpper(),
+                        gitlabIssueDescription.EngineColor.AsSpan(1)))
+                : EngineColor.Unknown,
+            Translations =
+                gitlabIssueDescription.Translations.Where(translation =>
+                    !string.IsNullOrWhiteSpace(translation.Text) &&
+                    !string.IsNullOrWhiteSpace(translation.Country)).ToList(),
+            Appearances = gitlabIssue.Labels?.Nodes?.Where(labelNode =>
+                    labelNode != null &&
+                    labelNode.Title.StartsWith("appearance:", StringComparison.OrdinalIgnoreCase))
+                .Select(labelNode => new Appearance
+                {
+                    Title = string.Empty,
+                    Color = string.Empty,
+                    TextColor = string.Empty,
+                    GitlabId = labelNode!.Id
+                }).ToList() ?? [],
+        }
+        : null;
 }
 
 private async Task<List<IGetFurtherIssues_Project_Issues_Nodes>> LoadAllRemainingIssues(

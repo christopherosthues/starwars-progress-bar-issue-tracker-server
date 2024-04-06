@@ -16,7 +16,7 @@ public class RestService
         var token = configuration.Value.Token ?? throw new ArgumentException("The token must not be null!");
         _client = client;
         _client.BaseAddress = new Uri(restUri);
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.TrimEnd());
     }
 
     // public async Task UpdateLabel(Label label)
@@ -47,12 +47,15 @@ public class RestService
 
     public async Task<IList<LinkIssue>?> GetIssueLinksAsync(int projectId, string issueIid)
     {
-        var response = await _client.GetAsync($"\"projects/{projectId}/issues/{issueIid}/links\"", CancellationToken.None);
+        var response = await _client.GetAsync($"projects/{projectId}/issues/{issueIid}/links", CancellationToken.None);
         response.EnsureSuccessStatusCode();
 
         var responseContent = await response.Content.ReadAsStreamAsync();
 
-        var issueLinks = await JsonSerializer.DeserializeAsync<IList<LinkIssue>>(responseContent);
+        var issueLinks = await JsonSerializer.DeserializeAsync<IList<LinkIssue>>(responseContent, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        });
 
         return issueLinks;
     }

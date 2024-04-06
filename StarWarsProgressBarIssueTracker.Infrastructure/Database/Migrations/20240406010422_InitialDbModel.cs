@@ -110,6 +110,7 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
 
             migrationBuilder.CreateTable(
                 name: "Tasks",
+                schema: "issue_tracker",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -156,7 +157,8 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                         column: x => x.AppearanceId,
                         principalSchema: "issue_tracker",
                         principalTable: "Vehicles",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -222,7 +224,8 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                         column: x => x.PhotoId,
                         principalSchema: "issue_tracker",
                         principalTable: "Vehicles",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -245,7 +248,8 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                         column: x => x.TranslationId,
                         principalSchema: "issue_tracker",
                         principalTable: "Vehicles",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -440,6 +444,7 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tasks_JobId",
+                schema: "issue_tracker",
                 table: "Tasks",
                 column: "JobId");
 
@@ -470,7 +475,8 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                 schema: "issue_tracker");
 
             migrationBuilder.DropTable(
-                name: "Tasks");
+                name: "Tasks",
+                schema: "issue_tracker");
 
             migrationBuilder.DropTable(
                 name: "Translations",

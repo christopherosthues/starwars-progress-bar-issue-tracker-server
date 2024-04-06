@@ -2,7 +2,6 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using StarWarsProgressBarIssueTracker.Infrastructure.Database;
@@ -12,11 +11,9 @@ using StarWarsProgressBarIssueTracker.Infrastructure.Database;
 namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
 {
     [DbContext(typeof(IssueTrackerContext))]
-    [Migration("20240403143411_InitialDbModel")]
-    partial class InitialDbModel
+    partial class IssueTrackerContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -415,7 +412,7 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
 
                     b.HasIndex("JobId");
 
-                    b.ToTable("Tasks");
+                    b.ToTable("Tasks", "issue_tracker");
                 });
 
             modelBuilder.Entity("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbTranslation", b =>
@@ -489,7 +486,8 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                 {
                     b.HasOne("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbVehicle", null)
                         .WithMany("Appearances")
-                        .HasForeignKey("AppearanceId");
+                        .HasForeignKey("AppearanceId")
+                        .OnDelete(DeleteBehavior.SetNull);
                 });
 
             modelBuilder.Entity("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbIssue", b =>
@@ -530,7 +528,8 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                 {
                     b.HasOne("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbVehicle", null)
                         .WithMany("Photos")
-                        .HasForeignKey("PhotoId");
+                        .HasForeignKey("PhotoId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbTask", b =>
@@ -548,7 +547,8 @@ namespace StarWarsProgressBarIssueTracker.Infrastructure.Database.Migrations
                 {
                     b.HasOne("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbVehicle", null)
                         .WithMany("Translations")
-                        .HasForeignKey("TranslationId");
+                        .HasForeignKey("TranslationId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("StarWarsProgressBarIssueTracker.Infrastructure.Models.DbIssue", b =>

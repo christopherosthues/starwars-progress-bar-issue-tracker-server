@@ -21,6 +21,7 @@ query GetAll($project: ID!) {
                 labels {
                     nodes {
                         id
+                        title
                     }
                 }
                 milestone {
@@ -72,7 +73,8 @@ query GetFurtherIssues($project: ID!, $after: String!) {
                 dueDate
                 labels {
                     nodes {
-                        id
+                        id,
+                        title
                     }
                 }
                 milestone {
