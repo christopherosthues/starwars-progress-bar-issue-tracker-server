@@ -73,10 +73,10 @@ public class ReleaseDataPort : IDataPort<Release>
     }
 
 
-    public async Task DeleteRangeAsync(IEnumerable<Release> domains, CancellationToken cancellationToken = default)
+    public async Task DeleteRangeByGitlabIdAsync(IEnumerable<Release> domains, CancellationToken cancellationToken = default)
     {
         var releases = await _repository.GetAll().ToListAsync(cancellationToken);
-        var toBeDeleted = releases.Where(dbRelease => domains.Any(release => release.Id.Equals(dbRelease.Id)));
+        var toBeDeleted = releases.Where(dbRelease => domains.Any(release => release.GitlabId?.Equals(dbRelease.GitlabId) ?? false));
         await _repository.DeleteRangeAsync(toBeDeleted, cancellationToken);
     }
 }

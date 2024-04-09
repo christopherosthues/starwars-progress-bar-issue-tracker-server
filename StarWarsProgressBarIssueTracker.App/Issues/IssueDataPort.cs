@@ -62,6 +62,7 @@ public class IssueDataPort : IDataPort<Issue>
     public async Task AddRangeAsync(IEnumerable<Issue> domains, CancellationToken cancellationToken = default)
     {
         var dbIssues = _mapper.Map<IEnumerable<DbIssue>>(domains);
+        // TODO: Load milestones, releases, labels, appearances
         await _repository.AddRangeAsync(dbIssues, cancellationToken);
     }
 
@@ -253,10 +254,10 @@ public class IssueDataPort : IDataPort<Issue>
         return _mapper.Map<Issue>(await _repository.DeleteAsync(issue, cancellationToken));
     }
 
-    public async Task DeleteRangeAsync(IEnumerable<Issue> domains, CancellationToken cancellationToken = default)
+    public async Task DeleteRangeByGitlabIdAsync(IEnumerable<Issue> domains, CancellationToken cancellationToken = default)
     {
         var issues = await _repository.GetAll().ToListAsync(cancellationToken);
-        var toBeDeleted = issues.Where(dbIssue => domains.Any(issue => issue.Id.Equals(dbIssue.Id)));
+        var toBeDeleted = issues.Where(dbIssue => domains.Any(issue => issue.GitlabId?.Equals(dbIssue.GitlabId) ?? false));
         await _repository.DeleteRangeAsync(toBeDeleted, cancellationToken);
     }
 }

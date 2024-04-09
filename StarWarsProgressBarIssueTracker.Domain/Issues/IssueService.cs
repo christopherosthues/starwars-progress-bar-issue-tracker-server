@@ -127,11 +127,12 @@ public async Task SynchronizeFromGitlabAsync(IList<Issue> issues, CancellationTo
         !existingIssues.Any(existingIssue => issue.GitlabId!.Equals(existingIssue.GitlabId)));
 
     var issuesToDelete = existingIssues.Where(existingIssue => existingIssue.GitlabId != null &&
-                                                               !issues.Any(issue => issue.GitlabId!.Equals(existingIssue.GitlabId)));
+                                                               !issues.Any(issue =>
+                                                                   issue.GitlabId!.Equals(existingIssue.GitlabId)));
 
     await dataPort.AddRangeAsync(issuesToAdd, cancellationToken);
 
-    await dataPort.DeleteRangeAsync(issuesToDelete, cancellationToken);
+    await dataPort.DeleteRangeByGitlabIdAsync(issuesToDelete, cancellationToken);
 
     // TODO: Update issues, resolve conflicts
 }

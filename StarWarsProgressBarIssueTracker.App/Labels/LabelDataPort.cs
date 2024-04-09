@@ -72,10 +72,10 @@ public class LabelDataPort : IDataPort<Label>
         return _mapper.Map<Label>(await _repository.DeleteAsync(label, cancellationToken));
     }
 
-    public async Task DeleteRangeAsync(IEnumerable<Label> domains, CancellationToken cancellationToken = default)
+    public async Task DeleteRangeByGitlabIdAsync(IEnumerable<Label> domains, CancellationToken cancellationToken = default)
     {
         var labels = await _repository.GetAll().ToListAsync(cancellationToken);
-        var toBeDeleted = labels.Where(dbLabel => domains.Any(label => label.Id.Equals(dbLabel.Id)));
+        var toBeDeleted = labels.Where(dbLabel => domains.Any(label => label.GitlabId?.Equals(dbLabel.GitlabId) ?? false));
         await _repository.DeleteRangeAsync(toBeDeleted, cancellationToken);
     }
 }

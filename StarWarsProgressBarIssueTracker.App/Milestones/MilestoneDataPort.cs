@@ -75,10 +75,10 @@ public class MilestoneDataPort : IDataPort<Milestone>
         return _mapper.Map<Milestone>(await _repository.DeleteAsync(milestone, cancellationToken));
     }
 
-    public async Task DeleteRangeAsync(IEnumerable<Milestone> domains, CancellationToken cancellationToken = default)
+    public async Task DeleteRangeByGitlabIdAsync(IEnumerable<Milestone> domains, CancellationToken cancellationToken = default)
     {
         var milestones = await _repository.GetAll().ToListAsync(cancellationToken);
-        var toBeDeleted = milestones.Where(dbMilestone => domains.Any(milestone => milestone.Id.Equals(dbMilestone.Id)));
+        var toBeDeleted = milestones.Where(dbMilestone => domains.Any(milestone => milestone.GitlabId?.Equals(dbMilestone.GitlabId) ?? false));
         await _repository.DeleteRangeAsync(toBeDeleted, cancellationToken);
     }
 }

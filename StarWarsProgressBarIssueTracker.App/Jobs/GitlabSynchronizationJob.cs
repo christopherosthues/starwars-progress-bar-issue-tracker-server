@@ -204,7 +204,8 @@ private async Task ProcessFirst100IssuesAsync(int projectId,
     }
 }
 
-private static Vehicle? CreateVehicle(IssueDescription gitlabIssueDescription, IGetAll_Project_Issues_Nodes gitlabIssue)
+private static Vehicle? CreateVehicle(IssueDescription gitlabIssueDescription,
+    IGetAll_Project_Issues_Nodes gitlabIssue)
 {
     return !string.IsNullOrWhiteSpace(gitlabIssueDescription.EngineColor) ||
            gitlabIssueDescription.Translations.Any()
@@ -317,7 +318,8 @@ private async Task ProcessRemainingIssuesAsync(int projectId,
     }
 }
 
-private static Vehicle? CreateVehicle(IssueDescription gitlabIssueDescription, IGetFurtherIssues_Project_Issues_Nodes gitlabIssue)
+private static Vehicle? CreateVehicle(IssueDescription gitlabIssueDescription,
+    IGetFurtherIssues_Project_Issues_Nodes gitlabIssue)
 {
     return !string.IsNullOrWhiteSpace(gitlabIssueDescription.EngineColor) ||
            gitlabIssueDescription.Translations.Any()

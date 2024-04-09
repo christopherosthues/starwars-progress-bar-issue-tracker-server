@@ -73,10 +73,10 @@ public class AppearanceDataPort : IDataPort<Appearance>
         return _mapper.Map<Appearance>(await _repository.DeleteAsync(appearance, cancellationToken));
     }
 
-    public async Task DeleteRangeAsync(IEnumerable<Appearance> domains, CancellationToken cancellationToken = default)
+    public async Task DeleteRangeByGitlabIdAsync(IEnumerable<Appearance> domains, CancellationToken cancellationToken = default)
     {
         var appearances = await _repository.GetAll().ToListAsync(cancellationToken);
-        var toBeDeleted = appearances.Where(dbAppearance => domains.Any(label => label.Id.Equals(dbAppearance.Id)));
+        var toBeDeleted = appearances.Where(dbAppearance => domains.Any(label => label.GitlabId?.Equals(dbAppearance.GitlabId) ?? false));
         await _repository.DeleteRangeAsync(toBeDeleted, cancellationToken);
     }
 }
