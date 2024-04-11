@@ -10,6 +10,8 @@ public class IssueRepository : IssueTrackerRepositoryBase<DbIssue>, IIssueReposi
         return Context.Issues.Include(dbIssue => dbIssue.Milestone)
             .Include(dbIssue => dbIssue.Release)
             .Include(dbIssue => dbIssue.Labels)
+            .Include(dbIssue => dbIssue.LinkedIssues)
+            .ThenInclude(dbLinkedIssue => dbLinkedIssue.LinkedIssue)
             .Include(dbIssue => dbIssue.Vehicle)
             .ThenInclude(dbVehicle => dbVehicle!.Appearances)
             .Include(dbIssue => dbIssue.Vehicle)

@@ -44,7 +44,8 @@ public class MilestoneQueriesTests : IntegrationTestBase
         // Arrange
         var dbMilestone = new DbMilestone
         {
-            Title = "Milestone 1", State = MilestoneState.Open
+            Title = "Milestone 1",
+            State = MilestoneState.Open
         };
 
         var dbIssue = new DbIssue
@@ -64,7 +65,9 @@ public class MilestoneQueriesTests : IntegrationTestBase
         };
         var dbMilestone2 = new DbMilestone
         {
-            Title = "Milestone 2", Description = "Notes 2", State = MilestoneState.Closed,
+            Title = "Milestone 2",
+            Description = "Notes 2",
+            State = MilestoneState.Closed,
             LastModifiedAt = DateTime.UtcNow.AddDays(-1),
             Issues =
             [
@@ -137,7 +140,9 @@ public class MilestoneQueriesTests : IntegrationTestBase
             context.Milestones.Add(new DbMilestone
             {
                 Id = new Guid("5888CDB6-57E2-4774-B6E8-7AABE82E2A5F"),
-                Title = "Milestone 1", Description = "Notes 1", State = MilestoneState.Closed,
+                Title = "Milestone 1",
+                Description = "Notes 1",
+                State = MilestoneState.Closed,
                 LastModifiedAt = DateTime.UtcNow.AddDays(-1)
             });
         });
@@ -205,7 +210,9 @@ public class MilestoneQueriesTests : IntegrationTestBase
         var dbMilestone = new DbMilestone
         {
             Id = new Guid(id),
-            Title = "Milestone 2", Description = "Notes 2", State = MilestoneState.Closed,
+            Title = "Milestone 2",
+            Description = "Notes 2",
+            State = MilestoneState.Closed,
             LastModifiedAt = DateTime.UtcNow.AddDays(-1),
             Issues = [dbIssue]
         };
@@ -214,7 +221,8 @@ public class MilestoneQueriesTests : IntegrationTestBase
             context.Milestones.Add(new DbMilestone
             {
                 Id = new Guid("5888CDB6-57E2-4774-B6E8-7AABE82E2A5F"),
-                Title = "Milestone 1", State = MilestoneState.Open
+                Title = "Milestone 1",
+                State = MilestoneState.Open
             });
             context.Milestones.Add(dbMilestone);
         });

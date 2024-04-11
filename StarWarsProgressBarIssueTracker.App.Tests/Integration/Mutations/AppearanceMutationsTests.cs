@@ -270,7 +270,9 @@ public class AppearanceMutationsTests : IntegrationTestBase
         {
             var dbVehicle = new DbVehicle
             {
-                Id = new Guid("87A2F9BF-CAB7-41D3-84F9-155135FA41D7"), EngineColor = EngineColor.Blue, Appearances = [dbAppearance]
+                Id = new Guid("87A2F9BF-CAB7-41D3-84F9-155135FA41D7"),
+                EngineColor = EngineColor.Blue,
+                Appearances = [dbAppearance]
             };
             context.Appearances.Add(dbAppearance);
             context.Vehicles.Add(dbVehicle);

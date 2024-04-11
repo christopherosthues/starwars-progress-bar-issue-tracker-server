@@ -245,7 +245,9 @@ public class MilestoneMutationsTests : IntegrationTestBase
         };
         var dbIssue = new DbIssue
         {
-            Id = new Guid("87A2F9BF-CAB7-41D3-84F9-155135FA41D7"), Title = "IssueTitle", Milestone = dbMilestone
+            Id = new Guid("87A2F9BF-CAB7-41D3-84F9-155135FA41D7"),
+            Title = "IssueTitle",
+            Milestone = dbMilestone
         };
         dbMilestone.Issues.Add(dbIssue);
         var dbMilestone2 = new DbMilestone

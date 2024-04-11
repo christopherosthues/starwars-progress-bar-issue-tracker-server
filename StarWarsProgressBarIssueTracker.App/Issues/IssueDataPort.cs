@@ -12,6 +12,7 @@ public class IssueDataPort : IDataPort<Issue>
 {
     private readonly IIssueRepository _repository;
     private readonly IAppearanceRepository _appearanceRepository;
+    private readonly IRepository<DbLabel> _labelRepository;
     private readonly IRepository<DbMilestone> _milestoneRepository;
     private readonly IRepository<DbRelease> _releaseRepository;
     private readonly IMapper _mapper;
@@ -21,16 +22,19 @@ public class IssueDataPort : IDataPort<Issue>
         IAppearanceRepository appearanceRepository,
         IRepository<DbMilestone> milestoneRepository,
         IRepository<DbRelease> releaseRepository,
+        IRepository<DbLabel> labelRepository,
         IMapper mapper)
     {
         _repository = repository;
         _appearanceRepository = appearanceRepository;
         _milestoneRepository = milestoneRepository;
         _releaseRepository = releaseRepository;
+        _labelRepository = labelRepository;
         _repository.Context = context;
         _appearanceRepository.Context = context;
         _milestoneRepository.Context = context;
         _releaseRepository.Context = context;
+        _labelRepository.Context = context;
         _mapper = mapper;
     }
 
@@ -74,6 +78,8 @@ public class IssueDataPort : IDataPort<Issue>
         dbIssue.Description = domain.Description;
         dbIssue.State = domain.State;
         dbIssue.Priority = domain.Priority;
+
+        // TODO: update labels
 
         await UpdateIssueMilestoneAsync(domain, dbIssue, cancellationToken);
 
@@ -237,6 +243,50 @@ public class IssueDataPort : IDataPort<Issue>
                 LinkedIssue = (await _repository.GetByIdAsync(addedLink.LinkedIssue.Id, cancellationToken))!
             };
             dbIssue.LinkedIssues.Add(addedDbLink);
+        }
+    }
+
+    public async Task UpdateRangeByGitlabIdAsync(IEnumerable<Issue> domains, CancellationToken cancellationToken = default)
+    {
+        var dbIssues = await _repository.GetAll()
+            .Where(dbIssue => domains.Any(domain => domain.GitlabId!.Equals(dbIssue.GitlabId)))
+            .ToListAsync(cancellationToken);
+        var dbMilestones = await _milestoneRepository.GetAll().ToListAsync(cancellationToken);
+        var dbReleases = await _releaseRepository.GetAll().ToListAsync(cancellationToken);
+        var dbAppearances = await _appearanceRepository.GetAll().ToListAsync(cancellationToken);
+        var dbLabels = await _labelRepository.GetAll().ToListAsync(cancellationToken);
+
+        foreach (var domain in domains)
+        {
+            var dbIssue = dbIssues.SingleOrDefault(dbIssue => dbIssue.GitlabId?.Equals(domain.GitlabId) ?? false);
+            if (dbIssue == null)
+            {
+                continue;
+            }
+
+            dbIssue.Milestone =
+                dbMilestones.FirstOrDefault(dbMilestone => dbMilestone.GitlabId?.Equals(domain.Milestone?.GitlabId) ?? false);
+            dbIssue.Release =
+                dbReleases.FirstOrDefault(dbRelease => dbRelease.GitlabId?.Equals(domain.Milestone?.GitlabId) ?? false);
+            dbIssue.Labels = dbLabels.Where(dbLabel =>
+                domain.Labels.Any(label => label.GitlabId?.Equals(dbLabel.GitlabId) ?? false)).ToList();
+
+            if (domain.Vehicle != null && dbIssue.Vehicle != null)
+            {
+                dbIssue.Vehicle.Appearances = dbAppearances.Where(dbAppearance =>
+                    domain.Vehicle.Appearances.Any(appearance =>
+                        appearance.GitlabId?.Equals(dbAppearance.GitlabId) ?? false)).ToList();
+            }
+
+            foreach (var addedLink in domain.LinkedIssues)
+            {
+                var addedDbLink = new DbIssueLink
+                {
+                    Type = addedLink.Type,
+                    LinkedIssue = dbIssues.Single(issue => issue.GitlabId!.Equals(addedLink.LinkedIssue.GitlabId))
+                };
+                dbIssue.LinkedIssues.Add(addedDbLink);
+            }
         }
     }
 

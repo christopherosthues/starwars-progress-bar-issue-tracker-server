@@ -270,7 +270,9 @@ public class LabelMutationsTests : IntegrationTestBase
         dbLabel2.Issues.Add(dbIssue2);
         var dbIssue = new DbIssue
         {
-            Id = new Guid("87A2F9BF-CAB7-41D3-84F9-155135FA41D7"), Title = "Issue", Labels = [dbLabel]
+            Id = new Guid("87A2F9BF-CAB7-41D3-84F9-155135FA41D7"),
+            Title = "Issue",
+            Labels = [dbLabel]
         };
         await SeedDatabaseAsync(context =>
         {

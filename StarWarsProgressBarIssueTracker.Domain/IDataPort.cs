@@ -21,4 +21,7 @@ public interface IDataPort<TDomain> where TDomain : DomainBase
 
     Task DeleteRangeByGitlabIdAsync(IEnumerable<TDomain> domains, CancellationToken cancellationToken = default) =>
         Task.CompletedTask;
+
+    Task UpdateRangeByGitlabIdAsync(IEnumerable<TDomain> domains, CancellationToken cancellationToken = default) =>
+        Task.CompletedTask;
 }

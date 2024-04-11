@@ -44,7 +44,8 @@ public class ReleaseQueriesTests : IntegrationTestBase
         // Arrange
         var dbRelease = new DbRelease
         {
-            Title = "Release 1", State = ReleaseState.Planned
+            Title = "Release 1",
+            State = ReleaseState.Planned
         };
 
         var dbIssue = new DbIssue
@@ -64,7 +65,10 @@ public class ReleaseQueriesTests : IntegrationTestBase
         };
         var dbRelease2 = new DbRelease
         {
-            Title = "Release 2", Notes = "Notes 2", State = ReleaseState.Released, Date = DateTime.UtcNow,
+            Title = "Release 2",
+            Notes = "Notes 2",
+            State = ReleaseState.Released,
+            Date = DateTime.UtcNow,
             LastModifiedAt = DateTime.UtcNow.AddDays(-1),
             Issues =
             [
@@ -139,7 +143,10 @@ public class ReleaseQueriesTests : IntegrationTestBase
             context.Releases.Add(new DbRelease
             {
                 Id = new Guid("5888CDB6-57E2-4774-B6E8-7AABE82E2A5F"),
-                Title = "Release 1", Notes = "Notes 1", State = ReleaseState.Released, Date = DateTime.UtcNow,
+                Title = "Release 1",
+                Notes = "Notes 1",
+                State = ReleaseState.Released,
+                Date = DateTime.UtcNow,
                 LastModifiedAt = DateTime.UtcNow.AddDays(-1)
             });
         });
@@ -206,7 +213,10 @@ public class ReleaseQueriesTests : IntegrationTestBase
         var dbRelease = new DbRelease
         {
             Id = new Guid(id),
-            Title = "Release 2", Notes = "Notes 2", State = ReleaseState.Released, Date = DateTime.UtcNow,
+            Title = "Release 2",
+            Notes = "Notes 2",
+            State = ReleaseState.Released,
+            Date = DateTime.UtcNow,
             LastModifiedAt = DateTime.UtcNow.AddDays(-1),
             Issues = [dbIssue]
         };
@@ -215,7 +225,8 @@ public class ReleaseQueriesTests : IntegrationTestBase
             context.Releases.Add(new DbRelease
             {
                 Id = new Guid("5888CDB6-57E2-4774-B6E8-7AABE82E2A5F"),
-                Title = "Release 1", State = ReleaseState.Planned
+                Title = "Release 1",
+                State = ReleaseState.Planned
             });
             context.Releases.Add(dbRelease);
         });

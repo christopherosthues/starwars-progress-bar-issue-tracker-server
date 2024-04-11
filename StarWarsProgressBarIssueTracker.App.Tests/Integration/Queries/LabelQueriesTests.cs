@@ -43,11 +43,17 @@ public class LabelQueriesTests : IntegrationTestBase
         // Arrange
         var dbLabel = new DbLabel
         {
-            Color = "001122", TextColor = "223344", Title = "Label 1", Description = "Description 1"
+            Color = "001122",
+            TextColor = "223344",
+            Title = "Label 1",
+            Description = "Description 1"
         };
         var dbLabel2 = new DbLabel
         {
-            Color = "112233", TextColor = "334455", Title = "Label 2", Description = "Description 2"
+            Color = "112233",
+            TextColor = "334455",
+            Title = "Label 2",
+            Description = "Description 2"
         };
         await SeedDatabaseAsync(context =>
         {
@@ -102,7 +108,10 @@ public class LabelQueriesTests : IntegrationTestBase
             context.Labels.Add(new DbLabel
             {
                 Id = new Guid("5888CDB6-57E2-4774-B6E8-7AABE82E2A5F"),
-                Color = "001122", TextColor = "223344", Title = "Label 1", Description = "Description 1"
+                Color = "001122",
+                TextColor = "223344",
+                Title = "Label 1",
+                Description = "Description 1"
             });
         });
         const string id = "F1378377-9846-4168-A595-E763CD61CD9F";
@@ -181,7 +190,10 @@ public class LabelQueriesTests : IntegrationTestBase
             context.Labels.Add(new DbLabel
             {
                 Id = new Guid("5888CDB6-57E2-4774-B6E8-7AABE82E2A5F"),
-                Color = "001122", TextColor = "223344", Title = "Label 1", Description = "Description 1"
+                Color = "001122",
+                TextColor = "223344",
+                Title = "Label 1",
+                Description = "Description 1"
             });
             context.Labels.Add(dbLabel);
         });
