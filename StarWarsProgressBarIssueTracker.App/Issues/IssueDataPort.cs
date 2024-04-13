@@ -248,8 +248,9 @@ public class IssueDataPort : IDataPort<Issue>
 
     public async Task UpdateRangeByGitlabIdAsync(IEnumerable<Issue> domains, CancellationToken cancellationToken = default)
     {
+        var issueIds = domains.Select(domain => domain.GitlabId!);
         var dbIssues = await _repository.GetAll()
-            .Where(dbIssue => domains.Any(domain => domain.GitlabId!.Equals(dbIssue.GitlabId)))
+            .Where(dbIssue => issueIds.Any(domain => domain.Equals(dbIssue.GitlabId)))
             .ToListAsync(cancellationToken);
         var dbMilestones = await _milestoneRepository.GetAll().ToListAsync(cancellationToken);
         var dbReleases = await _releaseRepository.GetAll().ToListAsync(cancellationToken);

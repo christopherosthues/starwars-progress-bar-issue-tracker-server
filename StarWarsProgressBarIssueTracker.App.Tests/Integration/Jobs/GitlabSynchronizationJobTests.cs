@@ -39,7 +39,7 @@ public class GitlabSynchronizationJobTests : IntegrationTestBase
     {
         // Arrange
         var expectedDbLabels = GitlabMockData.AddedLabels();
-        var dbIssue = new DbIssue() { Title = "NotDeleted", };
+        var dbIssue = new DbIssue { Title = "NotDeleted", };
         var deletedLabel = new DbLabel
         {
             Title = "Deleted",
@@ -100,6 +100,76 @@ public class GitlabSynchronizationJobTests : IntegrationTestBase
             issues.Should().ContainEquivalentOf(dbIssue, options => options.Excluding(issue => issue.Id)
                 .Excluding(issue => issue.CreatedAt).Excluding(issue => issue.Labels));
             issues.First().Labels.Should().BeEmpty();
+        });
+    }
+
+    [Test]
+    public async Task ExecuteAsyncShouldUpdateAppearances()
+    {
+        // Arrange
+        var expectedDbAppearances = GitlabMockData.AddedAppearances();
+        var dbIssue = new DbIssue { Title = "NotDeleted", };
+        var deletedAppearance = new DbAppearance
+        {
+            Title = "Deleted",
+            Color = "#fffff1",
+            TextColor = "#fffff1",
+            GitlabId = "gid://gitlab/ProjectLabel/7",
+        };
+        var dbVehicle = new DbVehicle
+        {
+            Appearances = [deletedAppearance]
+        };
+        dbIssue.Vehicle = dbVehicle;
+        var githubAppearance = new DbAppearance { Title = "GitHub", Color = "#fffffe", TextColor = "#fffffe", GitHubId = "gid://github/ProjectLabel/8" };
+        expectedDbAppearances.Add(githubAppearance);
+        await SeedDatabaseAsync(context =>
+        {
+            context.Appearances.Add(expectedDbAppearances.First());
+            context.Appearances.Add(deletedAppearance);
+            context.Appearances.Add(githubAppearance);
+            context.Issues.Add(dbIssue);
+        });
+        using var scope = ApiFactory.Services.CreateScope();
+        var job = scope.ServiceProvider.GetRequiredService<GitlabSynchronizationJob>();
+        _server.Given(Request.Create().WithPath("/api/graphql").UsingPost())
+            .RespondWith(Response.Create().WithStatusCode(200)
+                .WithHeader("Content-Type", "application/json")
+                .WithBody(GitlabMockData.AppearanceResponse));
+
+        CheckDbContent(context =>
+        {
+            context.Appearances.Should().ContainEquivalentOf(deletedAppearance,
+                options => options.Excluding(dbAppearance => dbAppearance.Id).Excluding(dbAppearance => dbAppearance.CreatedAt));
+            context.Appearances.Should().ContainEquivalentOf(githubAppearance,
+                options => options.Excluding(dbAppearance => dbAppearance.Id).Excluding(dbAppearance => dbAppearance.CreatedAt));
+            context.Appearances.Should().ContainEquivalentOf(expectedDbAppearances.First(),
+                options => options.Excluding(dbAppearance => dbAppearance.Id).Excluding(dbAppearance => dbAppearance.CreatedAt));
+            context.Issues.Should().ContainEquivalentOf(dbIssue,
+                options => options.Excluding(issue => issue.Id).Excluding(issue => issue.CreatedAt)
+                    .Excluding(issue => issue.Vehicle));
+            context.Issues.Include(entity => entity.Vehicle).ThenInclude(entity => entity!.Appearances).First().Vehicle!.Appearances.Should().NotBeEmpty();
+        });
+
+        // Act
+        await job.ExecuteAsync(CancellationToken.None);
+
+        // Assert
+        CheckDbContent(context =>
+        {
+            context.Appearances.Should().NotBeEmpty();
+            var resultAppearances = context.Appearances.ToList();
+
+            resultAppearances.Should().HaveCount(expectedDbAppearances.Count);
+            resultAppearances.Should().NotContainEquivalentOf(deletedAppearance,
+                options => options.Excluding(dbAppearance => dbAppearance.Id).Excluding(dbAppearance => dbAppearance.CreatedAt));
+            resultAppearances.Should().BeEquivalentTo(expectedDbAppearances,
+                options => options.Excluding(dbAppearance => dbAppearance.Id).Excluding(dbAppearance => dbAppearance.CreatedAt));
+
+            var issues = context.Issues.Include(issue => issue.Vehicle).ThenInclude(vehicle => vehicle!.Appearances).ToList();
+            issues.Should().ContainEquivalentOf(dbIssue, options => options.Excluding(issue => issue.Id)
+                .Excluding(issue => issue.CreatedAt).Excluding(issue => issue.Vehicle));
+            issues.First().Vehicle!.Appearances.Should().BeEmpty();
         });
     }
 

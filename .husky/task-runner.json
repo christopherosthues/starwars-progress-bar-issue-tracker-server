@@ -32,7 +32,6 @@
       "command": "dotnet",
       "args": [
         "dotnet-format",
-        "StarWarsProgressBarIssueTracker.sln",
         "--include",
         "${staged}"
       ],
