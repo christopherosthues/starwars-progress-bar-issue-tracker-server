@@ -21,7 +21,7 @@
       ]
     },
     "strawberryshake.tools": {
-      "version": "13.9.0",
+      "version": "13.9.1",
       "commands": [
         "dotnet-graphql"
       ]
