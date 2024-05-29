@@ -116,23 +116,6 @@ public class GraphQLService(
         return result.Data?.CreateIssue;
     }
 
-    // public async Task<IUpdateRelease_UpdateIssue?> UpdateRelease(Release release, StateChangeEvent changeEvent, CancellationToken token)
-    // {
-    //     var createReleaseInput = new UpdateIssueInput
-    //     {
-    //         Iid = release.Iid,
-    //         Title = release.Title,
-    //         Description = release.Notes,
-    //         ProjectPath = _projectId,
-    //         DueDate = release.Date?.ToString("yyyy-MM-dd"),
-    //         StateEvent = GetStateEvent(changeEvent),
-    //     };
-    //     var result = await _client.UpdateRelease.ExecuteAsync(createReleaseInput, token).ConfigureAwait(false);
-    //     result.EnsureNoErrors();
-    //
-    //     return result.Data?.UpdateIssue;
-    // }
-
     public async Task<IGetInitialIssues_Project?> GetInitialIssues(CancellationToken token)
     {
         var result = await client.GetInitialIssues.ExecuteAsync(_projectId, token).ConfigureAwait(false);
@@ -173,57 +156,4 @@ public class GraphQLService(
 
         return result.Data?.Project;
     }
-
-    // public async Task<ICreateIssue_CreateIssue?> CreateIssue(Issue issue, CancellationToken token)
-    // {
-    //     var createIssueInput = new CreateIssueInput
-    //     {
-    //         Description = ParseDescription(issue.IssueDescription),
-    //         Title = issue.Title,
-    //         LabelIds = issue.Labels.Select(label => label.Id).ToList(),
-    //         MilestoneId = issue.Milestone?.Id,
-    //         ProjectPath = _projectId,
-    //         Type = IssueType.Issue,
-    //     };
-    //     var result = await _client.CreateIssue.ExecuteAsync(createIssueInput, token).ConfigureAwait(false);
-    //     result.EnsureNoErrors();
-    //
-    //     return result.Data?.CreateIssue;
-    // }
-
-    // public async Task<IUpdateIssue_UpdateIssue?> UpdateIssue(Issue issue, StateChangeEvent changeEvent, CancellationToken token)
-    // {
-    //     var createIssueInput = new UpdateIssueInput
-    //     {
-    //         Iid = issue.Iid,
-    //         Description = ParseDescription(issue.IssueDescription),
-    //         Title = issue.Title,
-    //         LabelIds = issue.Labels.Select(label => label.Id).ToList(),
-    //         MilestoneId = issue.Milestone?.Id.ToId(),
-    //         ProjectPath = _projectId,
-    //         StateEvent = GetStateEvent(changeEvent),
-    //     };
-    //     var result = await _client.UpdateIssue.ExecuteAsync(createIssueInput, token).ConfigureAwait(false);
-    //     result.EnsureNoErrors();
-    //
-    //     return result.Data?.UpdateIssue;
-    // }
-    //
-    // private static IssueStateEvent? GetStateEvent(StateChangeEvent changeEvent)
-    // {
-    //     return changeEvent switch
-    //     {
-    //         StateChangeEvent.Reopen => IssueStateEvent.Reopen,
-    //         StateChangeEvent.Close => IssueStateEvent.Close,
-    //         _ => null,
-    //     };
-    // }
-    //
-    // private static string ParseDescription(IssueDescription issueDescription)
-    // {
-    //     return JsonSerializer.Serialize(issueDescription, new JsonSerializerOptions
-    //     {
-    //         WriteIndented = true
-    //     });
-    // }
 }
