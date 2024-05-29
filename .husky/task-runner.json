@@ -32,7 +32,9 @@
       "command": "dotnet",
       "args": [
         "test",
-        "StarWarsProgressBarIssueTracker.sln"
+        "StarWarsProgressBarIssueTracker.sln",
+        "--filter",
+        "TestCategory=Unit|TestCategory=Integration"
       ]
     }
   ]
